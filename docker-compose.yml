@@ -1,0 +1,24 @@
+web:
+  build: .
+  command: rails s --binding 0.0.0.0
+  volumes:
+    - .:/app
+  ports:
+    - "3000:3000"
+  links:
+    - db
+  environment:
+    - RAILS_ENV=development
+    - OAUTH_SITE=https://tmc.mooc.fi
+  cap_drop:
+    - all
+db:
+  image: postgres:alpine
+  cap_drop:
+    - all
+  cap_add:
+    - chown
+    - fowner
+    - setuid
+    - setgid
+    - dac_override
