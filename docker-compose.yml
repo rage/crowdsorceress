@@ -10,6 +10,7 @@ web:
   environment:
     - RAILS_ENV=development
     - OAUTH_SITE=https://tmc.mooc.fi
+    - PORT=3000
   cap_drop:
     - all
 db:
