@@ -47,7 +47,6 @@ class ExercisesController < ApplicationController
   end
 
   # Only allow a trusted parameter "white list" through.
-  # parse JSON?
   def exercise_params
     params[:exercise] = JSON.parse(params[:exercise])
     params.require(:exercise).permit(:user_id, :code, :description, :input, :output, :type_id)
