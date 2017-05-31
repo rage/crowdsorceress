@@ -10,37 +10,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170530082349) do
-
+ActiveRecord::Schema.define(version: 20_170_530_082_349) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension 'plpgsql'
 
-  create_table "exercise_types", force: :cascade do |t|
-    t.string "name"
-    t.string "test_template"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table 'exercise_types', force: :cascade do |t|
+    t.string 'name'
+    t.string 'test_template'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
   end
 
-  create_table "exercises", force: :cascade do |t|
-    t.integer "user_id"
-    t.string "code"
-    t.string "description"
-    t.string "input"
-    t.string "output"
-    t.integer "type_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table 'exercises', force: :cascade do |t|
+    t.integer 'user_id'
+    t.string 'code'
+    t.string 'description'
+    t.string 'input'
+    t.string 'output'
+    t.integer 'type_id'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
   end
 
-  create_table "users", force: :cascade do |t|
-    t.string "email"
-    t.string "first_name"
-    t.string "last_name"
-    t.boolean "administrator"
-    t.string "username"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table 'users', force: :cascade do |t|
+    t.string 'email'
+    t.string 'first_name'
+    t.string 'last_name'
+    t.boolean 'administrator'
+    t.string 'username'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
   end
-
 end

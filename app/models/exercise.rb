@@ -3,7 +3,7 @@ class Exercise < ApplicationRecord
   belongs_to :user
 
   def find_type
-    #TODO
+    # TODO
     type_id
   end
 end
