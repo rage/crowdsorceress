@@ -6,4 +6,9 @@ class Exercise < ApplicationRecord
     # TODO
     type_id
   end
+
+  def test_exercise_in_sandbox
+    #TODO
+  end
+  
 end
