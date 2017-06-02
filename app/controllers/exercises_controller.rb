@@ -14,14 +14,18 @@ class ExercisesController < ApplicationController
   end
 
   # POST /exercises
-  # TODO metodi exercise typen selvittämiseen (find_type)
+  # TODO metodi exercise typen selvittämiseen (find_type) 
+  # ts. selvitä mikä on exercise type
   def create
+    # ensure_signed_in!
+    if current_user
     @exercise = Exercise.new(exercise_params)
 
     if @exercise.save
       render json: @exercise, status: :created, location: @exercise
     else
       render json: @exercise.errors, status: :unprocessable_entity
+    end
     end
   end
 
@@ -50,5 +54,6 @@ class ExercisesController < ApplicationController
   def exercise_params
     params[:exercise] = JSON.parse(params[:exercise])
     params.require(:exercise).permit(:user_id, :code, :description, :input, :output, :type_id)
-  end
+    # byebug
+end
 end

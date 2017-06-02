@@ -1,3 +1,5 @@
+require 'oauth2'
+
 class ApplicationController < ActionController::API
   include ActionController::RequestForgeryProtection
 
@@ -20,7 +22,7 @@ class ApplicationController < ActionController::API
   def current_user
     return nil unless upstream_user
     @current_user ||= begin
-      User.create_with(email: upstream_user['email'], first_name: upstream_user['first_name'],
+      user = User.create_with(email: upstream_user['email'], first_name: upstream_user['first_name'],
                        last_name: upstream_user['last_name'], administrator: upstream_user['administrator'])
           .find_or_create_by(username: upstream_user['username'])
       user.update(last_logged_in: Time.zone.now) if user.last_logged_in.nil?

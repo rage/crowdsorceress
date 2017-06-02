@@ -1,10 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe ExercisesController, type: :controller do
-  describe "Exercise" do
+  describe 'Exercise' do
     it 'is created correctly from json' do
       post_create
-      # expect(response.status).to eq(201)
       assert_response 201
       expect { post_create }.to change { Exercise.count }.by(1)
     end
@@ -12,8 +11,10 @@ RSpec.describe ExercisesController, type: :controller do
     it 'is not created when params are not json' do
       user = User.create
       type = ExerciseType.create
-      expect { post :create, params: { exercise: { user_id: user.id, description: 'asd', code: 'asd',
-                      input: 'asd', output: 'asd', type_id: type.id } } }.to raise_error(TypeError)
+      expect do
+        post :create, params: { exercise: { user_id: user.id, description: 'asd', code: 'asd',
+                                            input: 'asd', output: 'asd', type_id: type.id }, oauth_token: ENV['OAUTH_TOKEN'] }
+      end.to raise_error(TypeError)
       expect(Exercise.count).to eq(0)
     end
 
@@ -36,6 +37,6 @@ RSpec.describe ExercisesController, type: :controller do
     type = ExerciseType.create
     json_params = { user_id: user.id, description: 'asd', code: 'asd',
                     input: 'asd', output: 'asd', type_id: type.id }.to_json
-    post :create, params: { exercise: json_params }
+    post :create, params: { exercise: json_params, oauth_token: ENV['OAUTH_TOKEN'] }
   end
 end
