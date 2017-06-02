@@ -1,10 +1,8 @@
 require 'oauth2'
 
 class ApplicationController < ActionController::API
-  include ActionController::RequestForgeryProtection
-
-  protect_from_forgery with: :exception
-  skip_before_action :verify_authenticity_token #only?
+  include ActionController::Helpers
+  
   helper_method :current_user, :admin?
 
   NotAuthorized = Class.new(StandardError)
