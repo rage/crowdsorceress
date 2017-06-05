@@ -2,6 +2,11 @@ require 'rails_helper'
 
 RSpec.describe ExercisesController, type: :controller do
   describe 'Exercise' do
+    let (:user){ FactoryGirl.create(:user) }
+    # let (:exercise){ FactoryGirl.create(:exercise) }
+    let (:type){ FactoryGirl.create(:exercise_type) }
+    before { allow(controller).to receive(:current_user) { user } }
+
     it 'is created correctly from json' do
       post_create
       assert_response 201
@@ -9,18 +14,14 @@ RSpec.describe ExercisesController, type: :controller do
     end
 
     it 'is not created when params are not json' do
-      user = User.create
-      type = ExerciseType.create
       expect do
         post :create, params: { exercise: { user_id: user.id, description: 'asd', code: 'asd',
-                                            input: 'asd', output: 'asd', type_id: type.id }, oauth_token: ENV['OAUTH_TOKEN'] }
+                                            IO: 'asd', type_id: type.id } }
       end.to raise_error(TypeError)
       expect(Exercise.count).to eq(0)
     end
 
     it 'is not saved when required params are missing' do
-      user = User.create
-      type = ExerciseType.create
       exercise = Exercise.create user_id: user.id
       exercise2 = Exercise.create type_id: type.id
 
@@ -33,10 +34,8 @@ RSpec.describe ExercisesController, type: :controller do
   private
 
   def post_create
-    user = User.create
-    type = ExerciseType.create
-    json_params = { user_id: user.id, description: 'asd', code: 'asd',
-                    input: 'asd', output: 'asd', type_id: type.id }.to_json
-    post :create, params: { exercise: json_params, oauth_token: ENV['OAUTH_TOKEN'] }
+    json_params = { description: 'asd', code: 'asd',
+                    IO: 'asd', type_id: type.id }.to_json
+    post :create, params: { exercise: json_params }
   end
 end
