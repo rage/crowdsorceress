@@ -20,6 +20,9 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: postgres
+  host: <%= ENV.fetch('DB_HOST', 'localhost') %>
+  port: <%= ENV.fetch('DB_1_PORT_5432_TCP_PORT', '5432') %>
 
 development:
   <<: *default
@@ -82,4 +85,4 @@ production:
   <<: *default
   database: crowdsorcerer_production
   username: crowdsorcerer
-  password: <%= ENV['CROWDSORCERER_DATABASE_PASSWORD'] %>
+  password: <%= ENV.fetch('CROWDSORCERER-BACKEND_DATABASE_PASSWORD', ENV['DATABASE_PASSWORD']) %>
