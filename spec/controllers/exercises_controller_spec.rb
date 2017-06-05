@@ -16,7 +16,7 @@ RSpec.describe ExercisesController, type: :controller do
     it 'is not created when params are not json' do
       expect do
         post :create, params: { exercise: { user_id: user.id, description: 'asd', code: 'asd',
-                                            IO: 'asd', type_id: type.id } }
+                                            testIO: 'asd', type_id: type.id } }
       end.to raise_error(TypeError)
       expect(Exercise.count).to eq(0)
     end
@@ -35,7 +35,7 @@ RSpec.describe ExercisesController, type: :controller do
 
   def post_create
     json_params = { description: 'asd', code: 'asd',
-                    IO: 'asd', type_id: type.id }.to_json
+                    testIO: 'asd', type_id: type.id }.to_json
     post :create, params: { exercise: json_params }
   end
 end
