@@ -11,8 +11,6 @@ RUN apk update && \
 
 WORKDIR /app
 
-User user
-
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
 
@@ -21,10 +19,6 @@ RUN bundle config build.nokogiri --use-system-libraries && \
             bundle clean
 
 COPY . /app
-
-User root
-RUN chown -R user /app/
-User user
 
 EXPOSE 3000
 
