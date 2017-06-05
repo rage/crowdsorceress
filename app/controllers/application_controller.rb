@@ -24,6 +24,7 @@ class ApplicationController < ActionController::API
                        last_name: upstream_user['last_name'], administrator: upstream_user['administrator'])
           .find_or_create_by(username: upstream_user['username'])
       user.update(last_logged_in: Time.zone.now) if user.last_logged_in.nil?
+      user
     end
   end
 

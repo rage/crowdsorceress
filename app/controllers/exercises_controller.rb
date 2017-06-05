@@ -1,5 +1,6 @@
 class ExercisesController < ApplicationController
   before_action :set_exercise, only: %i[show update destroy]
+  before_action :ensure_signed_in!, only: %i[create]
 
   # GET /exercises
   def index
@@ -14,18 +15,15 @@ class ExercisesController < ApplicationController
   end
 
   # POST /exercises
-  # TODO metodi exercise typen selvittämiseen (find_type) 
+  # TODO metodi exercise typen selvittämiseen (find_type)
   # ts. selvitä mikä on exercise type
   def create
-    # ensure_signed_in!
-    if current_user
     @exercise = Exercise.new(exercise_params)
 
     if @exercise.save
       render json: @exercise, status: :created, location: @exercise
     else
       render json: @exercise.errors, status: :unprocessable_entity
-    end
     end
   end
 
@@ -53,7 +51,7 @@ class ExercisesController < ApplicationController
   # Only allow a trusted parameter "white list" through.
   def exercise_params
     params[:exercise] = JSON.parse(params[:exercise])
-    params.require(:exercise).permit(:user_id, :code, :description, :input, :output, :type_id)
-    # byebug
-end
+    params[:exercise][:user_id] = current_user.id
+    params.require(:exercise).permit(:user_id, :code, :description, :IO, :type_id)
+  end
 end
