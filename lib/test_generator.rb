@@ -13,7 +13,16 @@ class TestGenerator
 
   def string_to_string
     <<-eos
+import fi.helsinki.cs.tmc.edutestutils.MockStdio;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import org.junit.Rule;
+import org.junit.Test;
+
 public class StringToStringTest {
+
+  @Rule
+  public MockStdio io = new MockStdio();
 
   @Test
   public void toimii(input, output) {

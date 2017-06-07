@@ -17,6 +17,8 @@ class ExerciseTypesController < ApplicationController
   def create
     @exercise_type = ExerciseType.new(exercise_type_params)
 
+    # generoidaan test_template
+
     if @exercise_type.save
       render json: @exercise_type, status: :created, location: @exercise_type
     else
