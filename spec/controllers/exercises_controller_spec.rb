@@ -4,38 +4,31 @@ RSpec.describe ExercisesController, type: :controller do
   describe 'Exercise' do
     let (:user) { FactoryGirl.create(:user) }
     # let (:exercise){ FactoryGirl.create(:exercise) }
-    let (:type) { FactoryGirl.create(:exercise_type) }
+    let (:assignment) { FactoryGirl.create(:assignment) }
     before { allow(controller).to receive(:current_user) { user } }
 
-    it 'is created correctly from json' do
+    it 'is created correctly' do
       post_create
       assert_response 201
       expect { post_create }.to change { Exercise.count }.by(1)
     end
 
-    it 'is not created when params are not json' do
+    it 'is not saved when a needed parameter is missing' do
+      exercise = Exercise.create
+      expect(exercise.assignment_id).to be(nil)
+
       expect do
-        post :create, params: { exercise: { user_id: user.id, description: 'asd', code: 'asd',
-                                            testIO: 'asd', type_id: type.id } }
-      end.to raise_error(TypeError)
-      expect(Exercise.count).to eq(0)
-    end
-
-    it 'is not saved when required params are missing' do
-      exercise = Exercise.create user_id: user.id
-      exercise2 = Exercise.create type_id: type.id
-
-      expect(exercise.type_id).to be(nil)
-      expect(exercise2.user_id).to be(nil)
-      expect(Exercise.count).to eq(0)
+        post :create, params: { exercise: {user_id: user.id, description: 'asd', code: 'asd',
+                                           testIO: {"input": "asd", "output": "asdf"}} }
+      end.to change { Exercise.count }.by(0)
     end
   end
 
   private
 
   def post_create
-    json_params = { description: 'asd', code: 'asd',
-                    testIO: 'asd', type_id: type.id }.to_json
-    post :create, params: { exercise: json_params }
+    params = { user_id: user.id, description: 'asd', code: 'asd',
+                    testIO: {"input": "asd", "output": "asdf"}, assignment_id: assignment.id }
+    post :create, params: { exercise: params }
   end
 end

@@ -18,12 +18,12 @@ class ExercisesController < ApplicationController
   # TODO metodi exercise typen selvittämiseen (find_type)
   # ts. selvitä mikä on exercise type
   def create
-    @exercise = Exercise.new(exercise_params)
+    @exercise = current_user.exercises.new(exercise_params)
 
     if @exercise.save
-      render json: @exercise, status: :created, location: @exercise
+      render json: { message: 'Exercise successfully created! :) :3' }, status: :created
     else
-      render json: @exercise.errors, status: :unprocessable_entity
+      render json: @exercise.errors, status: :unprocessable_entity,  message: 'Exercise not created. =( :F'
     end
   end
 
@@ -50,8 +50,6 @@ class ExercisesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def exercise_params
-    params[:exercise] = JSON.parse(params[:exercise])
-    params[:exercise][:user_id] = current_user.id
-    params.require(:exercise).permit(:user_id, :code, :description, :IO, :type_id)
+    params.require(:exercise).permit(:code, :description, :assignment_id, testIO: %i[input output])
   end
 end

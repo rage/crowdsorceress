@@ -3,25 +3,28 @@ class TestGenerator
   #   @exercise_type = exercise_type
   # end
 
-  def generate(exercise_type, io, code)
-    # raise 'Unsupported exercise type.' unless @exercise_type == :string_string
-    return string_to_string(io, code) if exercise_type == :string_string
+  def generate(exercise)
+    type = exercise.assignment.exercise_type.name
+    return string_to_string(exercise) if type == 'string_string'
   end
 
-  def string_to_string(io, _code)
+  def string_to_string(exercise)
+    io = exercise.testIO
     tests = ''
+    counter = 1
 
-    io.each do |key, value|
-      input = value[:input]
-      output = value[:output]
+    io.each do |key|
+      input = key['input']
+      output = key['output']
 
       tests += <<-eos
   @Test
-  public void test#{key}() {
+  public void test#{counter}() {
     toimii(#{input}, #{output});
   }
 
 eos
+      counter += 1
     end
 
     test_template = <<-eos
@@ -36,8 +39,6 @@ public class StringInputStringOutputTest {
   }
 }
 eos
-
-    puts test_template
     test_template
   end
 end

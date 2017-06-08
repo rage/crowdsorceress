@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :assignments
   resources :users
   resources :exercise_types
   resources :exercises

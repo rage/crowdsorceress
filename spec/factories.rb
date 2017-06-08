@@ -1,10 +1,14 @@
 FactoryGirl.define do
+  factory :assignment do
+    description 'MyString'
+    exercise_type
+  end
+
   factory :exercise do
     code 'asd'
     description 'asd'
-    IO 'asd'
     user
-    exercise_type
+    assignment
   end
 
   factory :user do
@@ -17,7 +21,7 @@ FactoryGirl.define do
   end
 
   factory :exercise_type do
-    name 'asd'
+    name 'string_string'
     test_template 'asd'
   end
 end
