@@ -1,46 +1,43 @@
 class TestGenerator
-
   # def initialize(exercise_type)
   #   @exercise_type = exercise_type
   # end
 
-  def generate(exercise_type)
+  def generate(exercise_type, io, code)
     # raise 'Unsupported exercise type.' unless @exercise_type == :string_string
-    if exercise_type == :string_string
-      return string_to_string
-    end
+    return string_to_string(io, code) if exercise_type == :string_string
   end
 
-  def string_to_string
-    <<-eos
-import fi.helsinki.cs.tmc.edutestutils.MockStdio;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import org.junit.Rule;
+  def string_to_string(io, _code)
+    tests = ''
+
+    io.each do |key, value|
+      input = value[:input]
+      output = value[:output]
+
+      tests += <<-eos
+  @Test
+  public void test#{key}() {
+    toimii(#{input}, #{output});
+  }
+
+eos
+    end
+
+    test_template = <<-eos
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-public class StringToStringTest {
+public class StringInputStringOutputTest {
 
-  @Rule
-  public MockStdio io = new MockStdio();
-
-  @Test
-  public void toimii(input, output) {
-    ReflectionUtils.newInstanceOfClass(TulostusKolmesti.class); // Exercise.code
-    io.setSysIn(input + "\n");
-    try {
-        TulostusKolmesti.main(new String[0]);
-    } catch (NumberFormatException e) {
-        fail("Kun luet käyttäjältä merkkijonoa, älä yritä muuttaa sitä numeroksi. Virhe: " + e.getMessage());
-    }
-
-    String out = io.getSysOut();
-
-    assertTrue("Kun syöte on \"" + input + "\" pitäisi tulostuksessa olla teksti \"" + output + "\", nyt ei ollut. Tulosteesi oli: "+out,
-                out.contains(output));
+#{tests}
+  private void toimii(String input, String output) {
+    assertEquals(output, TulostusKolmesti.tulosta(input));
   }
 }
 eos
+
+    puts test_template
+    test_template
   end
-  
 end

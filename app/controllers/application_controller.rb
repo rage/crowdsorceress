@@ -21,8 +21,8 @@ class ApplicationController < ActionController::API
     return nil unless upstream_user
     @current_user ||= begin
       user = User.create_with(email: upstream_user['email'], first_name: upstream_user['first_name'],
-                       last_name: upstream_user['last_name'], administrator: upstream_user['administrator'])
-          .find_or_create_by(username: upstream_user['username'])
+                              last_name: upstream_user['last_name'], administrator: upstream_user['administrator'])
+                 .find_or_create_by(username: upstream_user['username'])
       user.update(last_logged_in: Time.zone.now) if user.last_logged_in.nil?
       user
     end

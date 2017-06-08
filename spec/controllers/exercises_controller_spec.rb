@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe ExercisesController, type: :controller do
   describe 'Exercise' do
-    let (:user){ FactoryGirl.create(:user) }
+    let (:user) { FactoryGirl.create(:user) }
     # let (:exercise){ FactoryGirl.create(:exercise) }
-    let (:type){ FactoryGirl.create(:exercise_type) }
+    let (:type) { FactoryGirl.create(:exercise_type) }
     before { allow(controller).to receive(:current_user) { user } }
 
     it 'is created correctly from json' do

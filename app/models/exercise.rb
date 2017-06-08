@@ -8,7 +8,6 @@ class Exercise < ApplicationRecord
   end
 
   def test_exercise_in_sandbox
-    #TODO
+    # TODO
   end
-  
 end

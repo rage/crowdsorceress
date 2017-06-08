@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Exercise, type: :model do
-  describe "Exercise" do
+  describe 'Exercise' do
     # it 'recognises the exercise type' do
     #   pending("should test method find_type")
     #   fail
