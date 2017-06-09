@@ -15,9 +15,8 @@ class ExercisesController < ApplicationController
   end
 
   # POST /exercises
-  # TODO metodi exercise typen selvittämiseen (find_type)
-  # ts. selvitä mikä on exercise type
-  # generoi testit??
+  # TODO method to find out the exercise type
+  # TODO generate tests
   def create
     @exercise = current_user.exercises.new(exercise_params)
 

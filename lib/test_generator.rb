@@ -26,6 +26,10 @@ public class %<class_name>sTest {
   end
 
   def input_to_output(exercise, type) # input and output both exist
+    # TODO: get class_name and method_name
+    class_name = 'Class'
+    method_name = 'method'
+
     if type == 'string_string'
       input_type = 'String'
       output_type = 'String'
@@ -36,16 +40,14 @@ public class %<class_name>sTest {
       output_type = 'int'
     end
 
-    # TODO: get class_name and method_name
+    generate_string(exercise, input_type, output_type, class_name, method_name)
+  end
 
-    class_name = 'Class'
-    method_name = 'method'
-
-    io = exercise.testIO
+  def generate_string(exercise, input_type, output_type, class_name, method_name)
     tests = ''
     counter = 1
 
-    io.each do |i|
+    exercise.testIO.each do |i|
       input = i['input']
       output = i['output']
       tests += format(TESTS, counter: counter, input: input, output: output)
