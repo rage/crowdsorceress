@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 # require 'simplecov'
 # SimpleCov.start('rails')
+=======
+>>>>>>> 8647d9f40cdb4d1fea31cd6ad0b97884cef6859f
 # frozen_string_literal: true
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'

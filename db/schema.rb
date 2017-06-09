@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,46 +12,45 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170608115135) do
-
+ActiveRecord::Schema.define(version: 20_170_608_115_135) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension 'plpgsql'
 
-  create_table "assignments", force: :cascade do |t|
-    t.string "description"
-    t.bigint "exercise_type_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["exercise_type_id"], name: "index_assignments_on_exercise_type_id"
+  create_table 'assignments', force: :cascade do |t|
+    t.string 'description'
+    t.bigint 'exercise_type_id'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.index ['exercise_type_id'], name: 'index_assignments_on_exercise_type_id'
   end
 
-  create_table "exercise_types", force: :cascade do |t|
-    t.string "name"
-    t.string "test_template"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table 'exercise_types', force: :cascade do |t|
+    t.string 'name'
+    t.string 'test_template'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
   end
 
-  create_table "exercises", force: :cascade do |t|
-    t.integer "user_id"
-    t.string "code"
-    t.string "description"
-    t.integer "assignment_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.json "testIO"
+  create_table 'exercises', force: :cascade do |t|
+    t.integer 'user_id'
+    t.string 'code'
+    t.string 'description'
+    t.integer 'assignment_id'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.json 'testIO'
   end
 
-  create_table "users", force: :cascade do |t|
-    t.string "email"
-    t.string "first_name"
-    t.string "last_name"
-    t.boolean "administrator"
-    t.string "username"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.time "last_logged_in"
+  create_table 'users', force: :cascade do |t|
+    t.string 'email'
+    t.string 'first_name'
+    t.string 'last_name'
+    t.boolean 'administrator'
+    t.string 'username'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.time 'last_logged_in'
   end
 
-  add_foreign_key "assignments", "exercise_types"
+  add_foreign_key 'assignments', 'exercise_types'
 end
