@@ -1,10 +1,10 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe ExercisesController, type: :controller do
   describe 'Exercise' do
-    let (:user) { FactoryGirl.create(:user) }
-    # let (:exercise){ FactoryGirl.create(:exercise) }
-    let (:assignment) { FactoryGirl.create(:assignment) }
+    let(:user) { FactoryGirl.build(:user) }
     before { allow(controller).to receive(:current_user) { user } }
 
     it 'is created correctly' do
@@ -18,8 +18,8 @@ RSpec.describe ExercisesController, type: :controller do
       expect(exercise.assignment_id).to be(nil)
 
       expect do
-        post :create, params: { exercise: {user_id: user.id, description: 'asd', code: 'asd',
-                                           testIO: {"input": "asd", "output": "asdf"}} }
+        post :create, params: { exercise: { description: 'asd', code: 'asd',
+                                            testIO: { "input": 'asd', "output": 'asdf' } } }
       end.to change { Exercise.count }.by(0)
     end
   end
@@ -27,8 +27,8 @@ RSpec.describe ExercisesController, type: :controller do
   private
 
   def post_create
-    params = { user_id: user.id, description: 'asd', code: 'asd',
-                    testIO: {"input": "asd", "output": "asdf"}, assignment_id: assignment.id }
+    params = { description: 'asd', code: 'asd',
+               testIO: { "input": 'asd', "output": 'asdf' }, assignment_id: 1 }
     post :create, params: { exercise: params }
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ExercisesController < ApplicationController
   before_action :set_exercise, only: %i[show update destroy]
   before_action :ensure_signed_in!, only: %i[create]
@@ -15,8 +17,8 @@ class ExercisesController < ApplicationController
   end
 
   # POST /exercises
-  # TODO metodi exercise typen selvittämiseen (find_type)
-  # ts. selvitä mikä on exercise type
+  # TODO method to find out the exercise type
+  # TODO generate tests
   def create
     @exercise = current_user.exercises.new(exercise_params)
 
