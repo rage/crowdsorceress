@@ -6,20 +6,20 @@ RSpec.describe TestGenerator do
     exercise = FactoryGirl.create(:exercise)
 
     code = <<-eos
-public class TulostusKolmesti {
+      public class Class {
 
-    public static void main(String[] args) {
-        String asia = "asia";
-        tulosta(asia);
-    }
+          public static void main(String[] args) {
+              String asia = "asia";
+              method(asia);
+          }
 
-    public static String tulosta(String input) {
-        System.out.print(input);
-        System.out.print(input);
-        System.out.print(input);
-        return input + input + input;
-    }
-}
+          public static String method(String input) {
+              System.out.print(input);
+              System.out.print(input);
+              System.out.print(input);
+              return input + input + input;
+          }
+      }
     eos
 
     io = [{ input: 'asd', output: 'asdasdasd' },
@@ -32,7 +32,7 @@ public class TulostusKolmesti {
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-public class StringInputStringOutputTest {
+public class ClassTest {
 
   @Test
   public void test1() {
@@ -51,7 +51,7 @@ public class StringInputStringOutputTest {
 
 
   private void toimii(String input, String output) {
-    assertEquals(output, TulostusKolmesti.tulosta(input));
+    assertEquals(output, Class.method(input));
   }
 }
     eos
@@ -73,17 +73,17 @@ public class StringInputStringOutputTest {
     exercise.assignment.exercise_type.name = 'int_int'
 
     code = <<-eos
-public class Kertolasku {
+      public class Class {
 
-    public static void main(String[] args) {
-        int a = 1337;
-        System.out.println(korotaPotenssiinKaksi(a));
-    }
+          public static void main(String[] args) {
+              int a = 1337;
+              System.out.println(method(a));
+          }
 
-    public static int korotaPotenssiinKaksi(int input) {
-        return input * input;
-    }
-}
+          public static int method(int input) {
+              return input * input;
+          }
+      }
     eos
 
     io = [{ input: '3', output: '9' },
@@ -96,7 +96,7 @@ public class Kertolasku {
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-public class IntInputIntOutputTest {
+public class ClassTest {
 
   @Test
   public void test1() {
@@ -115,7 +115,7 @@ public class IntInputIntOutputTest {
 
 
   private void toimii(int input, int output) {
-    assertEquals(output, Kertolasku.korotaPotenssiinKaksi(input));
+    assertEquals(output, Class.method(input));
   }
 }
     eos
