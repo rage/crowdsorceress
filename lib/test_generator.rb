@@ -1,11 +1,8 @@
 class TestGenerator
-  # def initialize(exercise_type)
-  #   @exercise_type = exercise_type
-  # end
-
   def generate(exercise)
     type = exercise.assignment.exercise_type.name
     return string_to_string(exercise) if type == 'string_string'
+    return int_to_int(exercise) if type == 'int_int'
   end
 
   def string_to_string(exercise)
@@ -13,9 +10,9 @@ class TestGenerator
     tests = ''
     counter = 1
 
-    io.each do |key|
-      input = key['input']
-      output = key['output']
+    io.each do |i|
+      input = i['input']
+      output = i['output']
 
       tests += <<-eos
   @Test
@@ -39,6 +36,39 @@ public class StringInputStringOutputTest {
   }
 }
 eos
-    test_template
+  end
+
+  def int_to_int(exercise)
+    io = exercise.testIO
+    tests = ''
+    counter = 1
+
+    io.each do |i|
+      input = i['input']
+      output = i['output']
+
+      tests += <<-eos
+  @Test
+  public void test#{counter}() {
+    toimii(#{input}, #{output});
+  }
+
+      eos
+
+      counter += 1
+    end
+
+    test_template = <<-eos
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
+public class IntInputIntOutputTest {
+
+#{tests}
+  private void toimii(int input, int output) {
+    assertEquals(output, Kertolasku.korotaPotenssiinKaksi(input));
+  }
+}
+    eos
   end
 end

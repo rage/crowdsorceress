@@ -17,6 +17,7 @@ class ExercisesController < ApplicationController
   # POST /exercises
   # TODO metodi exercise typen selvittämiseen (find_type)
   # ts. selvitä mikä on exercise type
+  # generoi testit??
   def create
     @exercise = current_user.exercises.new(exercise_params)
 
