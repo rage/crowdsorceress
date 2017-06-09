@@ -3,7 +3,9 @@ require 'test_generator'
 
 RSpec.describe TestGenerator do
   describe 'String->String generator' do
-    exercise = FactoryGirl.create(:exercise)
+    exercise_type = FactoryGirl.build(:exercise_type)
+    assignment = FactoryGirl.build(:assignment, exercise_type: exercise_type)
+    exercise = FactoryGirl.build(:exercise, assignment: assignment)
 
     code = <<-eos
       public class Class {
@@ -26,34 +28,35 @@ RSpec.describe TestGenerator do
           { input: 'dsa', output: 'dsadsadsa' },
           { input: 'dsas', output: 'dsasdsasdsas' }]
 
-    exercise.update(testIO: io, code: code)
+    exercise.testIO = io
+    exercise.code = code
 
-    test_template = <<-eos
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+    test_template = <<-eos.strip_heredoc
+      import static org.junit.Assert.assertEquals;
+      import org.junit.Test;
 
-public class ClassTest {
+      public class ClassTest {
 
-  @Test
-  public void test1() {
-    toimii(asd, asdasdasd);
-  }
+        @Test
+        public void test1() {
+          toimii(asd, asdasdasd);
+        }
 
-  @Test
-  public void test2() {
-    toimii(dsa, dsadsadsa);
-  }
+        @Test
+        public void test2() {
+          toimii(dsa, dsadsadsa);
+        }
 
-  @Test
-  public void test3() {
-    toimii(dsas, dsasdsasdsas);
-  }
+        @Test
+        public void test3() {
+          toimii(dsas, dsasdsasdsas);
+        }
 
 
-  private void toimii(String input, String output) {
-    assertEquals(output, Class.method(input));
-  }
-}
+        private void toimii(String input, String output) {
+          assertEquals(output, Class.method(input));
+        }
+      }
     eos
 
     subject { TestGenerator.new }
@@ -69,7 +72,10 @@ public class ClassTest {
   end
 
   describe 'Int->Int generator' do
-    exercise = FactoryGirl.create(:exercise)
+    exercise_type = FactoryGirl.build(:exercise_type)
+    assignment = FactoryGirl.build(:assignment, exercise_type: exercise_type)
+    exercise = FactoryGirl.build(:exercise, assignment: assignment)
+
     exercise.assignment.exercise_type.name = 'int_int'
 
     code = <<-eos
@@ -90,34 +96,35 @@ public class ClassTest {
           { input: '4', output: '16' },
           { input: '1337', output: '1787569' }]
 
-    exercise.update(testIO: io, code: code)
+    exercise.testIO = io
+    exercise.code = code
 
-    test_template = <<-eos
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+    test_template = <<-eos.strip_heredoc
+      import static org.junit.Assert.assertEquals;
+      import org.junit.Test;
 
-public class ClassTest {
+      public class ClassTest {
 
-  @Test
-  public void test1() {
-    toimii(3, 9);
-  }
+        @Test
+        public void test1() {
+          toimii(3, 9);
+        }
 
-  @Test
-  public void test2() {
-    toimii(4, 16);
-  }
+        @Test
+        public void test2() {
+          toimii(4, 16);
+        }
 
-  @Test
-  public void test3() {
-    toimii(1337, 1787569);
-  }
+        @Test
+        public void test3() {
+          toimii(1337, 1787569);
+        }
 
 
-  private void toimii(int input, int output) {
-    assertEquals(output, Class.method(input));
-  }
-}
+        private void toimii(int input, int output) {
+          assertEquals(output, Class.method(input));
+        }
+      }
     eos
 
     subject { TestGenerator.new }

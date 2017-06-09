@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryGirl.define do
   factory :assignment do
     description 'MyString'
@@ -7,7 +9,6 @@ FactoryGirl.define do
   factory :exercise do
     code 'asd'
     description 'asd'
-    user
     assignment
   end
 

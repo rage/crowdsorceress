@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ExerciseTypesController < ApplicationController
   before_action :set_exercise_type, only: %i[show update destroy]
 

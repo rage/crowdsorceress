@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ExercisesController < ApplicationController
   before_action :set_exercise, only: %i[show update destroy]
   before_action :ensure_signed_in!, only: %i[create]

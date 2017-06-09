@@ -1,6 +1,16 @@
+AllCops:
+  Exclude:
+    - './lib/test_generator.rb'
+    - './spec/lib/test_generator_spec.rb'
+    - './db/schema.rb'
+
+  TargetRubyVersion: 2.3
+
 Metrics/LineLength:
   Max: 160
 
 Documentation:
   Enabled: false
 
+Rails:
+  Enabled: true
