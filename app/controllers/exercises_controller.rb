@@ -23,6 +23,7 @@ class ExercisesController < ApplicationController
     @exercise = current_user.exercises.new(exercise_params)
 
     if @exercise.save
+      ExerciseVerifierJob.perform_later @exercise
       render json: { message: 'Exercise successfully created! :) :3' }, status: :created
     else
       render json: @exercise.errors, status: :unprocessable_entity,  message: 'Exercise not created. =( :F'
