@@ -10,6 +10,7 @@ FactoryGirl.define do
     code 'asd'
     description 'asd'
     assignment
+    user
   end
 
   factory :user do

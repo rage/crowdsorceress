@@ -4,13 +4,14 @@ require 'rails_helper'
 
 RSpec.describe ExercisesController, type: :controller do
   describe 'Exercise' do
-    let(:user) { FactoryGirl.build(:user) }
+    let(:user) { FactoryGirl.create(:user) }
+    let(:assignment) {FactoryGirl.create(:assignment)}
     before { allow(controller).to receive(:current_user) { user } }
 
     it 'is created correctly' do
-      post_create
+      post_create(assignment)
       assert_response 201
-      expect { post_create }.to change { Exercise.count }.by(1)
+      expect { post_create(assignment) }.to change { Exercise.count }.by(1)
     end
 
     it 'is not saved when a needed parameter is missing' do
@@ -26,9 +27,9 @@ RSpec.describe ExercisesController, type: :controller do
 
   private
 
-  def post_create
+  def post_create(assignment)
     params = { description: 'asd', code: 'asd',
-               testIO: { "input": 'asd', "output": 'asdf' }, assignment_id: 1 }
+               testIO: { "input": 'asd', "output": 'asdf' }, assignment_id: assignment.id }
     post :create, params: { exercise: params }
   end
 end

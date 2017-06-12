@@ -3,9 +3,9 @@ require 'test_generator'
 
 RSpec.describe TestGenerator do
   describe 'String->String generator' do
-    exercise_type = FactoryGirl.build(:exercise_type)
-    assignment = FactoryGirl.build(:assignment, exercise_type: exercise_type)
-    exercise = FactoryGirl.build(:exercise, assignment: assignment)
+    exercise_type = FactoryGirl.create(:exercise_type)
+    assignment = FactoryGirl.create(:assignment)
+    exercise = FactoryGirl.create(:exercise)
 
     code = <<-eos
       public class Class {
