@@ -865,8 +865,8 @@
           <code class="ruby">  def ensure_signed_in!</code>
         </li>
       
-        <li class="covered" data-hits="3" data-linenumber="17">
-          <span class="hits">3</span>
+        <li class="covered" data-hits="2" data-linenumber="17">
+          <span class="hits">2</span>
           
           <code class="ruby">    return if current_user</code>
         </li>
@@ -2068,26 +2068,32 @@
           <code class="ruby">  def create</code>
         </li>
       
-        <li class="covered" data-hits="3" data-linenumber="23">
-          <span class="hits">3</span>
+        <li class="covered" data-hits="2" data-linenumber="23">
+          <span class="hits">2</span>
           
           <code class="ruby">    @exercise = current_user.exercises.new(exercise_params)</code>
         </li>
       
-        <li class="never" data-hits="" data-linenumber="24">
+        <li class="covered" data-hits="2" data-linenumber="24">
+          <span class="hits">2</span>
+          
+          <code class="ruby">    ExerciseVerifierJob.perform_later @exercise</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="25">
           
           
           <code class="ruby"></code>
         </li>
       
-        <li class="covered" data-hits="3" data-linenumber="25">
-          <span class="hits">3</span>
+        <li class="missed" data-hits="0" data-linenumber="26">
+          
           
           <code class="ruby">    if @exercise.save</code>
         </li>
       
-        <li class="covered" data-hits="2" data-linenumber="26">
-          <span class="hits">2</span>
+        <li class="missed" data-hits="0" data-linenumber="27">
+          
           
           <code class="ruby">      byebug</code>
         </li>

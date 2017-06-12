@@ -21,6 +21,7 @@ class ExercisesController < ApplicationController
   # TODO generate tests
   def create
     @exercise = current_user.exercises.new(exercise_params)
+    ExerciseVerifierJob.perform_later @exercise.code
 
     if @exercise.save
       ExerciseVerifierJob.perform_later @exercise
