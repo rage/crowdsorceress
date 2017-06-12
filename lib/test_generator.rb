@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class TestGenerator
-  TESTS = <<-eos.freeze
+  TESTS = <<-eos
   @Test
   public void test%<counter>s() {
     toimii(%<input>s, %<output>s);
@@ -7,17 +9,17 @@ class TestGenerator
 
   eos
 
-  TEST_TEMPLATE = <<-eos.freeze
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+  TEST_TEMPLATE = <<~eos
+    import static org.junit.Assert.assertEquals;
+    import org.junit.Test;
 
-public class %<class_name>sTest {
+    public class %<class_name>sTest {
 
-%<tests>s
-  private void toimii(%<input_type>s input, %<output_type>s output) {
-    assertEquals(output, %<class_name>s.%<method_name>s(input));
-  }
-}
+    %<tests>s
+      private void toimii(%<input_type>s input, %<output_type>s output) {
+        assertEquals(output, %<class_name>s.%<method_name>s(input));
+      }
+    }
   eos
 
   def generate(exercise)

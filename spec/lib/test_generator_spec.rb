@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 require 'test_generator'
 
@@ -7,20 +9,20 @@ RSpec.describe TestGenerator do
     assignment = FactoryGirl.create(:assignment)
     exercise = FactoryGirl.create(:exercise)
 
-    code = <<-eos
+    code = <<~eos
       public class Class {
 
-          public static void main(String[] args) {
-              String asia = "asia";
-              method(asia);
-          }
+        public static void main(String[] args) {
+          String asia = "asia";
+          method(asia);
+        }
 
-          public static String method(String input) {
-              System.out.print(input);
-              System.out.print(input);
-              System.out.print(input);
-              return input + input + input;
-          }
+        public static String method(String input) {
+          System.out.print(input);
+          System.out.print(input);
+          System.out.print(input);
+          return input + input + input;
+        }
       }
     eos
 
@@ -31,7 +33,7 @@ RSpec.describe TestGenerator do
     exercise.testIO = io
     exercise.code = code
 
-    test_template = <<-eos.strip_heredoc
+    test_template = <<~eos
       import static org.junit.Assert.assertEquals;
       import org.junit.Test;
 
@@ -78,17 +80,17 @@ RSpec.describe TestGenerator do
 
     exercise.assignment.exercise_type.name = 'int_int'
 
-    code = <<-eos
+    code = <<~eos
       public class Class {
 
-          public static void main(String[] args) {
-              int a = 1337;
-              System.out.println(method(a));
-          }
+        public static void main(String[] args) {
+          int a = 1337;
+          System.out.println(method(a));
+        }
 
-          public static int method(int input) {
-              return input * input;
-          }
+        public static int method(int input) {
+          return input * input;
+        }
       }
     eos
 
@@ -99,7 +101,7 @@ RSpec.describe TestGenerator do
     exercise.testIO = io
     exercise.code = code
 
-    test_template = <<-eos.strip_heredoc
+    test_template = <<~eos
       import static org.junit.Assert.assertEquals;
       import org.junit.Test;
 
