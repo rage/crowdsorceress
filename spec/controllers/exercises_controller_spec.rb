@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe ExercisesController, type: :controller do
   describe 'Exercise' do
     let(:user) { FactoryGirl.create(:user) }
-    let(:assignment) {FactoryGirl.create(:assignment)}
+    let(:assignment) { FactoryGirl.create(:assignment) }
     before { allow(controller).to receive(:current_user) { user } }
 
     it 'is created correctly' do
