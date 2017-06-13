@@ -8,5 +8,5 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-type = ExerciseType.create
+type = ExerciseType.create name: 'string_string'
 Assignment.create description: 'Luo tekoäly', exercise_type: type

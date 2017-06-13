@@ -13,11 +13,15 @@ class TestGenerator
     import static org.junit.Assert.assertEquals;
     import org.junit.Test;
 
-    public class %<class_name>sTest {
+    public class DoesThisEvenCompileTest {
+
+      public DoesThisEvenCompileTest() {
+    
+      }
 
     %<tests>s
       private void toimii(%<input_type>s input, %<output_type>s output) {
-        assertEquals(output, %<class_name>s.%<method_name>s(input));
+        assertEquals(output, DoesThisEvenCompile.%<method_name>s(input));
       }
     }
   eos
@@ -28,8 +32,6 @@ class TestGenerator
   end
 
   def input_to_output(exercise, type) # input and output both exist
-    # TODO: get class_name and method_name
-    class_name = 'Class'
     method_name = 'method'
 
     if type == 'string_string'
@@ -42,10 +44,10 @@ class TestGenerator
       output_type = 'int'
     end
 
-    generate_string(exercise, input_type, output_type, class_name, method_name)
+    generate_string(exercise, input_type, output_type, method_name)
   end
 
-  def generate_string(exercise, input_type, output_type, class_name, method_name)
+  def generate_string(exercise, input_type, output_type, method_name)
     tests = ''
     counter = 1
 
@@ -56,7 +58,7 @@ class TestGenerator
       counter += 1
     end
 
-    format(TEST_TEMPLATE, class_name: class_name, tests: tests,
+    format(TEST_TEMPLATE, tests: tests,
                           input_type: input_type, output_type: output_type, method_name: method_name)
   end
 end
