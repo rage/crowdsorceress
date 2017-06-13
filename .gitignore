@@ -19,4 +19,5 @@ vendor/bundle
 
 .env
 
-/coverage/
+coverage/
+.idea/
