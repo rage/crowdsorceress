@@ -51,3 +51,5 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 gem 'oauth2', '~> 1.2'
 
 gem 'sidekiq'
+
+gem 'minitar', '~> 0.6.1'
