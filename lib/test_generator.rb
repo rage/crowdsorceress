@@ -16,7 +16,7 @@ class TestGenerator
     public class DoesThisEvenCompileTest {
 
       public DoesThisEvenCompileTest() {
-    
+
       }
 
     %<tests>s

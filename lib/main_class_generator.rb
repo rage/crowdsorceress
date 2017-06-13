@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MainClassGenerator
   TEMPLATE = <<~eos
     public class DoesThisEvenCompile {
@@ -5,7 +7,7 @@ class MainClassGenerator
       public static void main(String[] args) {
 
       }
-    
+
       public static %<output_type>s metodi(%<input_type>s input) {
         %<code>s
       }

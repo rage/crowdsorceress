@@ -35,7 +35,11 @@ RSpec.describe TestGenerator do
       import static org.junit.Assert.assertEquals;
       import org.junit.Test;
 
-      public class ClassTest {
+      public class DoesThisEvenCompileTest {
+
+        public DoesThisEvenCompileTest() {
+
+        }
 
         @Test
         public void test1() {
@@ -54,7 +58,7 @@ RSpec.describe TestGenerator do
 
 
         private void toimii(String input, String output) {
-          assertEquals(output, Class.method(input));
+          assertEquals(output, DoesThisEvenCompile.method(input));
         }
       }
     eos
@@ -101,7 +105,11 @@ RSpec.describe TestGenerator do
       import static org.junit.Assert.assertEquals;
       import org.junit.Test;
 
-      public class ClassTest {
+      public class DoesThisEvenCompileTest {
+
+        public DoesThisEvenCompileTest() {
+
+        }
 
         @Test
         public void test1() {
@@ -120,7 +128,7 @@ RSpec.describe TestGenerator do
 
 
         private void toimii(int input, int output) {
-          assertEquals(output, Class.method(input));
+          assertEquals(output, DoesThisEvenCompile.method(input));
         }
       }
     eos
