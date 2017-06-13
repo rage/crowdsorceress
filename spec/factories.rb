@@ -11,6 +11,7 @@ FactoryGirl.define do
     description 'asd'
     assignment
     user
+    testIO '[{"input": "lol", "output": "lolled"}]'
   end
 
   factory :user do
