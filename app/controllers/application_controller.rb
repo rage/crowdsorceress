@@ -22,8 +22,7 @@ class ApplicationController < ActionController::API
   def current_user
     return nil unless upstream_user
     @current_user ||= begin
-      user = User.create_with(email: upstream_user['email'], first_name: upstream_user['first_name'],
-                              last_name: upstream_user['last_name'], administrator: upstream_user['administrator'])
+      user = User.create_with(new_user_params)
                  .find_or_create_by(username: upstream_user['username'])
       user.update(last_logged_in: Time.zone.now) if user.last_logged_in.nil?
       user
@@ -51,6 +50,15 @@ class ApplicationController < ActionController::API
   end
 
   private
+
+  def new_user_params
+    {
+      email: upstream_user['email'],
+      first_name: upstream_user['first_name'],
+      last_name: upstream_user['last_name'],
+      administrator: upstream_user['administrator']
+    }
+  end
 
   def render_error_page(status:, text:)
     render json: { errors: [message: "#{status} #{text}"] }, status: status

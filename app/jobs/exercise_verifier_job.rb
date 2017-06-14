@@ -14,6 +14,10 @@ class ExerciseVerifierJob < ApplicationJob
   #   end
 
   def perform(exercise)
+    if exercise.is_a? String
+      Rails.logger.warn('ExerciseVerifiedJob called with a string! Silently aborting...')
+      return
+    end
     puts 'EXERCISE ID: ' + exercise.id.to_s
     puts 'Performing! omg'
 
