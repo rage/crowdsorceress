@@ -1,0 +1,3 @@
+[submodule "tmc-langs"]
+	path = tmc-langs
+	url = https://github.com/testmycode/tmc-langs
