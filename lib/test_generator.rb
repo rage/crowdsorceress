@@ -32,7 +32,7 @@ class TestGenerator
   end
 
   def input_to_output(exercise, type) # input and output both exist
-    method_name = 'method'
+    method_name = 'metodi'
 
     if type == 'string_string'
       input_type = 'String'

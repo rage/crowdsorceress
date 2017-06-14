@@ -24,7 +24,7 @@ class ExerciseVerifierJob < ApplicationJob
     srcfile = create_file('srcfile', exercise)
     testfile = create_file('testfile', exercise)
 
-    Minitar.pack('DoesThisEvenCompile', Zlib::GzipWriter.new(File.open('DoesThisEvenCompile' + '.tgz', 'wb')))
+    Minitar.pack(['DoesThisEvenCompile', 'ext/tmc-langs/tmc-langs-cli/target/tmc-langs-cli-0.7.7-SNAPSHOT.jar'], Zlib::GzipWriter.new(File.open('JavaPackage' + '.tgz', 'wb')))
   end
 
   def create_file(file_type, exercise)

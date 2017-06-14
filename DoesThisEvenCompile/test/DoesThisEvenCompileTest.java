@@ -9,11 +9,11 @@ public class DoesThisEvenCompileTest {
 
   @Test
   public void test1() {
-    toimii(asd, asdasdasd);
+    toimii("asd", "asdasdasd");
   }
 
 
   private void toimii(String input, String output) {
-    assertEquals(output, DoesThisEvenCompile.method(input));
+    assertEquals(output, DoesThisEvenCompile.metodi(input));
   }
 }
