@@ -9,10 +9,6 @@ class ExerciseVerifierJob < ApplicationJob
     puts 'RECORD NOT FOUND TROLOLOLO'
   end
 
-  #   before_perform do
-  #     puts 'HEIPPA'
-  #   end
-
   def perform(exercise)
     puts 'EXERCISE ID: ' + exercise.id.to_s
     puts 'Performing! omg'
