@@ -17,10 +17,11 @@ class ExerciseVerifierJob < ApplicationJob
   end
 
   def create_tarball(exercise)
-    srcfile = create_file('srcfile', exercise)
-    testfile = create_file('testfile', exercise)
+    create_file('srcfile', exercise)
+    create_file('testfile', exercise)
 
-    Minitar.pack(['DoesThisEvenCompile', 'ext/tmc-langs/tmc-langs-cli/target/tmc-langs-cli-0.7.7-SNAPSHOT.jar'], Zlib::GzipWriter.new(File.open('JavaPackage' + '.tgz', 'wb')))
+    Minitar.pack(['DoesThisEvenCompile', 'ext/tmc-langs/tmc-langs-cli/target/tmc-langs-cli-0.7.7-SNAPSHOT.jar'],
+                 Zlib::GzipWriter.new(File.open('JavaPackage' + '.tgz', 'wb')))
   end
 
   def create_file(file_type, exercise)
@@ -36,8 +37,8 @@ class ExerciseVerifierJob < ApplicationJob
     file = File.new(filename, 'w+')
     file.close
 
-    File.open(filename, 'w') do |file|
-      file.write(generator.generate(exercise))
+    File.open(filename, 'w') do |f|
+      f.write(generator.generate(exercise))
     end
   end
 end
