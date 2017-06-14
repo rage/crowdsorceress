@@ -53,6 +53,8 @@ class ExercisesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def exercise_params
-    params.require(:exercise).permit(:code, :description, :assignment_id, testIO: %i[input output])
+    # Allow any slate state for now...
+    desc_params = params['exercise']['description'].permit!
+    params.require(:exercise).permit(:code, :assignment_id, testIO: %i[input output]).merge(description: desc_params)
   end
 end

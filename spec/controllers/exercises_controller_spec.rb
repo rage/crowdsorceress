@@ -19,7 +19,7 @@ RSpec.describe ExercisesController, type: :controller do
       expect(exercise.assignment_id).to be(nil)
 
       expect do
-        post :create, params: { exercise: { description: 'asd', code: 'asd',
+        post :create, params: { exercise: { description: { a: 'asd' }, code: 'asd',
                                             testIO: { "input": 'asd', "output": 'asdf' } } }
       end.to change { Exercise.count }.by(0)
     end
@@ -28,7 +28,7 @@ RSpec.describe ExercisesController, type: :controller do
   private
 
   def post_create(assignment)
-    params = { description: 'asd', code: 'asd',
+    params = { description: { a: 'asd' }, code: 'asd',
                testIO: { "input": 'asd', "output": 'asdf' }, assignment_id: assignment.id }
     post :create, params: { exercise: params }
   end
