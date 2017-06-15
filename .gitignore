@@ -21,3 +21,6 @@ vendor/bundle
 
 coverage/
 .idea/
+
+DoesThisEvenCompile/
+DoesThisEvenCompile.tgz
