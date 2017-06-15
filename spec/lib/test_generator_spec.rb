@@ -7,34 +7,36 @@ RSpec.describe TestGenerator do
   describe 'String->String generator' do
     exercise = FactoryGirl.create(:exercise)
 
-    code = <<~eos
-      public class Class {
-
-        public static void main(String[] args) {
-          String asia = "asia";
-          method(asia);
-        }
-
-        public static String method(String input) {
-          System.out.print(input);
-          System.out.print(input);
-          System.out.print(input);
-          return input + input + input;
-        }
-      }
-    eos
+    # code = <<~eos
+    #   public class Class {
+    #
+    #     public static void main(String[] args) {
+    #       String asia = "asia";
+    #       method(asia);
+    #     }
+    #
+    #     public static String method(String input) {
+    #       System.out.print(input);
+    #       System.out.print(input);
+    #       System.out.print(input);
+    #       return input + input + input;
+    #     }
+    #   }
+    # eos
 
     io = [{ input: 'asd', output: 'asdasdasd' },
           { input: 'dsa', output: 'dsadsadsa' },
           { input: 'dsas', output: 'dsasdsasdsas' }]
 
     exercise.testIO = io
-    exercise.code = code
+    # exercise.code = code
 
     test_template = <<~eos
+      import fi.helsinki.cs.tmc.edutestutils.Points;
       import static org.junit.Assert.assertEquals;
       import org.junit.Test;
 
+      @Points("01-11")
       public class DoesThisEvenCompileTest {
 
         public DoesThisEvenCompileTest() {
@@ -58,7 +60,7 @@ RSpec.describe TestGenerator do
 
 
         private void toimii(String input, String output) {
-          assertEquals(output, DoesThisEvenCompile.method(input));
+          assertEquals(output, DoesThisEvenCompile.metodi(input));
         }
       }
     eos
@@ -80,31 +82,33 @@ RSpec.describe TestGenerator do
 
     exercise.assignment.exercise_type.name = 'int_int'
 
-    code = <<~eos
-      public class Class {
-
-        public static void main(String[] args) {
-          int a = 1337;
-          System.out.println(method(a));
-        }
-
-        public static int method(int input) {
-          return input * input;
-        }
-      }
-    eos
+    # code = <<~eos
+    #   public class Class {
+    #
+    #     public static void main(String[] args) {
+    #       int a = 1337;
+    #       System.out.println(method(a));
+    #     }
+    #
+    #     public static int method(int input) {
+    #       return input * input;
+    #     }
+    #   }
+    # eos
 
     io = [{ input: '3', output: '9' },
           { input: '4', output: '16' },
           { input: '1337', output: '1787569' }]
 
     exercise.testIO = io
-    exercise.code = code
+    # exercise.code = code
 
     test_template = <<~eos
+      import fi.helsinki.cs.tmc.edutestutils.Points;
       import static org.junit.Assert.assertEquals;
       import org.junit.Test;
 
+      @Points("01-11")
       public class DoesThisEvenCompileTest {
 
         public DoesThisEvenCompileTest() {
@@ -128,7 +132,7 @@ RSpec.describe TestGenerator do
 
 
         private void toimii(int input, int output) {
-          assertEquals(output, DoesThisEvenCompile.method(input));
+          assertEquals(output, DoesThisEvenCompile.metodi(input));
         }
       }
     eos

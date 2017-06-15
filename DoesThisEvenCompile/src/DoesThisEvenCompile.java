@@ -5,6 +5,6 @@ public class DoesThisEvenCompile {
   }
 
   public static String metodi(String input) {
-    return null;
+    return "asdasdasd";
   }
 }

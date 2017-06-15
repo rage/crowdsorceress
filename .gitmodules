@@ -1,0 +1,6 @@
+[submodule "tmc-langs"]
+	path = tmc-langs
+	url = https://github.com/testmycode/tmc-langs
+[submodule "ext/tmc-langs"]
+	path = ext/tmc-langs
+	url = git@github.com:testmycode/tmc-langs.git
