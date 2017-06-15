@@ -14,7 +14,7 @@ TEST_TEMPLATE = <<~eos
 
     }
 
-    %{tests}
+    %<tests>s
 
     private void toimii(%<IOtype>s input, %<IOtype>s output) {
       assertEquals(output, DoesThisEvenCompile.metodi(input));
