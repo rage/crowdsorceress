@@ -1,69 +1,30 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'test_generator'
+
+TEST_TEMPLATE = <<~eos
+  import fi.helsinki.cs.tmc.edutestutils.Points;
+  import static org.junit.Assert.assertEquals;
+  import org.junit.Test;
+
+  @Points("01-11")
+  public class DoesThisEvenCompileTest {
+
+    public DoesThisEvenCompileTest() {
+
+    }
+
+    %{tests}
+
+    private void toimii(%<IOtype>s input, %<IOtype>s output) {
+      assertEquals(output, DoesThisEvenCompile.metodi(input));
+    }
+  }
+eos
 
 RSpec.describe TestGenerator do
-  describe 'String->String generator' do
+  describe 'Input to output generator' do
     exercise = FactoryGirl.create(:exercise)
-
-    # code = <<~eos
-    #   public class Class {
-    #
-    #     public static void main(String[] args) {
-    #       String asia = "asia";
-    #       method(asia);
-    #     }
-    #
-    #     public static String method(String input) {
-    #       System.out.print(input);
-    #       System.out.print(input);
-    #       System.out.print(input);
-    #       return input + input + input;
-    #     }
-    #   }
-    # eos
-
-    io = [{ input: 'asd', output: 'asdasdasd' },
-          { input: 'dsa', output: 'dsadsadsa' },
-          { input: 'dsas', output: 'dsasdsasdsas' }]
-
-    exercise.testIO = io
-    # exercise.code = code
-
-    test_template = <<~eos
-      import fi.helsinki.cs.tmc.edutestutils.Points;
-      import static org.junit.Assert.assertEquals;
-      import org.junit.Test;
-
-      @Points("01-11")
-      public class DoesThisEvenCompileTest {
-
-        public DoesThisEvenCompileTest() {
-
-        }
-
-        @Test
-        public void test1() {
-          toimii(asd, asdasdasd);
-        }
-
-        @Test
-        public void test2() {
-          toimii(dsa, dsadsadsa);
-        }
-
-        @Test
-        public void test3() {
-          toimii(dsas, dsasdsasdsas);
-        }
-
-
-        private void toimii(String input, String output) {
-          assertEquals(output, DoesThisEvenCompile.metodi(input));
-        }
-      }
-    eos
 
     subject { TestGenerator.new }
 
@@ -71,81 +32,58 @@ RSpec.describe TestGenerator do
       expect(subject).not_to be(nil)
     end
 
-    it 'generates a test template' do
+    it 'generates a proper test template when ExerciseType is "string_string"' do
+      io = [{ input: 'asd', output: 'asdasdasd' },
+            { input: 'dsa', output: 'dsadsadsa' },
+            { input: 'dsas', output: 'dsasdsasdsas' }]
+
+      exercise.testIO = io
+
+      tests = <<~eos
+        @Test
+          public void test1() {
+            toimii(asd, asdasdasd);
+          }
+
+          @Test
+          public void test2() {
+            toimii(dsa, dsadsadsa);
+          }
+
+          @Test
+          public void test3() {
+            toimii(dsas, dsasdsasdsas);
+          }
+eos
       expect(subject).to respond_to(:generate).with(1).argument
-      expect(subject.generate(exercise)).to eq(test_template)
-    end
-  end
-
-  describe 'Int->Int generator' do
-    exercise = FactoryGirl.create(:exercise)
-
-    exercise.assignment.exercise_type.name = 'int_int'
-
-    # code = <<~eos
-    #   public class Class {
-    #
-    #     public static void main(String[] args) {
-    #       int a = 1337;
-    #       System.out.println(method(a));
-    #     }
-    #
-    #     public static int method(int input) {
-    #       return input * input;
-    #     }
-    #   }
-    # eos
-
-    io = [{ input: '3', output: '9' },
-          { input: '4', output: '16' },
-          { input: '1337', output: '1787569' }]
-
-    exercise.testIO = io
-    # exercise.code = code
-
-    test_template = <<~eos
-      import fi.helsinki.cs.tmc.edutestutils.Points;
-      import static org.junit.Assert.assertEquals;
-      import org.junit.Test;
-
-      @Points("01-11")
-      public class DoesThisEvenCompileTest {
-
-        public DoesThisEvenCompileTest() {
-
-        }
-
-        @Test
-        public void test1() {
-          toimii(3, 9);
-        }
-
-        @Test
-        public void test2() {
-          toimii(4, 16);
-        }
-
-        @Test
-        public void test3() {
-          toimii(1337, 1787569);
-        }
-
-
-        private void toimii(int input, int output) {
-          assertEquals(output, DoesThisEvenCompile.metodi(input));
-        }
-      }
-    eos
-
-    subject { TestGenerator.new }
-
-    it 'is valid' do
-      expect(subject).not_to be(nil)
+      expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, IOtype: 'String'))
     end
 
-    it 'generates a test template' do
-      expect(subject).to respond_to(:generate).with(1).argument
-      expect(subject.generate(exercise)).to eq(test_template)
+    it 'generates a proper test template when ExerciseType is "int_int"' do
+      exercise.assignment.exercise_type.name = 'int_int'
+      io = [{ input: '3', output: '9' },
+            { input: '4', output: '16' },
+            { input: '1337', output: '1787569' }]
+
+      exercise.testIO = io
+
+      tests = <<~eos
+        @Test
+          public void test1() {
+            toimii(3, 9);
+          }
+
+          @Test
+          public void test2() {
+            toimii(4, 16);
+          }
+
+          @Test
+          public void test3() {
+            toimii(1337, 1787569);
+          }
+eos
+      expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, IOtype: 'int'))
     end
   end
 end

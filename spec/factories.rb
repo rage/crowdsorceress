@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :assignment do
-    description 'MyString'
+    description 'AAAAAAAA'
     exercise_type
   end
 
