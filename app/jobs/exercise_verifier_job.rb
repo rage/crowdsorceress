@@ -3,6 +3,7 @@
 class ExerciseVerifierJob < ApplicationJob
   require 'test_generator'
   require 'main_class_generator'
+  require 'rest-client'
   queue_as :default
 
   rescue_from(ActiveRecord::RecordNotFound) do |_exception|
@@ -17,15 +18,16 @@ class ExerciseVerifierJob < ApplicationJob
     puts 'EXERCISE ID: ' + exercise.id.to_s
     puts 'Performing! omg'
 
-    create_tarball(exercise)
+    # create_tar(exercise)
+    send_to_sandbox(exercise)
   end
 
-  def create_tarball(exercise)
+  def create_tar(exercise)
     create_file('srcfile', exercise)
     create_file('testfile', exercise)
 
-    Minitar.pack(['DoesThisEvenCompile', 'ext/tmc-langs/tmc-langs-cli/target/tmc-langs-cli-0.7.7-SNAPSHOT.jar'],
-                 Zlib::GzipWriter.new(File.open('JavaPackage' + '.tgz', 'wb')))
+    Minitar.pack(['DoesThisEvenCompile', 'ext/tmc-langs/tmc-langs-cli/target/tmc-langs-cli-0.7.7-SNAPSHOT.jar', 'tmc-run'],
+                 File.open('JavaPackage.tar', 'wb'))
   end
 
   def create_file(file_type, exercise)
@@ -44,5 +46,18 @@ class ExerciseVerifierJob < ApplicationJob
     File.open(filename, 'w') do |f|
       f.write(generator.generate(exercise))
     end
+  end
+
+  def send_to_sandbox(exercise)
+    create_tar(exercise)
+    puts 'Sending to sandbox'
+    File.open('JavaPackage.tar', 'r') do |tar_file|
+      RestClient.post post_url, file: tar_file, notify: "https://3973cfef.ngrok.io/exercises/#{exercise.id}/results", token: 'KISSA'
+    end
+    puts 'Sent to sandbox'
+  end
+
+  def post_url
+    ENV['SANDBOX_BASE_URL'] + '/tasks.json'
   end
 end

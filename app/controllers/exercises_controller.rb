@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ExercisesController < ApplicationController
-  before_action :set_exercise, only: %i[show update destroy]
+  before_action :set_exercise, only: %i[show update destroy results]
   before_action :ensure_signed_in!, only: %i[create]
 
   # GET /exercises
@@ -26,6 +26,8 @@ class ExercisesController < ApplicationController
       ExerciseVerifierJob.perform_later @exercise
       render json: { message: 'Exercise successfully created! :) :3' }, status: :created
       # SubmissionStatusChannel.broadcast_to("SubmissionStatus", data: "Exercise saved!") <- data JSON: { message: string, progress: number}
+
+      SubmissionStatusChannel.broadcast_to("SubmissionStatus", data: "Exercise saved!")
     else
       render json: @exercise.errors, status: :unprocessable_entity, message: 'Exercise not created. =( :F'
     end
@@ -44,6 +46,14 @@ class ExercisesController < ApplicationController
   # DELETE /exercises/1
   def destroy
     @exercise.destroy
+  end
+
+  def results
+    puts "I am " + params[:status]
+    puts "with exit code " + params[:exit_code]
+
+    if params[:status] == 'finished' then status = true else status = false end
+    SubmissionStatusChannel.broadcast_to("SubmissionStatus", data: { "status": status, "message": "Screaming externally", "progress": 0 })
   end
 
   private
