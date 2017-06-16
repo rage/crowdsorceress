@@ -12,7 +12,7 @@ class ExerciseVerifierJob < ApplicationJob
 
   def perform(exercise)
     if exercise.is_a? String
-      Rails.logger.warn('ExerciseVerifiedJob called with a string! Silently aborting...')
+      Rails.logger.warn('ExerciseVerifierJob called with a string! Silently aborting...')
       return
     end
     puts 'EXERCISE ID: ' + exercise.id.to_s
@@ -26,8 +26,8 @@ class ExerciseVerifierJob < ApplicationJob
     create_file('srcfile', exercise)
     create_file('testfile', exercise)
 
-    Minitar.pack(['DoesThisEvenCompile', 'ext/tmc-langs/tmc-langs-cli/target/tmc-langs-cli-0.7.7-SNAPSHOT.jar', 'tmc-run'],
-                 File.open('JavaPackage.tar', 'wb'))
+    `cd DoesThisEvenCompile/ && tar -cpf ../JavaPackage.tar * && cd ..`
+    # Minitar.pack(['lib', 'nbproject', 'src', 'test', 'build.xml', 'tmc-langs-cli-0.7.7-SNAPSHOT.jar', 'tmc-run'], File.open('JavaPackage.tar', 'wb'))
   end
 
   def create_file(file_type, exercise)
@@ -52,7 +52,7 @@ class ExerciseVerifierJob < ApplicationJob
     create_tar(exercise)
     puts 'Sending to sandbox'
     File.open('JavaPackage.tar', 'r') do |tar_file|
-      RestClient.post post_url, file: tar_file, notify: "https://3973cfef.ngrok.io/exercises/#{exercise.id}/results", token: 'KISSA'
+      RestClient.post post_url, file: tar_file, notify: "https://a3d8a7f7.ngrok.io/exercises/#{exercise.id}/results", token: 'KISSA'
     end
     puts 'Sent to sandbox'
   end
