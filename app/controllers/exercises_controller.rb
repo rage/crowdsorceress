@@ -25,9 +25,11 @@ class ExercisesController < ApplicationController
     if @exercise.save
       ExerciseVerifierJob.perform_later @exercise
       render json: { message: 'Exercise successfully created! :) :3' }, status: :created
+      SubmissionStatusChannel.broadcast_to("SubmissionStatus", data: "Exercise saved!")
     else
       render json: @exercise.errors, status: :unprocessable_entity, message: 'Exercise not created. =( :F'
     end
+
   end
 
   # PATCH/PUT /exercises/1
