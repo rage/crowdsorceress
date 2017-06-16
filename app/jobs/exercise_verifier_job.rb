@@ -26,7 +26,7 @@ class ExerciseVerifierJob < ApplicationJob
     create_file('srcfile', exercise)
     create_file('testfile', exercise)
 
-    Minitar.pack(['DoesThisEvenCompile', 'ext/tmc-langs/tmc-langs-cli/target/tmc-langs-cli-0.7.7-SNAPSHOT.jar'],
+    Minitar.pack(['DoesThisEvenCompile', 'ext/tmc-langs/tmc-langs-cli/target/tmc-langs-cli-0.7.7-SNAPSHOT.jar', 'tmc-run'],
                  File.open('JavaPackage.tar', 'wb'))
   end
 
@@ -52,7 +52,7 @@ class ExerciseVerifierJob < ApplicationJob
     create_tar(exercise)
     puts 'Sending to sandbox'
     File.open('JavaPackage.tar', 'r') do |tar_file|
-      RestClient.post post_url, file: tar_file, notify: 'https://1085f425.ngrok.io/exercises', token: 'KISSA'
+      RestClient.post post_url, file: tar_file, notify: "https://a3d8a7f7.ngrok.io/exercises/#{exercise.id}/results", token: 'KISSA'
     end
     puts 'Sent to sandbox'
   end
