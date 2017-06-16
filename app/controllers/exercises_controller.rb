@@ -49,7 +49,9 @@ class ExercisesController < ApplicationController
   def results
     puts "I am " + params[:status]
     puts "with exit code " + params[:exit_code]
-    SubmissionStatusChannel.broadcast_to("SubmissionStatus", data: { "Status": "#{ params[:status] }", "Exit code": "#{ params[:exit_code] }"})
+
+    if params[:status] == 'finished' then status = true else status = false end
+    SubmissionStatusChannel.broadcast_to("SubmissionStatus", data: { "Status": "#{status}", "Message": "Screaming externally", "Progress": 0 })
   end
 
   private
