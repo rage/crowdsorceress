@@ -5,7 +5,14 @@ require 'oauth2'
 class ApplicationController < ActionController::API
   include ActionController::Helpers
 
-  helper_method :current_user, :admin?
+  helper_method :current_user, :admin?, :get_current_status, :set_current_status
+
+  @@current_status = {
+    'status' => 'in progress',
+    'message' => 'Connection established',
+    'progress' => 0.05,
+    'result' => { 'OK' => false, 'ERROR' => [] }
+  }
 
   NotAuthorized = Class.new(StandardError)
 
@@ -27,6 +34,19 @@ class ApplicationController < ActionController::API
       user.update(last_logged_in: Time.zone.now) if user.last_logged_in.nil?
       user
     end
+  end
+
+  def set_current_status(status, message, progress, result)
+    @@current_status = {
+      'status' => status,
+      'message' => message,
+      'progress' => progress,
+      'result' => result
+    }
+  end
+
+  def get_current_status
+    @@current_status
   end
 
   def admin?

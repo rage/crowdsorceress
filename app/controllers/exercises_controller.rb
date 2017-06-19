@@ -24,14 +24,12 @@ class ExercisesController < ApplicationController
 
     if @exercise.save
       ExerciseVerifierJob.perform_later @exercise
-      render json: { message: 'Exercise successfully created! :) :3' }, status: :created
-      # SubmissionStatusChannel.broadcast_to("SubmissionStatus", data: "Exercise saved!") <- data JSON: { message: string, progress: number}
+      # SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'In Progress', 'message' => 'Exercise saved to DB.', 'progress' => 0.1, 'result' => false }])
 
-      SubmissionStatusChannel.broadcast_to("SubmissionStatus", data: "Exercise saved!")
+      render json: { message: 'Exercise successfully created! :) :3' }, status: :created
     else
       render json: @exercise.errors, status: :unprocessable_entity, message: 'Exercise not created. =( :F'
     end
-
   end
 
   # PATCH/PUT /exercises/1
@@ -48,17 +46,18 @@ class ExercisesController < ApplicationController
     @exercise.destroy
   end
 
-  def results
-    puts "I am " + params[:status]
-    if !params[:exit_code].nil? then puts "with exit code " + params[:exit_code] end
+  def sandbox_results
+    set_current_status('in progress', 'Handling results', 0.666, 'OK' => false, 'ERROR' => [])
+    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[get_current_status])
 
+    puts 'I am ' + params[:status]
+    puts 'with exit code ' + params[:exit_code] unless params[:exit_code].nil?
 
     test_output = JSON.parse(params[:test_output])
-    if test_output['status'] == 'PASSED' then passed = true else passed = false end
+    passed = test_output['status'] == 'PASSED' ? true : false
 
-    if params[:status] == 'finished' && passed then status = true else status = false end
-
-    SubmissionStatusChannel.broadcast_to("SubmissionStatus", JSON[{ 'finished' => status, 'message' => 'Screaming externally', 'progress' => 0 }])
+    set_current_status(params[:status], 'Valmista', 1, 'OK' => passed, 'ERROR' => test_output['testResults'])
+    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[get_current_status])
   end
 
   private

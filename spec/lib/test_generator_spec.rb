@@ -42,17 +42,17 @@ RSpec.describe TestGenerator do
       tests = <<~eos
         @Test
           public void test1() {
-            toimii(asd, asdasdasd);
+            toimii("asd", "asdasdasd");
           }
 
           @Test
           public void test2() {
-            toimii(dsa, dsadsadsa);
+            toimii("dsa", "dsadsadsa");
           }
 
           @Test
           public void test3() {
-            toimii(dsas, dsasdsasdsas);
+            toimii("dsas", "dsasdsasdsas");
           }
 eos
       expect(subject).to respond_to(:generate).with(1).argument

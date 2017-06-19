@@ -8,10 +8,6 @@ class Exercise < ApplicationRecord
   validates :testIO, presence: true
   validates :code, presence: true
 
-  def test_exercise_in_sandbox
-    # TODO
-  end
-
   def parse_exercise
     # TODO
   end

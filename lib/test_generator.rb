@@ -53,9 +53,9 @@ class TestGenerator
 
     exercise.testIO.each do |i|
       input = i['input']
-      if input_type == 'String' then input = "\"#{input}\"" end
+      input = "\"#{input}\"" if input_type == 'String'
       output = i['output']
-      if output_type == 'String' then output = "\"#{output}\"" end
+      output = "\"#{output}\"" if output_type == 'String'
 
       tests += format(TESTS, counter: counter, input: input, output: output)
       counter += 1
