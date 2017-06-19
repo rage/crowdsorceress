@@ -54,11 +54,11 @@ class ExercisesController < ApplicationController
 
 
     test_output = JSON.parse(params[:test_output])
-
     if test_output['status'] == 'PASSED' then passed = true else passed = false end
 
     if params[:status] == 'finished' && passed then status = true else status = false end
-    SubmissionStatusChannel.broadcast_to("SubmissionStatus", data: { "status": status, "message": "Screaming externally", "progress": 0 })
+
+    SubmissionStatusChannel.broadcast_to("SubmissionStatus", JSON[{ 'finished' => status, 'message' => 'Screaming externally', 'progress' => 0 }])
   end
 
   private
