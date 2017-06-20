@@ -53,8 +53,8 @@ class ExercisesController < ApplicationController
     test_output = JSON.parse(params[:test_output])
     passed = test_output['status'] == 'PASSED' ? true : false
 
-    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{'status' => params[:status], 'message' => 'Valmis', 'progress' => 1, 'result' => {'OK' => passed, 'error' => test_output['testResults']}}])
-    if params[:status] == 'finished' then Exercise.find(params[:id]).finished! else Exercise.find(params[:id]).error! end
+    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => params[:status], 'message' => 'Valmis', 'progress' => 1, 'result' => { 'OK' => passed, 'error' => test_output['testResults'] } }])
+    params[:status] == 'finished' ? Exercise.find(params[:id]).finished! : Exercise.find(params[:id]).error!
   end
 
   private

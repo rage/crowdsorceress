@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'json'
 
 class SubmissionStatusChannel < ApplicationCable::Channel
@@ -24,18 +25,18 @@ class SubmissionStatusChannel < ApplicationCable::Channel
   def submission_state(exercise)
     # puts "Exercise id submission_staten alussa on " + exercise.id.to_s
 
-    if exercise == nil || exercise.empty? then
-      state = {'status' => 'in progress', 'message' => 'Yhteys tietokantaan ok, odotetaan', 'progress' => 0, 'result' => {'OK' => false, 'error' => ''}}
-    elsif exercise.saved? then
-      state = {'status' => 'in progress', 'message' => 'Exercise saved to DB', 'progress' => 0.1, 'result' => {'OK' => false, 'error' => ''}}
-    elsif exercise.testing_stub? then
-      state = {'status' => 'in progress', 'message' => 'Testing stub in sandbox', 'progress' => 0.3, 'result' => {'OK' => false, 'error' => ''}}
-    elsif exercise.testing_model_solution? then
-      state = {'status' => 'in progress', 'message' => 'Testing model solution in sandbox', 'progress' => 0.5, 'result' => {'OK' => false, 'error' => ''}}
-    elsif exercise.finished? then
-      state = {'status' => 'finished', 'message' => 'Valmis', 'progress' => 1, 'result' => {'OK' => true, 'error' => ''}}
-    elsif exercise.error? then
-      state = {'status' => 'error', 'message' => 'Tapahtui hirvittävä virhe', 'progress' => 1, 'result' => {'OK' => false, 'error' => 'Kuvittele tähän jonkinlainen hyödyllinen virheviesti'}}
+    if exercise.blank?
+      state = { 'status' => 'in progress', 'message' => 'Yhteys tietokantaan ok, odotetaan', 'progress' => 0, 'result' => { 'OK' => false, 'error' => '' } }
+    elsif exercise.saved?
+      state = { 'status' => 'in progress', 'message' => 'Exercise saved to DB', 'progress' => 0.1, 'result' => { 'OK' => false, 'error' => '' } }
+    elsif exercise.testing_stub?
+      state = { 'status' => 'in progress', 'message' => 'Testing stub in sandbox', 'progress' => 0.3, 'result' => { 'OK' => false, 'error' => '' } }
+    elsif exercise.testing_model_solution?
+      state = { 'status' => 'in progress', 'message' => 'Testing model solution in sandbox', 'progress' => 0.5, 'result' => { 'OK' => false, 'error' => '' } }
+    elsif exercise.finished?
+      state = { 'status' => 'finished', 'message' => 'Valmis', 'progress' => 1, 'result' => { 'OK' => true, 'error' => '' } }
+    elsif exercise.error?
+      state = { 'status' => 'error', 'message' => 'Tapahtui hirvittävä virhe', 'progress' => 1, 'result' => { 'OK' => false, 'error' => 'Kuvittele tähän jonkinlainen hyödyllinen virheviesti' } }
     end
     # puts "Metodissa submission_state iffien jälkeen state on status " + exercise.status
     state

@@ -19,7 +19,7 @@ class ExerciseVerifierJob < ApplicationJob
     puts 'EXERCISE ID: ' + exercise.id.to_s
     puts 'Performing! omg'
 
-    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{'status' => 'in progress', 'message' => 'Exercise saved to DB', 'progress' => 0.1, 'result' => {'OK' => false, 'error' => ''}}])
+    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => 'Exercise saved to DB', 'progress' => 0.1, 'result' => { 'OK' => false, 'error' => '' } }])
     exercise.saved!
 
     send_to_sandbox(exercise)
@@ -55,7 +55,7 @@ class ExerciseVerifierJob < ApplicationJob
 
     puts 'Sending to sandbox'
 
-    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{'status' => 'in progress', 'message' => 'Testing model solution in sandbox', 'progress' => 0.5, 'result' => {'OK' => false, 'error' => ''}}])
+    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => 'Testing model solution in sandbox', 'progress' => 0.5, 'result' => { 'OK' => false, 'error' => '' } }])
     exercise.testing_model_solution!
 
     File.open('JavaPackage.tar', 'r') do |tar_file|
