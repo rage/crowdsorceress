@@ -5,7 +5,7 @@ class ExerciseVerifierJob < ApplicationJob
   require 'main_class_generator'
   require 'rest-client'
   require 'submission_status_channel'
-  require 'application_controller'
+  require 'current_status'
   queue_as :default
 
   rescue_from(ActiveRecord::RecordNotFound) do |_exception|
@@ -64,7 +64,7 @@ class ExerciseVerifierJob < ApplicationJob
 
 
     File.open('JavaPackage.tar', 'r') do |tar_file|
-      RestClient.post post_url, file: tar_file, notify: "https://22b6d68c.ngrok.io/exercises/#{exercise.id}/results", token: 'KISSA'
+      RestClient.post post_url, file: tar_file, notify: "https://ccf8a53c.ngrok.io/exercises/#{exercise.id}/results", token: 'KISSA'
     end
     puts 'Sent to sandbox'
   end

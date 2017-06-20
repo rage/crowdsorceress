@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 require 'json'
 
-require 'json'
-require 'application_controller'
-
 class SubmissionStatusChannel < ApplicationCable::Channel
 
   def subscribed
