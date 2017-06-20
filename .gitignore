@@ -22,8 +22,7 @@ vendor/bundle
 coverage/
 .idea/
 
-DoesThisEvenCompile/src/
-DoesThisEvenCompile/test/
-JavaPackage.tgz
-DoesThisEvenCompile/
-DoesThisEvenCompile.tgz
+
+DoesThisEvenCompile/src/DoesThisEvenCompile.java
+DoesThisEvenCompile/test/DoesThisEvenCompileTest.java
+JavaPackage.tar

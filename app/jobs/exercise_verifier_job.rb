@@ -3,6 +3,9 @@
 class ExerciseVerifierJob < ApplicationJob
   require 'test_generator'
   require 'main_class_generator'
+  require 'rest-client'
+  require 'submission_status_channel'
+  require 'application_controller'
   queue_as :default
 
   rescue_from(ActiveRecord::RecordNotFound) do |_exception|
@@ -11,21 +14,25 @@ class ExerciseVerifierJob < ApplicationJob
 
   def perform(exercise)
     if exercise.is_a? String
-      Rails.logger.warn('ExerciseVerifiedJob called with a string! Silently aborting...')
+      Rails.logger.warn('ExerciseVerifierJob called with a string! Silently aborting...')
       return
     end
     puts 'EXERCISE ID: ' + exercise.id.to_s
     puts 'Performing! omg'
 
-    create_tarball(exercise)
+    sleep 5
+    ApplicationController.set_current_status('in progress', 'Exercise saved to DB', 0.1, 'OK' => false, 'ERROR' => [])
+    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[ApplicationController.get_current_status])
+
+    # create_tar(exercise)
+    send_to_sandbox(exercise)
   end
 
-  def create_tarball(exercise)
+  def create_tar(exercise)
     create_file('srcfile', exercise)
     create_file('testfile', exercise)
 
-    Minitar.pack(['DoesThisEvenCompile', 'ext/tmc-langs/tmc-langs-cli/target/tmc-langs-cli-0.7.7-SNAPSHOT.jar'],
-                 Zlib::GzipWriter.new(File.open('JavaPackage' + '.tgz', 'wb')))
+    `cd DoesThisEvenCompile/ && tar -cpf ../JavaPackage.tar * && cd ..`
   end
 
   def create_file(file_type, exercise)
@@ -44,5 +51,21 @@ class ExerciseVerifierJob < ApplicationJob
     File.open(filename, 'w') do |f|
       f.write(generator.generate(exercise))
     end
+  end
+
+  def send_to_sandbox(exercise)
+    create_tar(exercise)
+    puts 'Sending to sandbox'
+    ApplicationController.set_current_status('in progress', 'Testing exercise in sandbox', 0.5, 'OK' => false, 'ERROR' => [])
+    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[ApplicationController.get_current_status])
+
+    File.open('JavaPackage.tar', 'r') do |tar_file|
+      RestClient.post post_url, file: tar_file, notify: "https://2ec3d8c0.ngrok.io/exercises/#{exercise.id}/results", token: 'KISSA'
+    end
+    puts 'Sent to sandbox'
+  end
+
+  def post_url
+    ENV['SANDBOX_BASE_URL'] + '/tasks.json'
   end
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ExercisesController < ApplicationController
-  before_action :set_exercise, only: %i[show update destroy]
+  before_action :set_exercise, only: %i[show update destroy results]
   before_action :ensure_signed_in!, only: %i[create]
 
   # GET /exercises
@@ -24,12 +24,12 @@ class ExercisesController < ApplicationController
 
     if @exercise.save
       ExerciseVerifierJob.perform_later @exercise
+      # SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'In Progress', 'message' => 'Exercise saved to DB.', 'progress' => 0.1, 'result' => false }])
+
       render json: { message: 'Exercise successfully created! :) :3' }, status: :created
-      # SubmissionStatusChannel.broadcast_to("SubmissionStatus", data: "Exercise saved!") <- data JSON: { message: string, progress: number}
     else
       render json: @exercise.errors, status: :unprocessable_entity, message: 'Exercise not created. =( :F'
     end
-
   end
 
   # PATCH/PUT /exercises/1
@@ -44,6 +44,20 @@ class ExercisesController < ApplicationController
   # DELETE /exercises/1
   def destroy
     @exercise.destroy
+  end
+
+  def sandbox_results
+    set_current_status('in progress', 'Handling results', 0.666, 'OK' => false, 'ERROR' => [])
+    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[get_current_status])
+
+    puts 'I am ' + params[:status]
+    puts 'with exit code ' + params[:exit_code] unless params[:exit_code].nil?
+
+    test_output = JSON.parse(params[:test_output])
+    passed = test_output['status'] == 'PASSED' ? true : false
+
+    set_current_status(params[:status], 'Valmista', 1, 'OK' => passed, 'ERROR' => test_output['testResults'])
+    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[get_current_status])
   end
 
   private

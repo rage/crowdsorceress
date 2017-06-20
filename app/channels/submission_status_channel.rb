@@ -1,12 +1,16 @@
 # frozen_string_literal: true
 require 'json'
 
+require 'json'
+require 'application_controller'
+
 class SubmissionStatusChannel < ApplicationCable::Channel
 
   def subscribed
     # stream_from "some_channel"
-    stream_from "SubmissionStatus"
-    stream_for "SubmissionStatus"
+    stream_from 'SubmissionStatus'
+
+    stream_for 'SubmissionStatus'
   end
 
   def unsubscribed
@@ -15,29 +19,7 @@ class SubmissionStatusChannel < ApplicationCable::Channel
 
   # send current status in case socket opened too late
   def receive(data)
-    return unless data["ping"]
-    test_subscription
+    return unless data['ping']
+    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[ApplicationController.get_current_status])
   end
-
-
-  private
-  def test_subscription
-    data = {
-      'message'=> "pong1",
-      'progress'=> 0,
-    }
-
-    SubmissionStatusChannel.broadcast_to("SubmissionStatus", JSON[data]
-    )
-
-    sleep 15
-
-    data1 = {
-      'message'=> "pong2",
-      'progress'=> 1,
-    }
-    SubmissionStatusChannel.broadcast_to("SubmissionStatus", JSON[data1]
-    )
-  end
-
 end

@@ -85,10 +85,10 @@ fi
 
 echo "Running tests..."
 # export JVM_OPTIONS="-Xms${JAVA_RAM_KB}K -Xmx${JAVA_RAM_KB}K ${runtime_params[@]}"
-java -jar ../ext/tmc-langs/tmc-langs-cli/target/tmc-langs-cli-0.7.7-SNAPSHOT.jar run-tests --exercisePath . --outputPath test_output.txt > stdout.txt 2> stderr.txt || exit 103
+java -jar tmc-langs-cli-0.7.7-SNAPSHOT.jar run-tests --exercisePath . --outputPath test_output.txt > stdout.txt 2> stderr.txt || exit 103
 cat stdout.txt
 cat stderr.txt
-java -jar ../ext/tmc-langs/tmc-langs-cli/target/tmc-langs-cli-0.7.7-SNAPSHOT.jar checkstyle --exercisePath . --outputPath validations.json --locale $error_msg_locale > stdout.txt 2> stderr.txt || exit 104
+java -jar tmc-langs-cli-0.7.7-SNAPSHOT.jar checkstyle --exercisePath . --outputPath validations.json --locale $error_msg_locale > stdout.txt 2> stderr.txt || exit 104
 cat stdout.txt
 cat stderr.txt
 ls -laR

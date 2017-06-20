@@ -23,7 +23,7 @@ class TestGenerator
 
     %<tests>s
       private void toimii(%<input_type>s input, %<output_type>s output) {
-        assertEquals(output, DoesThisEvenCompile.%<method_name>s(input));
+        assertEquals(output, DoesThisEvenCompile.metodi(input));
       }
     }
   eos
@@ -34,8 +34,6 @@ class TestGenerator
   end
 
   def input_to_output(exercise, type) # input and output both exist
-    method_name = 'metodi'
-
     if type == 'string_string'
       input_type = 'String'
       output_type = 'String'
@@ -46,21 +44,24 @@ class TestGenerator
       output_type = 'int'
     end
 
-    generate_string(exercise, input_type, output_type, method_name)
+    generate_string(exercise, input_type, output_type)
   end
 
-  def generate_string(exercise, input_type, output_type, method_name)
+  def generate_string(exercise, input_type, output_type)
     tests = ''
     counter = 1
 
     exercise.testIO.each do |i|
       input = i['input']
+      input = "\"#{input}\"" if input_type == 'String'
       output = i['output']
+      output = "\"#{output}\"" if output_type == 'String'
+
       tests += format(TESTS, counter: counter, input: input, output: output)
       counter += 1
     end
 
     format(TEST_TEMPLATE, tests: tests,
-                          input_type: input_type, output_type: output_type, method_name: method_name)
+                          input_type: input_type, output_type: output_type)
   end
 end
