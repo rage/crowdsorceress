@@ -8,6 +8,8 @@ class Exercise < ApplicationRecord
   validates :testIO, presence: true
   validates :code, presence: true
 
+  enum status: [ :empty, :saved, :testing_stub, :testing_model_solution, :finished, :error ]
+
   def parse_exercise
     # TODO
   end
