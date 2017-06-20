@@ -21,8 +21,10 @@ class ExerciseVerifierJob < ApplicationJob
     puts 'Performing! omg'
 
     sleep 5
-    ApplicationController.set_current_status('in progress', 'Exercise saved to DB', 0.1, 'OK' => false, 'ERROR' => [])
-    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[ApplicationController.get_current_status])
+    # ApplicationController.set_current_status('in progress', 'Exercise saved to DB', 0.1, 'OK' => false, 'ERROR' => [])
+    # SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[ApplicationController.get_current_status])
+    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{'status' => 'in progress', 'message' => 'Exercise saved to DB.', 'progress' => 0.1, 'result' => {'OK' => false, 'ERROR' => ''}}])
+
 
     # create_tar(exercise)
     send_to_sandbox(exercise)
@@ -56,11 +58,13 @@ class ExerciseVerifierJob < ApplicationJob
   def send_to_sandbox(exercise)
     create_tar(exercise)
     puts 'Sending to sandbox'
-    ApplicationController.set_current_status('in progress', 'Testing exercise in sandbox', 0.5, 'OK' => false, 'ERROR' => [])
-    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[ApplicationController.get_current_status])
+    # ApplicationController.set_current_status('in progress', 'Testing exercise in sandbox', 0.5, 'OK' => false, 'ERROR' => [])
+    # SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[ApplicationController.get_current_status])
+    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{'status' => 'in progress', 'message' => 'Testing exercise in sandbox', 'progress' => 0.5, 'result' => {'OK' => false, 'ERROR' => ''}}])
+
 
     File.open('JavaPackage.tar', 'r') do |tar_file|
-      RestClient.post post_url, file: tar_file, notify: "https://2ec3d8c0.ngrok.io/exercises/#{exercise.id}/results", token: 'KISSA'
+      RestClient.post post_url, file: tar_file, notify: "https://22b6d68c.ngrok.io/exercises/#{exercise.id}/results", token: 'KISSA'
     end
     puts 'Sent to sandbox'
   end

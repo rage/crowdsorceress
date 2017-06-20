@@ -18,6 +18,6 @@ class SubmissionStatusChannel < ApplicationCable::Channel
   # send current status in case socket opened too late
   def receive(data)
     return unless data['ping']
-    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[ApplicationController.get_current_status])
+    # SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[ApplicationController.get_current_status])
   end
 end
