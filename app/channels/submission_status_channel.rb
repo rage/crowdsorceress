@@ -1,9 +1,11 @@
 # frozen_string_literal: true
+require 'json'
 
 require 'json'
 require 'application_controller'
 
 class SubmissionStatusChannel < ApplicationCable::Channel
+
   def subscribed
     # stream_from "some_channel"
     stream_from 'SubmissionStatus'
