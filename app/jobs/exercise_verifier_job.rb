@@ -50,16 +50,20 @@ class ExerciseVerifierJob < ApplicationJob
   def send_to_sandbox(exercise)
     create_tar(exercise)
 
-    puts 'Sending to sandbox'
+    # SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => 'Testataan tehtäväpohjaa', 'progress' => 0.5, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
+    # exercise.testing_stub!
 
-    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => 'Testing model solution in sandbox', 'progress' => 0.5, 'result' => { 'OK' => false, 'error' => '' } }])
+    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => 'Testataan malliratkaisua', 'progress' => 0.7, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
     exercise.testing_model_solution!
 
     File.open('JavaPackage.tar', 'r') do |tar_file|
-      RestClient.post post_url, file: tar_file, notify: " https://dbeeece1.ngrok.io/exercises/#{exercise.id}/results", token: 'KISSA'
+      RestClient.post post_url, file: tar_file, notify: " https://28ed7933.ngrok.io/exercises/#{exercise.id}/results", token: 'KISSA'
     end
+
     puts 'Sent to sandbox'
   end
+
+  private
 
   def post_url
     ENV['SANDBOX_BASE_URL'] + '/tasks.json'

@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(version: 20170621091521) do
     t.json "testIO"
     t.json "description"
     t.integer "status", default: 0
-    t.string "error_messages"
+    t.string "error_messages", default: [], array: true
   end
 
   create_table "users", force: :cascade do |t|

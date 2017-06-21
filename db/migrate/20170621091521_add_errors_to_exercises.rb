@@ -2,6 +2,6 @@
 
 class AddErrorsToExercises < ActiveRecord::Migration[5.1]
   def change
-    add_column :exercises, :error_messages, :string
+    add_column :exercises, :error_messages, :string, array: true, default: []
   end
 end
