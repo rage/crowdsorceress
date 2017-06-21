@@ -52,8 +52,8 @@ class TestGenerator
     counter = 1
 
     exercise.testIO.each do |i|
-      if input_type == 'String' then input = prettify_string(i['input']) else input = i['input'] end
-      if output_type == 'String' then output = prettify_string(i['output']) else output = i['output'] end
+      input = input_type == 'String' ? prettify_string(i['input']) : i['input']
+      output = output_type == 'String' ? prettify_string(i['output']) : i['output']
 
       tests += format(TESTS, counter: counter, input: input, output: output)
       counter += 1
@@ -65,6 +65,6 @@ class TestGenerator
 
   def prettify_string(str)
     prettified = str.gsub(/\A"|"\Z/, '')
-    prettified = "\"#{prettified}\""
+    "\"#{prettified}\""
   end
 end

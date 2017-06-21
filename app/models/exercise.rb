@@ -8,9 +8,5 @@ class Exercise < ApplicationRecord
   validates :testIO, presence: true
   validates :code, presence: true
 
-  enum status: %i[empty saved testing_stub testing_model_solution finished error]
-
-  def parse_exercise
-    # TODO
-  end
+  enum status: %i[status_undefined saved testing_stub testing_model_solution finished error]
 end
