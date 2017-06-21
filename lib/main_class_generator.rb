@@ -17,7 +17,8 @@ class MainClassGenerator
   def generate(exercise)
     type = exercise.assignment.exercise_type.name
 
-    input_to_output(exercise, type) if type == 'string_string' || type == 'int_int'
+    # input_to_output(exercise, type) if type == 'string_string' || type == 'int_int'
+    input_to_output(exercise, type) if %w[string_string int_int].include?(type)
   end
 
   def input_to_output(exercise, type) # input and output both exist

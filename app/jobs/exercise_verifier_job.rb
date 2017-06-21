@@ -34,11 +34,16 @@ class ExerciseVerifierJob < ApplicationJob
       filename = 'DoesThisEvenCompile/src/DoesThisEvenCompile.java'
       generator = MainClassGenerator.new
     end
+
     if file_type == 'testfile'
       filename = 'DoesThisEvenCompile/test/DoesThisEvenCompileTest.java'
       generator = TestGenerator.new
     end
 
+    write_to_file(filename, generator, exercise)
+  end
+
+  def write_to_file(filename, generator, exercise)
     file = File.new(filename, 'w+')
     file.close
 
@@ -50,10 +55,12 @@ class ExerciseVerifierJob < ApplicationJob
   def send_to_sandbox(exercise)
     create_tar(exercise)
 
-    # SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => 'Testataan tehtäväpohjaa', 'progress' => 0.5, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
+    # SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => 'Testataan tehtäväpohjaa',
+    #                                                                 'progress' => 0.5, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
     # exercise.testing_stub!
 
-    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => 'Testataan malliratkaisua', 'progress' => 0.7, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
+    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => 'Testataan malliratkaisua',
+                                                                    'progress' => 0.7, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
     exercise.testing_model_solution!
 
     File.open('JavaPackage.tar', 'r') do |tar_file|

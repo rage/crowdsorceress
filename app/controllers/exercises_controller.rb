@@ -23,7 +23,8 @@ class ExercisesController < ApplicationController
     if @exercise.save
       ExerciseVerifierJob.perform_later @exercise
 
-      SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => 'Tehtävä tallennettu tietokantaan', 'progress' => 0.1, 'result' => { 'OK' => false, 'error' => @exercise.error_messages } }])
+      SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => 'Tehtävä tallennettu tietokantaan',
+                                                                      'progress' => 0.1, 'result' => { 'OK' => false, 'error' => @exercise.error_messages } }])
       @exercise.saved!
 
       render json: { message: 'Exercise successfully created! :) :3', exercise: @exercise }, status: :created
@@ -47,28 +48,34 @@ class ExercisesController < ApplicationController
   end
 
   def sandbox_results
-    # SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{'status' => 'in progress', 'message' => 'Handling results', 'progress' => 0.666, 'result' => {'OK' => false, 'ERROR' => ''}}])
+    # SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{'status' => 'in progress', 'message' => 'Handling results',
+    #                                                                'progress' => 0.666, 'result' => {'OK' => false, 'ERROR' => ''}}])
     exercise = Exercise.find(params[:id])
 
     puts 'I am ' + params[:status]
     puts 'with exit code ' + params[:exit_code] unless params[:exit_code].nil?
 
     test_output = JSON.parse(params[:test_output])
-    passed = test_output['status'] == 'PASSED' ? true : false
-    compiled = test_output['status'] != 'COMPILE_FAILED' ? true : false
+    passed = test_output['status'] == 'PASSED'
+    compiled = test_output['status'] != 'COMPILE_FAILED'
 
-    exercise.error_messages = []
     test_output['testResults'].each { |o| exercise.error_messages.push o['message'] }
 
-    if params[:status] == 'finished' && passed then message = 'Valmis'
-    elsif params[:status] == 'finished' && compiled then message = 'Testit eivät menneet läpi'
+    send_data_to_frontend(params[:status], passed, compiled, exercise)
+
+    params[:status] == 'finished' && passed && compiled ? exercise.finished! : exercise.error!
+  end
+
+  def send_data_to_frontend(status, passed, compiled, exercise)
+    if status == 'finished' && passed then message = 'Valmis'
+    elsif status == 'finished' && compiled then message = 'Testit eivät menneet läpi'
     else
-      message = 'Koodi ei kääntynyt' # either stub or model solution didn't compile, check which one
+      message = 'Koodi ei kääntynyt' # either stub or model solution didn't compile, TODO check which one
       exercise.error_messages.push 'Compile failed'
     end
 
-    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => params[:status], 'message' => message, 'progress' => 1, 'result' => { 'OK' => passed, 'ERROR' => exercise.error_messages } }])
-    params[:status] == 'finished' && passed && compiled ? exercise.finished! : exercise.error!
+    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => status, 'message' => message, 'progress' => 1,
+                                                                    'result' => { 'OK' => passed, 'error' => exercise.error_messages } }])
   end
 
   private
