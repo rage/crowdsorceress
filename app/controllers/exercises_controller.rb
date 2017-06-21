@@ -23,8 +23,10 @@ class ExercisesController < ApplicationController
     if @exercise.save
       ExerciseVerifierJob.perform_later @exercise
 
-      render json: { message: 'Exercise successfully created! :) :3', exercise: @exercise }, status: :created
+      SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => 'Exercise saved to DB', 'progress' => 0.1, 'result' => { 'OK' => false, 'error' => '' } }])
+      @exercise.saved!
 
+      render json: { message: 'Exercise successfully created! :) :3', exercise: @exercise }, status: :created
     else
       render json: @exercise.errors, status: :unprocessable_entity, message: 'Exercise not created. =( :F'
     end
@@ -54,7 +56,7 @@ class ExercisesController < ApplicationController
     passed = test_output['status'] == 'PASSED' ? true : false
 
     SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => params[:status], 'message' => 'Valmis', 'progress' => 1, 'result' => { 'OK' => passed, 'error' => test_output['testResults'] } }])
-    params[:status] == 'finished' ? Exercise.find(params[:id]).finished! : Exercise.find(params[:id]).error!
+    params[:status] == 'finished' && passed ? Exercise.find(params[:id]).finished! : Exercise.find(params[:id]).error!
   end
 
   private

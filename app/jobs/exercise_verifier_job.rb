@@ -19,9 +19,6 @@ class ExerciseVerifierJob < ApplicationJob
     puts 'EXERCISE ID: ' + exercise.id.to_s
     puts 'Performing! omg'
 
-    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => 'Exercise saved to DB', 'progress' => 0.1, 'result' => { 'OK' => false, 'error' => '' } }])
-    exercise.saved!
-
     send_to_sandbox(exercise)
   end
 
