@@ -4,6 +4,11 @@ class ExercisesController < ApplicationController
   before_action :set_exercise, only: %i[show update destroy results]
   before_action :ensure_signed_in!, only: %i[create]
 
+  @@status = ''
+  @@message = ''
+  @@passed = true
+  @@sandbox_results_received = false
+
   # GET /exercises
   def index
     @exercises = Exercise.all
@@ -48,9 +53,6 @@ class ExercisesController < ApplicationController
   end
 
   def sandbox_results
-    # SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{'status' => 'in progress', 'message' => 'Handling results',
-    #                                                                'progress' => 0.666, 'result' => {'OK' => false, 'ERROR' => ''}}])
-
     exercise = Exercise.find(params[:id])
 
     puts 'I am ' + params[:status]
@@ -62,24 +64,45 @@ class ExercisesController < ApplicationController
 
     test_output['testResults'].each { |o| exercise.error_messages.push o['message'] }
 
-    send_data_to_frontend(params[:status], passed, compiled, exercise, params[:token])
+    handle_results(params[:status], passed, compiled, exercise, params[:token])
 
     params[:status] == 'finished' && passed && compiled ? exercise.finished! : exercise.error!
   end
 
-  def send_data_to_frontend(status, passed, compiled, exercise, token)
-    message = token == 'KISSA_STUB' ? 'Tehtäväpohjan tulokset: ' : 'Mallivastauksen tulokset: '
+  def handle_results(status, passed, compiled, exercise, token)
+    @@message += token == 'KISSA_STUB' ? ' Tehtäväpohjan tulokset: ' : ' Mallivastauksen tulokset: '
 
-    if status == 'finished' && passed then message += 'Valmis'
-    elsif status == 'finished' && compiled then message += 'Testit eivät menneet läpi'
+    if status == 'finished' && passed then @@message += 'Valmis'
+    elsif status == 'finished' && compiled then @@message += 'Testit eivät menneet läpi'
     else
-      message += 'Koodi ei kääntynyt'
-      # byebug
+      @@message += 'Koodi ei kääntynyt'
       exercise.error_messages.push 'Compile failed'
     end
 
-    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => status, 'message' => message, 'progress' => 1,
-                                                                    'result' => { 'OK' => passed, 'ERROR' => exercise.error_messages } }])
+    if @@status == '' || @@status == 'finished'
+      @@status = status
+    end
+
+    if !passed
+      then @@passed = false
+    end
+
+    if !@@sandbox_results_received
+      then @@sandbox_results_received = true
+      else send_data_to_frontend(exercise)
+    end
+  end
+
+  def send_data_to_frontend(exercise)
+    results = { 'status' => @@status, 'message' => @@message, 'progress' => 1,
+                'result' => { 'OK' => @@passed, 'ERROR' => exercise.error_messages } }
+
+    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[results])
+
+    @@status = ''
+    @@message = ''
+    @@passed = true
+    @@sandbox_results_received = false
   end
 
   private

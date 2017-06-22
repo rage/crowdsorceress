@@ -46,7 +46,7 @@ class ExerciseVerifierJob < ApplicationJob
     puts 'Sending stub to sandbox'
 
     File.open('StubPackage.tar', 'r') do |tar_file|
-      RestClient.post post_url, file: tar_file, notify: " https://5baab9e2.ngrok.io/exercises/#{exercise.id}/results", token: 'KISSA_STUB'
+      RestClient.post post_url, file: tar_file, notify: " https://8c0ef1e4.ngrok.io/exercises/#{exercise.id}/results", token: 'KISSA_STUB'
     end
 
     puts 'Sent stub to sandbox'

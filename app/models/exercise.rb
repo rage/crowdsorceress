@@ -11,26 +11,24 @@ class Exercise < ApplicationRecord
   enum status: %i[status_undefined saved testing_stub testing_model_solution finished error]
 
   def create_stub
-    stub = code
-    stub.gsub(/\/\/ BEGIN SOLUTION\n.*?\n\/\/ END SOLUTION/, '')
+    stub = self.code
+    stub = stub.gsub(/\/\/\sBEGIN SOLUTION\n(.*?\n)*\/\/\sEND SOLUTION/, '')
   end
 
   def create_file(file_type)
-    self_code = code
-    stub = create_stub
-    model_solution = self_code
+    self_code = self.code
 
     if file_type == 'stubfile'
       filename = 'Stub/src/Stub.java'
       generator = MainClassGenerator.new
-      self.code = stub
+      self.code = create_stub
       write_to_file(filename, generator, self, 'Stub')
     end
 
     if file_type == 'model_solution_file'
       filename = 'ModelSolution/src/ModelSolution.java'
       generator = MainClassGenerator.new
-      self.code = model_solution
+      self.code = self_code
       write_to_file(filename, generator, self, 'ModelSolution')
     end
 
