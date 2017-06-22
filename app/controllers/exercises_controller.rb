@@ -20,6 +20,8 @@ class ExercisesController < ApplicationController
   def create
     @exercise = current_user.exercises.new(exercise_params)
 
+    @exercise.parse_code
+
     if @exercise.save
       ExerciseVerifierJob.perform_later @exercise
 
@@ -75,7 +77,7 @@ class ExercisesController < ApplicationController
     end
 
     SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => status, 'message' => message, 'progress' => 1,
-                                                                    'result' => { 'OK' => passed, 'error' => exercise.error_messages } }])
+                                                                    'result' => { 'OK' => passed, 'ERROR' => exercise.error_messages } }])
   end
 
   private

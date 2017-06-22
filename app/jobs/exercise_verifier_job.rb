@@ -64,7 +64,7 @@ class ExerciseVerifierJob < ApplicationJob
     exercise.testing_model_solution!
 
     File.open('JavaPackage.tar', 'r') do |tar_file|
-      RestClient.post post_url, file: tar_file, notify: " https://28ed7933.ngrok.io/exercises/#{exercise.id}/results", token: 'KISSA'
+      RestClient.post post_url, file: tar_file, notify: " https://8c0ef1e4.ngrok.io/exercises/#{exercise.id}/results", token: 'KISSA'
     end
 
     puts 'Sent to sandbox'
