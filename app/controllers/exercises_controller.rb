@@ -20,8 +20,6 @@ class ExercisesController < ApplicationController
   def create
     @exercise = current_user.exercises.new(exercise_params)
 
-    @exercise.parse_code
-
     if @exercise.save
       ExerciseVerifierJob.perform_later @exercise
 
@@ -52,6 +50,7 @@ class ExercisesController < ApplicationController
   def sandbox_results
     # SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{'status' => 'in progress', 'message' => 'Handling results',
     #                                                                'progress' => 0.666, 'result' => {'OK' => false, 'ERROR' => ''}}])
+
     exercise = Exercise.find(params[:id])
 
     puts 'I am ' + params[:status]
@@ -63,16 +62,19 @@ class ExercisesController < ApplicationController
 
     test_output['testResults'].each { |o| exercise.error_messages.push o['message'] }
 
-    send_data_to_frontend(params[:status], passed, compiled, exercise)
+    send_data_to_frontend(params[:status], passed, compiled, exercise, params[:token])
 
     params[:status] == 'finished' && passed && compiled ? exercise.finished! : exercise.error!
   end
 
-  def send_data_to_frontend(status, passed, compiled, exercise)
-    if status == 'finished' && passed then message = 'Valmis'
-    elsif status == 'finished' && compiled then message = 'Testit eivät menneet läpi'
+  def send_data_to_frontend(status, passed, compiled, exercise, token)
+    if token == 'KISSA_STUB' then message = 'Tehtäväpohjan tulokset: ' else message = 'Mallivastauksen tulokset: ' end
+
+    if status == 'finished' && passed then message += 'Valmis'
+    elsif status == 'finished' && compiled then message += 'Testit eivät menneet läpi'
     else
-      message = 'Koodi ei kääntynyt' # either stub or model solution didn't compile, TODO check which one
+      message += 'Koodi ei kääntynyt'
+      # byebug
       exercise.error_messages.push 'Compile failed'
     end
 

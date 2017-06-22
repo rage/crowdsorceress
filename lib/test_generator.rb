@@ -15,25 +15,25 @@ class TestGenerator
     import org.junit.Test;
 
     @Points("01-11")
-    public class DoesThisEvenCompileTest {
+    public class %<class_name>sTest {
 
-      public DoesThisEvenCompileTest() {
+      public %<class_name>sTest() {
 
       }
 
     %<tests>s
       private void toimii(%<input_type>s input, %<output_type>s output) {
-        assertEquals(output, DoesThisEvenCompile.metodi(input));
+        assertEquals(output, %<class_name>s.metodi(input));
       }
     }
   eos
 
-  def generate(exercise)
+  def generate(exercise, class_name)
     type = exercise.assignment.exercise_type.name
-    input_to_output(exercise, type)
+    input_to_output(exercise, type, class_name)
   end
 
-  def input_to_output(exercise, type) # input and output both exist
+  def input_to_output(exercise, type, class_name) # input and output both exist
     if type == 'string_string'
       input_type = 'String'
       output_type = 'String'
@@ -44,10 +44,10 @@ class TestGenerator
       output_type = 'int'
     end
 
-    generate_string(exercise, input_type, output_type)
+    generate_string(exercise, input_type, output_type, class_name)
   end
 
-  def generate_string(exercise, input_type, output_type)
+  def generate_string(exercise, input_type, output_type, class_name)
     tests = ''
     counter = 1
 
@@ -60,7 +60,7 @@ class TestGenerator
     end
 
     format(TEST_TEMPLATE, tests: tests,
-                          input_type: input_type, output_type: output_type)
+                          input_type: input_type, output_type: output_type, class_name: class_name)
   end
 
   def prettify_string(str)

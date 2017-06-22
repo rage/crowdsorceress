@@ -10,29 +10,46 @@ class Exercise < ApplicationRecord
 
   enum status: %i[status_undefined saved testing_stub testing_model_solution finished error]
 
-  def parse_code
-    model_solution_parts = self.code.scan((/\/\/ BEGIN SOLUTION\n.*?\n\/\/ END SOLUTION/))
-
+  def create_stub
     stub = self.code
+    stub.gsub((/\/\/ BEGIN SOLUTION\n.*?\n\/\/ END SOLUTION/), '')
+  end
 
-    model_solution_parts.each do |part|
-      puts 'part: ' + part
-      stub = stub.sub(part, '')
-      stub = stub
-      puts 'stub loopin sisällä: ' + stub
+  def create_file(file_type)
+    self_code = self.code
+    stub = create_stub
+    model_solution = self_code
+
+    if file_type == 'stubfile'
+      filename = 'Stub/src/Stub.java'
+      generator = MainClassGenerator.new
+      self.code = stub
+      write_to_file(filename, generator, self, 'Stub')
     end
 
-    puts 'stub lopuksi: ' + stub
+    if file_type == 'model_solution_file'
+      filename = 'ModelSolution/src/ModelSolution.java'
+      generator = MainClassGenerator.new
+      self.code = model_solution
+      write_to_file(filename, generator, self, 'ModelSolution')
+    end
 
-    model_solution = self.code
+    if file_type == 'testfile'
+      filename = 'ModelSolution/test/ModelSolutionTest.java'
+      generator = TestGenerator.new
+      self.code = self_code
+      write_to_file(filename, generator, self, 'ModelSolution')
+    end
 
+    self.code = self_code
   end
 
-  def write_model_solution
+  def write_to_file(filename, generator, exercise, class_name)
+    file = File.new(filename, 'w+')
+    file.close
 
-  end
-
-  def write_stub
-
+    File.open(filename, 'w') do |f|
+      f.write(generator.generate(exercise, class_name))
+    end
   end
 end

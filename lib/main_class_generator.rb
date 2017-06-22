@@ -2,7 +2,7 @@
 
 class MainClassGenerator
   TEMPLATE = <<~eos
-    public class DoesThisEvenCompile {
+    public class %<class_name>s {
 
       public static void main(String[] args) {
 
@@ -14,14 +14,14 @@ class MainClassGenerator
     }
   eos
 
-  def generate(exercise)
+  def generate(exercise, class_name)
     type = exercise.assignment.exercise_type.name
 
     # input_to_output(exercise, type) if type == 'string_string' || type == 'int_int'
-    input_to_output(exercise, type) if %w[string_string int_int].include?(type)
+    input_to_output(exercise, type, class_name) if %w[string_string int_int].include?(type)
   end
 
-  def input_to_output(exercise, type) # input and output both exist
+  def input_to_output(exercise, type, class_name) # input and output both exist
     if type == 'string_string'
       input_type = 'String'
       output_type = 'String'
@@ -32,6 +32,6 @@ class MainClassGenerator
       output_type = 'int'
     end
 
-    format(TEMPLATE, input_type: input_type, output_type: output_type, code: exercise.code)
+    format(TEMPLATE, input_type: input_type, output_type: output_type, code: exercise.code, class_name: class_name)
   end
 end

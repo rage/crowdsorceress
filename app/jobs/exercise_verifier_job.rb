@@ -22,52 +22,47 @@ class ExerciseVerifierJob < ApplicationJob
     send_to_sandbox(exercise)
   end
 
-  def create_tar(exercise)
-    create_file('srcfile', exercise)
-    create_file('testfile', exercise)
+  def create_stub_tar(exercise)
+    exercise.create_file('stubfile')
 
-    `cd DoesThisEvenCompile/ && tar -cpf ../JavaPackage.tar * && cd ..`
+    `cd Stub/ && tar -cpf ../StubPackage.tar * && cd ..`
   end
 
-  def create_file(file_type, exercise)
-    if file_type == 'srcfile'
-      filename = 'DoesThisEvenCompile/src/DoesThisEvenCompile.java'
-      generator = MainClassGenerator.new
-    end
+  def create_model_solution_tar(exercise)
+    exercise.create_file('model_solution_file')
+    exercise.create_file('testfile')
 
-    if file_type == 'testfile'
-      filename = 'DoesThisEvenCompile/test/DoesThisEvenCompileTest.java'
-      generator = TestGenerator.new
-    end
-
-    write_to_file(filename, generator, exercise)
-  end
-
-  def write_to_file(filename, generator, exercise)
-    file = File.new(filename, 'w+')
-    file.close
-
-    File.open(filename, 'w') do |f|
-      f.write(generator.generate(exercise))
-    end
+    `cd ModelSolution/ && tar -cpf ../ModelSolutionPackage.tar * && cd ..`
   end
 
   def send_to_sandbox(exercise)
-    create_tar(exercise)
+    create_stub_tar(exercise)
+    create_model_solution_tar(exercise)
 
-    # SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => 'Testataan tehtäväpohjaa',
-    #                                                                 'progress' => 0.5, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
-    # exercise.testing_stub!
+    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => 'Testataan tehtäväpohjaa',
+                                                                    'progress' => 0.5, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
+    exercise.testing_stub!
+
+    puts 'Sending stub to sandbox'
+
+    File.open('StubPackage.tar', 'r') do |tar_file|
+      RestClient.post post_url, file: tar_file, notify: " https://5baab9e2.ngrok.io/exercises/#{exercise.id}/results", token: 'KISSA_STUB'
+    end
+
+    puts 'Sent stub to sandbox'
 
     SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => 'Testataan malliratkaisua',
                                                                     'progress' => 0.7, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
+
     exercise.testing_model_solution!
 
-    File.open('JavaPackage.tar', 'r') do |tar_file|
-      RestClient.post post_url, file: tar_file, notify: " https://8c0ef1e4.ngrok.io/exercises/#{exercise.id}/results", token: 'KISSA'
+    puts 'Sending model solution to sandbox'
+
+    File.open('ModelSolutionPackage.tar', 'r') do |tar_file|
+      RestClient.post post_url, file: tar_file, notify: " https://5baab9e2.ngrok.io/exercises/#{exercise.id}/results", token: 'MODEL_KISSA'
     end
 
-    puts 'Sent to sandbox'
+    puts 'Sent model solution to sandbox'
   end
 
   private
