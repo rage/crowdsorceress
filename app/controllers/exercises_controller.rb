@@ -68,7 +68,7 @@ class ExercisesController < ApplicationController
   end
 
   def send_data_to_frontend(status, passed, compiled, exercise, token)
-    if token == 'KISSA_STUB' then message = 'Tehtäväpohjan tulokset: ' else message = 'Mallivastauksen tulokset: ' end
+    message = token == 'KISSA_STUB' ? 'Tehtäväpohjan tulokset: ' : 'Mallivastauksen tulokset: '
 
     if status == 'finished' && passed then message += 'Valmis'
     elsif status == 'finished' && compiled then message += 'Testit eivät menneet läpi'

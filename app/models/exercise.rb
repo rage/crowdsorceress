@@ -11,12 +11,12 @@ class Exercise < ApplicationRecord
   enum status: %i[status_undefined saved testing_stub testing_model_solution finished error]
 
   def create_stub
-    stub = self.code
-    stub.gsub((/\/\/ BEGIN SOLUTION\n.*?\n\/\/ END SOLUTION/), '')
+    stub = code
+    stub.gsub(/\/\/ BEGIN SOLUTION\n.*?\n\/\/ END SOLUTION/, '')
   end
 
   def create_file(file_type)
-    self_code = self.code
+    self_code = code
     stub = create_stub
     model_solution = self_code
 
