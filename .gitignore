@@ -23,6 +23,8 @@ coverage/
 .idea/
 
 
-DoesThisEvenCompile/src/DoesThisEvenCompile.java
-DoesThisEvenCompile/test/DoesThisEvenCompileTest.java
-JavaPackage.tar
+ModelSolution/src/ModelSolution.java
+ModelSolution/test/ModelSolutionTest.java
+Stub/src/Stub.java
+ModelSolutionPackage.tar
+StubPackage.tar
