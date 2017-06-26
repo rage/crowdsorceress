@@ -8,6 +8,8 @@ class Exercise < ApplicationRecord
   validates :testIO, presence: true
   validates :code, presence: true
 
+  serialize :sandbox_results, Hash
+
   enum status: %i[status_undefined saved testing_stub testing_model_solution finished error]
 
   def create_stub
