@@ -52,13 +52,7 @@ class ExercisesController < ApplicationController
     exercise = Exercise.find(params[:id])
     test_output = JSON.parse(params[:test_output])
 
-    # Push test results into exercise's error messages
-    test_output['testResults'].each do |o|
-      exercise.error_messages.push o['message']
-    end
-
-    # Handle sending results to frontend in exercise model
-    exercise.handle_results(params[:status], test_output['status'] == 'PASSED', test_output['status'] != 'COMPILE_FAILED', params[:token])
+    exercise.handle_results(params[:status], test_output, params[:token])
   end
 
   private

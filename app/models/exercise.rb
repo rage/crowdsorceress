@@ -48,8 +48,9 @@ class Exercise < ApplicationRecord
     end
   end
 
-  def handle_results(sandbox_status, passed, compiled, token)
-    generate_message(sandbox_status, passed, compiled, token)
+  def handle_results(sandbox_status, test_output, token)
+    exercise_errors(test_output, token)
+    generate_message(sandbox_status, test_output['status'] == 'PASSED', test_output['status'] == 'COMPILED', token)
 
     # Status will be 'finished' if both stub results and model solution results are finished in sandbox
     if sandbox_results[:status] == '' || sandbox_results[:status] == 'finished'
@@ -57,15 +58,31 @@ class Exercise < ApplicationRecord
     end
 
     # Model solution is passed if test results are passed
-    sandbox_results[:passed] = false unless passed
+    sandbox_results[:passed] = false unless test_output['status'] == 'PASSED'
 
-    # Update exercises standbox_results
+    # Update exercises sandbox_results
     save!
 
     if sandbox_results[:model_results_received] && sandbox_results[:stub_results_received]
     then send_results_to_frontend(sandbox_results[:status], 1, sandbox_results[:passed])
     else send_results_to_frontend('in progress', 0.8, false)
     end
+  end
+
+  def exercise_errors(test_output, token)
+    # Push test results into exercise's error messages
+    test_output['testResults'].each do |o|
+      error_messages.push o['message']
+    end
+
+    if test_output['status'] == 'COMPILE_FAILED'
+      error_message = test_output['logs']['stdout'].pack('c*').slice(/(?<=do-compile:\n)(.*?\n)*(.*$)/)
+      if token == 'KISSA_STUB'
+      then error_messages.push 'Tehtäväpohja ei kääntynyt: ' + error_message
+      else error_messages.push 'Malliratkaisu ei kääntynyt: ' + error_message
+      end
+    end
+    save!
   end
 
   # Generate message that will be sent to frontend
@@ -77,12 +94,11 @@ class Exercise < ApplicationRecord
       sandbox_results[:message] += ' Malliratkaisun tulokset: '
       sandbox_results[:model_results_received] = true
     end
-    if sandbox_status == 'finished' && passed then sandbox_results[:message] += 'Kaikki OK.'
-    elsif sandbox_status == 'finished' && compiled then sandbox_results[:message] += 'Testit eivät menneet läpi.'
-    else
-      sandbox_results[:message] += 'Koodi ei kääntynyt.'
-      error_messages.push 'Compile failed'
-    end
+    sandbox_results[:message] += if sandbox_status == 'finished' && passed then 'Kaikki OK.'
+                                 elsif sandbox_status == 'finished' && compiled then 'Testit eivät menneet läpi.'
+                                 else
+                                   'Koodi ei kääntynyt.'
+                                 end
 
     save!
   end
@@ -92,5 +108,7 @@ class Exercise < ApplicationRecord
                 'result' => { 'OK' => passed, 'error' => error_messages } }
 
     SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[results])
+
+    status == 'finished' && passed ? finished! : error!
   end
 end
