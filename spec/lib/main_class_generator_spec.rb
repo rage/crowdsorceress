@@ -30,8 +30,8 @@ RSpec.describe MainClassGenerator do
       exercise.testIO = io
       exercise.code = 'return "asdasdasd";'
 
-      expect(subject).to respond_to(:generate).with(1).argument
-      expect(subject.generate(exercise)).to eq(format(TEMPLATE, IOtype: 'String', code: exercise.code))
+      expect(subject).to respond_to(:generate).with(2).arguments
+      expect(subject.generate(exercise, 'DoesThisEvenCompile')).to eq(format(TEMPLATE, IOtype: 'String', code: exercise.code))
     end
 
     it 'generates a proper main class when ExerciseType is "int_int"' do
@@ -40,7 +40,7 @@ RSpec.describe MainClassGenerator do
       exercise.testIO = io
       exercise.code = 'return 5;'
 
-      expect(subject.generate(exercise)).to eq(format(TEMPLATE, IOtype: 'int', code: exercise.code))
+      expect(subject.generate(exercise, 'DoesThisEvenCompile')).to eq(format(TEMPLATE, IOtype: 'int', code: exercise.code))
     end
   end
 end

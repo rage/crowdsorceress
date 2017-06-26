@@ -34,7 +34,7 @@ class SubmissionStatusChannel < ApplicationCable::Channel
         'progress' => 0.3, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }
     elsif exercise.testing_model_solution?
       { 'status' => 'in progress', 'message' => '(response to ping:) Testataan malliratkaisua',
-        'progress' => 0.5, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }
+        'progress' => 0.6, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }
     elsif exercise.finished?
       { 'status' => 'finished', 'message' => '(response to ping:) Valmis',
         'progress' => 1, 'result' => { 'OK' => true, 'error' => exercise.error_messages } }

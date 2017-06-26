@@ -55,8 +55,8 @@ RSpec.describe TestGenerator do
             toimii("dsas", "dsasdsasdsas");
           }
 eos
-      expect(subject).to respond_to(:generate).with(1).argument
-      expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, IOtype: 'String'))
+      expect(subject).to respond_to(:generate).with(2).arguments
+      expect(subject.generate(exercise, 'DoesThisEvenCompile')).to eq(format(TEST_TEMPLATE, tests: tests, IOtype: 'String'))
     end
 
     it 'generates a proper test template when ExerciseType is "int_int"' do
@@ -83,7 +83,7 @@ eos
             toimii(1337, 1787569);
           }
 eos
-      expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, IOtype: 'int'))
+      expect(subject.generate(exercise, 'DoesThisEvenCompile')).to eq(format(TEST_TEMPLATE, tests: tests, IOtype: 'int'))
     end
   end
 end
