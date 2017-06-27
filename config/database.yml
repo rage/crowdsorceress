@@ -83,6 +83,6 @@ test:
 #
 production:
   <<: *default
-  database: crowdsorcerer_production
-  username: crowdsorcerer
+  database: crowdsorceress_production
+  username: crowdsorceress
   password: <%= ENV.fetch('CROWDSORCERER-BACKEND_DATABASE_PASSWORD', ENV['DATABASE_PASSWORD']) %>
