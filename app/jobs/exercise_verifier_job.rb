@@ -62,6 +62,6 @@ class ExerciseVerifierJob < ApplicationJob
   end
 
   def results_url(exercise)
-    "https://4be62af2.ngrok.io/exercises/#{exercise.id}/results"
+    "#{ENV['BASE_URL']}/exercises/#{exercise.id}/results"
   end
 end
