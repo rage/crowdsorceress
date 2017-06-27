@@ -17,7 +17,7 @@ class ExerciseVerifierJob < ApplicationJob
       return
     end
 
-    send_to_sandbox(exercise)
+    send_exercise_to_sandbox(exercise)
   end
 
   def create_stub_tar(exercise)
@@ -33,25 +33,25 @@ class ExerciseVerifierJob < ApplicationJob
     `cd ModelSolution/ && tar -cpf ../ModelSolutionPackage.tar * && cd ..`
   end
 
-  def send_to_sandbox(exercise)
+  def send_exercise_to_sandbox(exercise)
     create_stub_tar(exercise)
     create_model_solution_tar(exercise)
 
-    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => 'Testataan tehtäväpohjaa',
-                                                                    'progress' => 0.3, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
-    exercise.testing_stub!
+    # Send stub to sandbox
+    send_package_to_sandbox('Testataan tehtäväpohjaa', 0.3, exercise, 'KISSA_STUB', 'StubPackage.tar')
 
-    File.open('StubPackage.tar', 'r') do |tar_file|
-      RestClient.post post_url, file: tar_file, notify: results_url(exercise), token: 'KISSA_STUB'
-    end
+    # Send model solution to sandbox
+    send_package_to_sandbox('Testataan malliratkaisua', 0.6, exercise, 'MODEL_KISSA', 'ModelSolutionPackage.tar')
+  end
 
-    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => 'Testataan malliratkaisua',
-                                                                    'progress' => 0.6, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
+  def send_package_to_sandbox(message, progress, exercise, token, package_name)
+    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => message, 'progress' => progress,
+                                                                    'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
 
-    exercise.testing_model_solution!
+    token == 'KISSA_STUB' ? exercise.testing_stub! : exercise.testing_model_solution!
 
-    File.open('ModelSolutionPackage.tar', 'r') do |tar_file|
-      RestClient.post post_url, file: tar_file, notify: results_url(exercise), token: 'MODEL_KISSA'
+    File.open(package_name, 'r') do |tar_file|
+      RestClient.post post_url, file: tar_file, notify: results_url(exercise), token: token
     end
   end
 
@@ -62,6 +62,6 @@ class ExerciseVerifierJob < ApplicationJob
   end
 
   def results_url(exercise)
-    "https://5c80d014.ngrok.io/exercises/#{exercise.id}/results"
+    "https://4be62af2.ngrok.io/exercises/#{exercise.id}/results"
   end
 end
