@@ -45,4 +45,13 @@ Rails.application.configure do
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
+
+  Sidekiq.configure_server do |config|
+    config.redis = { url: 'redis://redis:6379/12' }
+  end
+
+  Sidekiq.configure_client do |config|
+    config.redis = { url: 'redis://redis:6379/12' }
+  end
+
 end
