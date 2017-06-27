@@ -1,6 +1,7 @@
 AllCops:
   Exclude:
     - './db/schema.rb'
+    - './Gemfile'
 
   TargetRubyVersion: 2.3
 
