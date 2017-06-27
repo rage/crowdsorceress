@@ -42,7 +42,7 @@ class ApplicationController < ActionController::API
   end
 
   def oauth_client
-    @oauth_client ||= OAuth2::Client.new(ENV['OAUTH_APPLICATION_ID'], ENV['OAUTH_SECRET'], site: ENV['OAUTH_SITE'])
+    @oauth_client ||= OAuth2::Client.new('', '', site: ENV['OAUTH_SITE'])
   end
 
   def info_for_paper_trail

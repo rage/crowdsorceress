@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/rage/crowdsorceress.svg?branch=master)](https://travis-ci.org/rage/crowdsorceress)
+
 # README
 
 ## Setup for development
