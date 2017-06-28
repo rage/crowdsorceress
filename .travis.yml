@@ -10,3 +10,16 @@ git:
 before_install:
  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
  - git submodule update --init --recursive
+env:
+ global:
+  - JRUBY_OPTS=-Xcext.enabled=true
+ - DB=pgsql
+services:
+ - postgresql
+script:
+ - RAILS_ENV=test bundle exec rake db:migrate
+ - bundle exec rake db:test:prepare
+ - bundle exec rake
+before_script:
+ - cp config/database.yml.travis config/database.yml
+ - psql -c 'create database crowdsorceress_test;' -U postgres
