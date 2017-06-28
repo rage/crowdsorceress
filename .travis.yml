@@ -2,7 +2,7 @@ language: ruby
 rvm:
   - 2.3.1
   - jruby
-  - rbx-2
+  - rbx-3.69
 # Handle git submodules yourself
 git:
   submodules: false
@@ -24,3 +24,5 @@ script:
 before_script:
   - cp config/database.yml.travis config/database.yml
   - psql -c 'create database crowdsorceress_test;' -U postgres
+addons:
+  postgresql: "9.4"
