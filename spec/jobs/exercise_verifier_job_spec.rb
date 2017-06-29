@@ -5,6 +5,9 @@ require 'rails_helper'
 RSpec.describe ExerciseVerifierJob, type: :job do
   describe '#perform_later' do
     let(:exercise) { FactoryGirl.create(:exercise) }
+    before :each do
+      allow_any_instance_of(ExerciseVerifierJob).to receive(:sandbox_post)
+    end
 
     it 'enqueues a job' do
       ActiveJob::Base.queue_adapter = :test

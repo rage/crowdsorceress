@@ -51,18 +51,21 @@ class ExerciseVerifierJob < ApplicationJob
     token == 'KISSA_STUB' ? exercise.testing_stub! : exercise.testing_model_solution!
 
     File.open(package_name, 'r') do |tar_file|
-      RestClient.post post_url, file: tar_file, notify: results_url(exercise), token: token
+      sandbox_post(tar_file, exercise, token)
     end
   end
 
   private
+
+  def sandbox_post(tar_file, exercise, token)
+    RestClient.post post_url, file: tar_file, notify: results_url(exercise), token: token
+  end
 
   def post_url
     ENV['SANDBOX_BASE_URL'] + '/tasks.json'
   end
 
   def results_url(exercise)
-    # "#{ENV['BASE_URL']}/exercises/#{exercise.id}/results"
-    "https://0ada1438.ngrok.io/exercises/#{exercise.id}/results"
+    "#{ENV['BASE_URL']}/exercises/#{exercise.id}/results"
   end
 end

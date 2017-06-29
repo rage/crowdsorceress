@@ -203,6 +203,7 @@ DEPENDENCIES
   rails (~> 5.1.1)
   redis (~> 3.0)
   rest-client (~> 1.8)
+  rspec-mocks (~> 3.4, >= 3.4.1)
   rspec-rails (~> 3.5)
   sidekiq
   simplecov
