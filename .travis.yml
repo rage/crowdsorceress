@@ -17,5 +17,5 @@ services:
   - docker
 script:
   - docker-compose build
-  - docker-compose run --service-ports web env RAILS_ENV=test bin/rails db:create db:migrate
-  - docker-compose run --service-ports web env RAILS_ENV=test bin/rails spec
+  - docker-compose run --service-ports web bin/rails db:create db:migrate
+  - docker-compose run --service-ports web bin/rails spec
