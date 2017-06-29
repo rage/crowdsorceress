@@ -1,4 +1,5 @@
 language: ruby
+cache: bundler
 rvm:
   - 2.4.1
 # Handle git submodules yourself
@@ -12,6 +13,7 @@ env:
   global:
     - DB=pgsql
     - REDIS_URL=redis://localhost:6379/12
+    - RAILS_ENV=test
 services:
   - postgresql
   - redis-server
@@ -19,7 +21,7 @@ script:
   - RAILS_ENV=test bundle exec rake db:environment:set
   - RAILS_ENV=test bundle exec rake db:migrate
   - bundle exec rake db:test:prepare
-  - bundle exec rake
+  - bundle exec rspec spec
 before_script:
   - cp config/database.yml.travis config/database.yml
   - psql -c 'create database crowdsorceress_test;' -U postgres
