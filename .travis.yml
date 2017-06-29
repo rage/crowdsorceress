@@ -1,8 +1,5 @@
 language: ruby
-cache: bundler
 sudo: required
-rvm:
-  - 2.4.1
 git:
   submodules: false
 before_install:
@@ -14,7 +11,7 @@ env:
 services:
   - docker
 before_script:
-  - docker-compose run --service-ports web bin/rails db:create db:migrate
+  - docker-compose run --service-ports web ./docker-wait-for-db.sh bin/rails db:create db:migrate RAILS_ENV=test
 script:
   - docker-compose run --service-ports web bin/rails spec
 install:

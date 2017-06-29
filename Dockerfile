@@ -4,7 +4,7 @@ ENV RAILS_LOG_TO_STDOUT=1
 
 RUN apk update && \
     apk upgrade && \
-    apk add --update curl-dev ruby-dev build-base bash zlib-dev libxml2-dev libxslt-dev tzdata postgresql-dev ruby-json yaml nodejs && \
+    apk add --update curl-dev ruby-dev build-base bash zlib-dev libxml2-dev libxslt-dev tzdata postgresql-dev postgresql-client ruby-json yaml nodejs && \
     rm -rf /var/cache/apk/* && \
     echo "user:x:1000:1000:user:/:/sbin/nologin" >> /etc/passwd && \
     mkdir -p /app
