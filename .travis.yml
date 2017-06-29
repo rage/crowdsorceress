@@ -10,8 +10,8 @@ before_install:
   - git submodule update --init --recursive
 env:
   global:
-    - JRUBY_OPTS=-Xcext.enabled=true
     - DB=pgsql
+    - REDIS_URL=redis://localhost:6379/12
 services:
   - postgresql
   - redis-server
