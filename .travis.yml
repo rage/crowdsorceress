@@ -3,10 +3,8 @@ cache: bundler
 sudo: required
 rvm:
   - 2.4.1
-# Handle git submodules yourself
 git:
   submodules: false
-# Use sed to replace the SSH URL with the public URL, then initialize submodules
 before_install:
   - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
   - git submodule update --init --recursive
@@ -15,7 +13,9 @@ env:
     - RAILS_ENV=test
 services:
   - docker
-script:
-  - docker-compose build
+before_script:
   - docker-compose run --service-ports web bin/rails db:create db:migrate
+script:
   - docker-compose run --service-ports web bin/rails spec
+install:
+  - docker-compose build
