@@ -119,7 +119,7 @@ class Exercise < ApplicationRecord
     results = { 'status' => status, 'message' => sandbox_results[:message], 'progress' => progress,
                 'result' => { 'OK' => passed, 'error' => error_messages } }
 
-    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[results])
+    SubmissionStatusChannel.broadcast_to("SubmissionStatus_#{user_id}", JSON[results])
 
     status == 'finished' && passed ? finished! : error!
   end

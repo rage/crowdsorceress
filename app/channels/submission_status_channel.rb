@@ -4,10 +4,7 @@ require 'json'
 
 class SubmissionStatusChannel < ApplicationCable::Channel
   def subscribed
-    # stream_from "some_channel"
-    stream_from 'SubmissionStatus'
-
-    stream_for 'SubmissionStatus'
+    stream_for "SubmissionStatus_#{current_user.id}"
   end
 
   def unsubscribed
@@ -19,7 +16,7 @@ class SubmissionStatusChannel < ApplicationCable::Channel
     return unless data['ping']
     exercise = Exercise.find(data['id'])
 
-    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[submission_state(exercise)])
+    SubmissionStatusChannel.broadcast_to("SubmissionStatus_#{current_user.id}", JSON[submission_state(exercise)])
   end
 
   def submission_state(exercise)
