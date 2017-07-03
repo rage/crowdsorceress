@@ -4,10 +4,11 @@ module ApplicationCable
   require 'upstream_user'
 
   class Connection < ActionCable::Connection::Base
-    identified_by :current_user
+    identified_by :current_user, :current_exercise
 
     def connect
       self.current_user = find_verified_user
+      self.current_exercise = find_exercise
     end
 
     private
@@ -17,6 +18,14 @@ module ApplicationCable
         current_user
       else
         reject_unauthorized_connection
+      end
+    end
+
+    def find_exercise
+      if current_exercise = Exercise.find(request.params[:exercise_id])
+        current_exercise
+      else
+        raise 'Exercise was somehow not found'
       end
     end
   end

@@ -45,8 +45,9 @@ class ExerciseVerifierJob < ApplicationJob
   end
 
   def send_package_to_sandbox(message, progress, exercise, token, package_name)
-    SubmissionStatusChannel.broadcast_to("SubmissionStatus_#{exercise.user_id}", JSON[{ 'status' => 'in progress', 'message' => message, 'progress' => progress,
-                                                                                        'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
+    SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{exercise.user_id}_exercise:_#{exercise.id}",
+                                         JSON[{ 'status' => 'in progress', 'message' => message, 'progress' => progress,
+                                                'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
 
     token == 'KISSA_STUB' ? exercise.testing_stub! : exercise.testing_model_solution!
 
