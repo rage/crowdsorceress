@@ -14,11 +14,16 @@ class ApplicationController < ActionController::API
     render_error_page(status: 403, text: 'Forbidden')
   end
 
+  NotLoggedIn = Class.new(StandardError)
+
+  rescue_from ApplicationController::NotLoggedIn do
+    render_error_page(status: 403, text: 'Please log in')
+  end
+
   def ensure_signed_in!
     return if current_user
-    params[:return_to] = request.url
-    render json: { error: 'Please log in.' }
-    raise 'User not logged in'
+
+    raise NotLoggedIn
   end
 
   def current_user

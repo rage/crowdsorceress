@@ -60,10 +60,11 @@ class ExerciseVerifierJob < ApplicationJob
 
   def sandbox_post(tar_file, exercise, token)
     response = RestClient.post post_url, file: tar_file, notify: results_url(exercise), token: token
-    if response.code != 200
-      # TODO
-      puts 'not jee'
-    end
+    return unless response.code != 200
+    exercise.error_messages.push 'Error in posting exercise to sandbox'
+    SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{exercise.user_id}_exercise:_#{exercise.id}",
+                                         JSON[{ 'status' => 'error', 'message' => 'Ongelmia palvelimessa, yritä jonkin ajan päästä uudelleen.',
+                                                'progress' => 1, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
   end
 
   def post_url

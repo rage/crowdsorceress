@@ -21,10 +21,10 @@ class UpstreamUser
 
   def new_user_params
     {
-        email: upstream_user['email'],
-        first_name: upstream_user['first_name'],
-        last_name: upstream_user['last_name'],
-        administrator: upstream_user['administrator']
+      email: upstream_user['email'],
+      first_name: upstream_user['first_name'],
+      last_name: upstream_user['last_name'],
+      administrator: upstream_user['administrator']
     }
   end
 
