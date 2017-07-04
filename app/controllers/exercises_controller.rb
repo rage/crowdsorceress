@@ -23,8 +23,9 @@ class ExercisesController < ApplicationController
 
     if @exercise.save
       ExerciseVerifierJob.perform_later @exercise
-      SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => 'Tehtävä tallennettu tietokantaan',
-                                                                      'progress' => 0.1, 'result' => { 'OK' => false, 'error' => @exercise.error_messages } }])
+      SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{current_user.id}_exercise:_#{@exercise.id}",
+                                           JSON[{ 'status' => 'in progress', 'message' => 'Tehtävä tallennettu tietokantaan', 'progress' => 0.1,
+                                                  'result' => { 'OK' => false, 'error' => @exercise.error_messages } }])
       @exercise.saved!
 
       render json: { message: 'Exercise successfully created! :) :3', exercise: @exercise }, status: :created

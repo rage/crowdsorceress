@@ -16,24 +16,18 @@ class Exercise < ApplicationRecord
     self_code = code
 
     if file_type == 'stubfile'
-      filename = 'Stub/src/Stub.java'
-      generator = MainClassGenerator.new
       self.code = code.gsub(%r{\/\/\sBEGIN SOLUTION\n(.*?\n)*\/\/\sEND SOLUTION}, '')
-      write_to_file(filename, generator, 'Stub')
+      write_to_file('Stub/src/Stub.java', MainClassGenerator.new, 'Stub')
     end
 
     if file_type == 'model_solution_file'
-      filename = 'ModelSolution/src/ModelSolution.java'
-      generator = MainClassGenerator.new
       self.code = self_code
-      write_to_file(filename, generator, 'ModelSolution')
+      write_to_file('ModelSolution/src/ModelSolution.java', MainClassGenerator.new, 'ModelSolution')
     end
 
     if file_type == 'testfile'
-      filename = 'ModelSolution/test/ModelSolutionTest.java'
-      generator = TestGenerator.new
       self.code = self_code
-      write_to_file(filename, generator, 'ModelSolution')
+      write_to_file('ModelSolution/test/ModelSolutionTest.java', TestGenerator.new, 'ModelSolution')
     end
 
     self.code = self_code
@@ -119,7 +113,7 @@ class Exercise < ApplicationRecord
     results = { 'status' => status, 'message' => sandbox_results[:message], 'progress' => progress,
                 'result' => { 'OK' => passed, 'error' => error_messages } }
 
-    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[results])
+    SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{user_id}_exercise:_#{id}", JSON[results])
 
     status == 'finished' && passed ? finished! : error!
   end

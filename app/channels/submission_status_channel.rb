@@ -4,10 +4,7 @@ require 'json'
 
 class SubmissionStatusChannel < ApplicationCable::Channel
   def subscribed
-    # stream_from "some_channel"
-    stream_from 'SubmissionStatus'
-
-    stream_for 'SubmissionStatus'
+    stream_for "SubmissionStatus_user:_#{current_user.id}_exercise:_#{current_exercise.id}"
   end
 
   def unsubscribed
@@ -17,9 +14,8 @@ class SubmissionStatusChannel < ApplicationCable::Channel
   # send current status in case socket opened too late
   def receive(data)
     return unless data['ping']
-    exercise = Exercise.find(data['id'])
 
-    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[submission_state(exercise)])
+    SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{current_user.id}_exercise:_#{current_exercise.id}", JSON[submission_state(current_exercise)])
   end
 
   def submission_state(exercise)

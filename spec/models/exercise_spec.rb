@@ -69,7 +69,7 @@ public class ModelSolutionTest {
 
   describe '.handle_results' do
     subject(:exercise) { FactoryGirl.create(:exercise) }
-    
+
     context 'stub does not compile and tests fail' do
       it 'handles sandbox results properly' do
         exercise.code =

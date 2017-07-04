@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'oauth2'
+require 'upstream_user'
 
 class ApplicationController < ActionController::API
   include ActionController::Helpers
@@ -13,19 +14,21 @@ class ApplicationController < ActionController::API
     render_error_page(status: 403, text: 'Forbidden')
   end
 
+  NotLoggedIn = Class.new(StandardError)
+
+  rescue_from ApplicationController::NotLoggedIn do
+    render_error_page(status: 401, text: 'Please log in')
+  end
+
   def ensure_signed_in!
     return if current_user
-    params[:return_to] = request.url
-    render json: { error: 'Please log in.' }
+
+    raise NotLoggedIn
   end
 
   def current_user
-    return nil unless upstream_user
     @current_user ||= begin
-      user = User.create_with(new_user_params)
-                 .find_or_create_by(username: upstream_user['username'])
-      user.update(last_logged_in: Time.zone.now) if user.last_logged_in.nil?
-      user
+      UpstreamUser.new(params[:oauth_token]).get
     end
   end
 
@@ -41,43 +44,13 @@ class ApplicationController < ActionController::API
     raise ApplicationController::NotAuthorized unless admin? || current_user == user
   end
 
-  def oauth_client
-    @oauth_client ||= OAuth2::Client.new('', '', site: ENV['OAUTH_SITE'])
-  end
-
   def info_for_paper_trail
     { ip: request.remote_ip }
   end
 
   private
 
-  def new_user_params
-    {
-      email: upstream_user['email'],
-      first_name: upstream_user['first_name'],
-      last_name: upstream_user['last_name'],
-      administrator: upstream_user['administrator']
-    }
-  end
-
   def render_error_page(status:, text:)
     render json: { errors: [message: "#{status} #{text}"] }, status: status
-  end
-
-  def upstream_user
-    @upstream_user ||= begin
-      if params[:oauth_token]
-        Rails.cache.fetch("upstream_user_#{params[:oauth_token]}", expires_in: 1.hour) do
-          fetch_user_from_backend!
-        end
-      end
-    end
-  end
-
-  def fetch_user_from_backend!
-    token = OAuth2::AccessToken.new(oauth_client, params[:oauth_token])
-    response = token.get('/api/v8/users/current.json')
-    return nil unless response.status == 200
-    JSON.parse(response.body)
   end
 end

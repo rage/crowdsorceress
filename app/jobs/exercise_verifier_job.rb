@@ -45,8 +45,9 @@ class ExerciseVerifierJob < ApplicationJob
   end
 
   def send_package_to_sandbox(message, progress, exercise, token, package_name)
-    SubmissionStatusChannel.broadcast_to('SubmissionStatus', JSON[{ 'status' => 'in progress', 'message' => message, 'progress' => progress,
-                                                                    'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
+    SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{exercise.user_id}_exercise:_#{exercise.id}",
+                                         JSON[{ 'status' => 'in progress', 'message' => message, 'progress' => progress,
+                                                'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
 
     token == 'KISSA_STUB' ? exercise.testing_stub! : exercise.testing_model_solution!
 
@@ -58,7 +59,12 @@ class ExerciseVerifierJob < ApplicationJob
   private
 
   def sandbox_post(tar_file, exercise, token)
-    RestClient.post post_url, file: tar_file, notify: results_url(exercise), token: token
+    response = RestClient.post post_url, file: tar_file, notify: results_url(exercise), token: token
+    return unless response.code != 200
+    exercise.error_messages.push 'Error in posting exercise to sandbox'
+    SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{exercise.user_id}_exercise:_#{exercise.id}",
+                                         JSON[{ 'status' => 'error', 'message' => 'Ongelmia palvelimessa, yritä jonkin ajan päästä uudelleen.',
+                                                'progress' => 1, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
   end
 
   def post_url
