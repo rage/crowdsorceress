@@ -18,6 +18,7 @@ class ApplicationController < ActionController::API
     return if current_user
     params[:return_to] = request.url
     render json: { error: 'Please log in.' }
+    raise 'User not logged in'
   end
 
   def current_user

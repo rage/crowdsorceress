@@ -59,7 +59,11 @@ class ExerciseVerifierJob < ApplicationJob
   private
 
   def sandbox_post(tar_file, exercise, token)
-    RestClient.post post_url, file: tar_file, notify: results_url(exercise), token: token
+    response = RestClient.post post_url, file: tar_file, notify: results_url(exercise), token: token
+    if response.code != 200
+      # TODO
+      puts 'not jee'
+    end
   end
 
   def post_url

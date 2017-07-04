@@ -6,6 +6,7 @@ class UpstreamUser
   end
 
   def get
+    return nil if upstream_user.nil?
     user = User.create_with(new_user_params)
                .find_or_create_by(username: upstream_user['username'])
     user.update(last_logged_in: Time.zone.now) if user.last_logged_in.nil?
@@ -20,10 +21,10 @@ class UpstreamUser
 
   def new_user_params
     {
-      email: upstream_user['email'],
-      first_name: upstream_user['first_name'],
-      last_name: upstream_user['last_name'],
-      administrator: upstream_user['administrator']
+        email: upstream_user['email'],
+        first_name: upstream_user['first_name'],
+        last_name: upstream_user['last_name'],
+        administrator: upstream_user['administrator']
     }
   end
 
@@ -39,8 +40,11 @@ class UpstreamUser
 
   def fetch_user_from_backend!
     token = OAuth2::AccessToken.new(oauth_client, @oauth_token)
-    response = token.get('/api/v8/users/current.json')
-    return nil unless response.status == 200
+    begin
+      response = token.get('/api/v8/users/current.json')
+    rescue
+      return nil
+    end
     JSON.parse(response.body)
   end
 end
