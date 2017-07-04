@@ -17,7 +17,7 @@ class ApplicationController < ActionController::API
   NotLoggedIn = Class.new(StandardError)
 
   rescue_from ApplicationController::NotLoggedIn do
-    render_error_page(status: 403, text: 'Please log in')
+    render_error_page(status: 401, text: 'Please log in')
   end
 
   def ensure_signed_in!
