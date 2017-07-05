@@ -22,10 +22,9 @@ vendor/bundle
 coverage/
 .idea/
 
-
-ModelSolution/src/ModelSolution.java
-ModelSolution/test/ModelSolutionTest.java
-Stub/src/Stub.java
-
 packages/*
 !packages/.gitkeep
+
+langs-tmp/
+Submission/src/Submission.java
+Submission/test/SubmissionTest.java

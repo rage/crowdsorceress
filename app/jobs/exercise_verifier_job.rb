@@ -23,7 +23,8 @@ class ExerciseVerifierJob < ApplicationJob
   def create_stub_tar(exercise)
     exercise.create_file('stubfile')
 
-    `cd Stub/ && tar -cpf ../packages/StubPackage#{exercise.id}.tar * && cd ..`
+    # TODO: change command for proper tarball
+    # `cd langs-tmp/stub/ && tar -cpf ../packages/StubPackage#{exercise.id}.tar * && cd ..`
     puts 'Exercise id in create stub tar: ' + exercise.id.to_s
   end
 
@@ -31,7 +32,9 @@ class ExerciseVerifierJob < ApplicationJob
     exercise.create_file('model_solution_file')
     exercise.create_file('testfile')
 
-    `cd ModelSolution/ && tar -cpf ../packages/ModelSolutionPackage#{exercise.id}.tar * && cd ..`
+    # TODO: change command for proper tarball
+    `cd langs-tmp/model/ && tar -cpf ../../packages/ModelSolutionPackage#{exercise.id}.tar * && cd ../..`
+    `cd langs-tmp/stub/ && tar -cpf ../../packages/StubPackage#{exercise.id}.tar * && cd ../..`
   end
 
   def send_exercise_to_sandbox(exercise)
@@ -40,7 +43,6 @@ class ExerciseVerifierJob < ApplicationJob
 
     # Send stub to sandbox
     send_package_to_sandbox('Testataan tehtäväpohjaa', 0.3, exercise, 'KISSA_STUB', "StubPackage#{exercise.id}.tar")
-    puts 'Exercise id in send exercise to sandbox: ' + exercise.id.to_s
 
     # Send model solution to sandbox
     send_package_to_sandbox('Testataan malliratkaisua', 0.6, exercise, 'MODEL_KISSA', "ModelSolutionPackage#{exercise.id}.tar")

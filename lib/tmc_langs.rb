@@ -7,14 +7,11 @@ class TMCLangs
   end
 
   def self.prepare_solutions
-    puts 'Nyt minä valmistelen vastauksia'
-    `java -jar #{langs_path.to_s} prepare-solutions --exercisePath ./ModelSolution/ --outputPath ./langs-tmp/model`
+    `java -jar #{langs_path.to_s} prepare-solutions --exercisePath ./Submission/ --outputPath ./langs-tmp/model`
   end
 
   def self.prepare_stubs
-    puts 'Nyt minä valmistelen stubia'
-    `java -jar #{langs_path.to_s} prepare-stubs --exercisePath ./ModelSolution/ --outputPath ./langs-tmp/stub`
-
+    `java -jar #{langs_path.to_s} prepare-stubs --exercisePath ./Submission/ --outputPath ./langs-tmp/stub`
   end
 
   private
