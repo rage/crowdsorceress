@@ -23,14 +23,15 @@ class ExerciseVerifierJob < ApplicationJob
   def create_stub_tar(exercise)
     exercise.create_file('stubfile')
 
-    `cd Stub/ && tar -cpf ../StubPackage.tar * && cd ..`
+    `cd Stub/ && tar -cpf ../packages/StubPackage#{exercise.id}.tar * && cd ..`
+    puts 'Exercise id in create stub tar: ' + exercise.id.to_s
   end
 
   def create_model_solution_tar(exercise)
     exercise.create_file('model_solution_file')
     exercise.create_file('testfile')
 
-    `cd ModelSolution/ && tar -cpf ../ModelSolutionPackage.tar * && cd ..`
+    `cd ModelSolution/ && tar -cpf ../packages/ModelSolutionPackage#{exercise.id}.tar * && cd ..`
   end
 
   def send_exercise_to_sandbox(exercise)
@@ -38,20 +39,22 @@ class ExerciseVerifierJob < ApplicationJob
     create_model_solution_tar(exercise)
 
     # Send stub to sandbox
-    send_package_to_sandbox('Testataan tehtäväpohjaa', 0.3, exercise, 'KISSA_STUB', 'StubPackage.tar')
+    send_package_to_sandbox('Testataan tehtäväpohjaa', 0.3, exercise, 'KISSA_STUB', "StubPackage#{exercise.id}.tar")
+    puts 'Exercise id in send exercise to sandbox: ' + exercise.id.to_s
 
     # Send model solution to sandbox
-    send_package_to_sandbox('Testataan malliratkaisua', 0.6, exercise, 'MODEL_KISSA', 'ModelSolutionPackage.tar')
+    send_package_to_sandbox('Testataan malliratkaisua', 0.6, exercise, 'MODEL_KISSA', "ModelSolutionPackage#{exercise.id}.tar")
   end
 
   def send_package_to_sandbox(message, progress, exercise, token, package_name)
+    puts 'Exercise id in send package to sandbox: ' + exercise.id.to_s
     SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{exercise.user_id}_exercise:_#{exercise.id}",
                                          JSON[{ 'status' => 'in progress', 'message' => message, 'progress' => progress,
                                                 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
 
     token == 'KISSA_STUB' ? exercise.testing_stub! : exercise.testing_model_solution!
 
-    File.open(package_name, 'r') do |tar_file|
+    File.open('./packages/' + package_name, 'r') do |tar_file|
       sandbox_post(tar_file, exercise, token)
     end
   end
@@ -60,6 +63,9 @@ class ExerciseVerifierJob < ApplicationJob
 
   def sandbox_post(tar_file, exercise, token)
     response = RestClient.post post_url, file: tar_file, notify: results_url(exercise), token: token
+
+    `rm #{tar_file.path}`
+
     return unless response.code != 200
     exercise.error_messages.push 'Error in posting exercise to sandbox'
     SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{exercise.user_id}_exercise:_#{exercise.id}",

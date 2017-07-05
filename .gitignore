@@ -26,5 +26,6 @@ coverage/
 ModelSolution/src/ModelSolution.java
 ModelSolution/test/ModelSolutionTest.java
 Stub/src/Stub.java
-ModelSolutionPackage.tar
-StubPackage.tar
+
+packages/*
+!packages/.gitkeep
