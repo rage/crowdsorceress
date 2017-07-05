@@ -4,6 +4,9 @@ class Exercise < ApplicationRecord
   belongs_to :assignment
   belongs_to :user
 
+  require 'zip'
+  require 'tmc_langs'
+
   validates :description, presence: true
   validates :testIO, presence: true
   validates :code, presence: true
@@ -23,6 +26,8 @@ class Exercise < ApplicationRecord
     if file_type == 'model_solution_file'
       self.code = self_code
       write_to_file('ModelSolution/src/ModelSolution.java', MainClassGenerator.new, 'ModelSolution')
+      TMCLangs.prepare_solutions
+      TMCLangs.prepare_stubs
     end
 
     if file_type == 'testfile'
@@ -116,5 +121,34 @@ class Exercise < ApplicationRecord
     SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{user_id}_exercise:_#{id}", JSON[results])
 
     status == 'finished' && passed ? finished! : error!
+
+    create_zip if finished?
+  end
+
+  def create_zip
+    stub_zipfile_name = "./packages/Stub#{id}.zip"
+    modelsolution_zipfile_name = "./packages/ModelSolution#{id}.zip"
+
+    stub_input = ['lib/testrunner/tmc-junit-runner.jar', 'lib/edu-test-utils-0.4.2.jar', 'lib/junit-4.10.jar',
+                  'nbproject/private/private.properties', 'nbproject/private/private.xml', 'nbproject/build-impl.xml',
+                  'nbproject/genfiles.properties', 'nbproject/project.properties', 'nbproject/project.xml',
+                  'src/Stub.java', 'test/StubTest.java', 'build.xml']
+
+    modelsolution_input = ['lib/testrunner/tmc-junit-runner.jar', 'lib/edu-test-utils-0.4.2.jar', 'lib/junit-4.10.jar',
+                           'nbproject/private/private.properties', 'nbproject/private/private.xml', 'nbproject/build-impl.xml',
+                           'nbproject/genfiles.properties', 'nbproject/project.properties', 'nbproject/project.xml',
+                           'src/ModelSolution.java', 'test/ModelSolutionTest.java', 'build.xml']
+
+    Zip::File.open(stub_zipfile_name, Zip::File::CREATE) do |zipfile|
+      stub_input.each do |name|
+        zipfile.add(name, './Stub/' + name)
+      end
+    end
+
+    Zip::File.open(modelsolution_zipfile_name, Zip::File::CREATE) do |zipfile|
+      modelsolution_input.each do |name|
+        zipfile.add(name, './ModelSolution/' + name)
+      end
+    end
   end
 end

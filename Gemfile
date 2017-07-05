@@ -53,7 +53,7 @@ gem 'oauth2', '~> 1.2'
 
 gem 'sidekiq'
 
-gem 'minitar', '~> 0.6.1'
+gem 'rubyzip'
 
 gem 'http-cookie', '~> 1.0', '>= 1.0.3'
 gem 'mime-types'
