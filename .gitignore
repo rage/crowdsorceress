@@ -22,8 +22,8 @@ vendor/bundle
 coverage/
 .idea/
 
-packages/*
-!packages/.gitkeep
+submission_generation/packages/*
+!submission_generation/packages/.gitkeep
 
 langs-tmp/
 submission_generation/Submission/src/Submission.java

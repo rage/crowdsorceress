@@ -5,6 +5,10 @@ require 'stdout_example'
 
 RSpec.describe Exercise, type: :model do
   describe '.create_file' do
+    before :each do
+      allow_any_instance_of(Exercise).to receive(:create_model_solution_and_stub)
+    end
+
     subject(:exercise) { FactoryGirl.create(:exercise) }
 
     it 'creates a submission' do

@@ -7,6 +7,7 @@ RSpec.describe ExerciseVerifierJob, type: :job do
     let(:exercise) { FactoryGirl.create(:exercise) }
     before :each do
       allow_any_instance_of(ExerciseVerifierJob).to receive(:sandbox_post)
+      allow_any_instance_of(Exercise).to receive(:create_model_solution_and_stub)
     end
 
     it 'enqueues a job' do

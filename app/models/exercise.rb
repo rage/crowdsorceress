@@ -21,6 +21,10 @@ class Exercise < ApplicationRecord
     write_to_file('submission_generation/Submission/src/Submission.java', MainClassGenerator.new, 'Submission')
     write_to_file('submission_generation/Submission/test/SubmissionTest.java', TestGenerator.new, 'Submission')
 
+    create_model_solution_and_stub
+  end
+
+  def create_model_solution_and_stub
     TMCLangs.prepare_solutions
     TMCLangs.prepare_stubs
   end
