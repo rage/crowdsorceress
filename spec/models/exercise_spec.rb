@@ -7,12 +7,10 @@ RSpec.describe Exercise, type: :model do
   describe '.create_file' do
     subject(:exercise) { FactoryGirl.create(:exercise) }
 
-    it 'creates a stub file' do
-      pending('Still refactoring code')
-      exercise.create_file('stubfile')
-      # TODO: change path
-      contents = File.read('langs-tmp/stub/src/Submission.java')
-      expect(contents).to eq('public class Stub {
+    it 'creates a submission' do
+      exercise.create_submission
+      src_contents = File.read('submission_generation/Submission/src/Submission.java')
+      expect(src_contents).to eq('public class Submission {
 
   public static void main(String[] args) {
 
@@ -23,29 +21,9 @@ RSpec.describe Exercise, type: :model do
   }
 }
 ')
-    end
 
-    it 'creates a model solution file' do
-      exercise.create_file('model_solution_file')
-      contents = File.read('Submission/src/Submission.java')
-      expect(contents).to eq('public class Submission {
-
-  public static void main(String[] args) {
-
-  }
-
-  public static String metodi(String input) {
-    asd
-  }
-}
-')
-    end
-
-    it 'creates a test file' do
-      pending('Trying to handle all these }}}')
-      exercise.create_file('testfile')
-      contents = File.read('langs-tmp/model/test/SubmissionTest.java')
-      expect(contents).to eq('import fi.helsinki.cs.tmc.edutestutils.Points;
+      test_contents = File.read('submission_generation/Submission/test/SubmissionTest.java')
+      expect(test_contents).to eq('import fi.helsinki.cs.tmc.edutestutils.Points;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 

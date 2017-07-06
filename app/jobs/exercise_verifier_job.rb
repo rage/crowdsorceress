@@ -20,26 +20,16 @@ class ExerciseVerifierJob < ApplicationJob
     send_exercise_to_sandbox(exercise)
   end
 
-  def create_stub_tar(exercise)
-    exercise.create_file('stubfile')
+  def create_tar_files(exercise)
+    exercise.create_submission
 
     # TODO: change command for proper tarball
-    # `cd langs-tmp/stub/ && tar -cpf ../packages/StubPackage#{exercise.id}.tar * && cd ..`
-    puts 'Exercise id in create stub tar: ' + exercise.id.to_s
-  end
-
-  def create_model_solution_tar(exercise)
-    exercise.create_file('model_solution_file')
-    exercise.create_file('testfile')
-
-    # TODO: change command for proper tarball
-    `cd langs-tmp/model/ && tar -cpf ../../packages/ModelSolutionPackage#{exercise.id}.tar * && cd ../..`
-    `cd langs-tmp/stub/ && tar -cpf ../../packages/StubPackage#{exercise.id}.tar * && cd ../..`
+    `cd langs-tmp/model/ && tar -cpf ../../submission_generation/packages/ModelSolutionPackage#{exercise.id}.tar * && cd ../..`
+    `cd langs-tmp/stub/ && tar -cpf ../../submission_generation/packages/StubPackage#{exercise.id}.tar * && cd ../..`
   end
 
   def send_exercise_to_sandbox(exercise)
-    create_stub_tar(exercise)
-    create_model_solution_tar(exercise)
+    create_tar_files(exercise)
 
     # Send stub to sandbox
     send_package_to_sandbox('Testataan tehtäväpohjaa', 0.3, exercise, 'KISSA_STUB', "StubPackage#{exercise.id}.tar")
@@ -49,14 +39,13 @@ class ExerciseVerifierJob < ApplicationJob
   end
 
   def send_package_to_sandbox(message, progress, exercise, token, package_name)
-    puts 'Exercise id in send package to sandbox: ' + exercise.id.to_s
     SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{exercise.user_id}_exercise:_#{exercise.id}",
                                          JSON[{ 'status' => 'in progress', 'message' => message, 'progress' => progress,
                                                 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
 
     token == 'KISSA_STUB' ? exercise.testing_stub! : exercise.testing_model_solution!
 
-    File.open('./packages/' + package_name, 'r') do |tar_file|
+    File.open('./submission_generation/packages/' + package_name, 'r') do |tar_file|
       sandbox_post(tar_file, exercise, token)
     end
   end

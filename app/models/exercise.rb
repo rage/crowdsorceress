@@ -15,27 +15,14 @@ class Exercise < ApplicationRecord
 
   enum status: %i[status_undefined saved testing_stub testing_model_solution finished error]
 
-  def create_file(file_type)
-    self_code = code
+  def create_submission
+    # muisto: self.code = code.gsub(%r{\/\/\sBEGIN SOLUTION\n(.*?\n)*\/\/\sEND SOLUTION}, '')
 
-    if file_type == 'stubfile'
-      self.code = code.gsub(%r{\/\/\sBEGIN SOLUTION\n(.*?\n)*\/\/\sEND SOLUTION}, '')
-      # write_to_file('Stub/src/Stub.java', MainClassGenerator.new, 'Stub')
-    end
+    write_to_file('submission_generation/Submission/src/Submission.java', MainClassGenerator.new, 'Submission')
+    write_to_file('submission_generation/Submission/test/SubmissionTest.java', TestGenerator.new, 'Submission')
 
-    if file_type == 'model_solution_file'
-      self.code = self_code
-      write_to_file('Submission/src/Submission.java', MainClassGenerator.new, 'Submission')
-      TMCLangs.prepare_solutions
-      TMCLangs.prepare_stubs
-    end
-
-    if file_type == 'testfile'
-      self.code = self_code
-      write_to_file('Submission/test/SubmissionTest.java', TestGenerator.new, 'Submission')
-    end
-
-    self.code = self_code
+    TMCLangs.prepare_solutions
+    TMCLangs.prepare_stubs
   end
 
   def write_to_file(filename, generator, class_name)
@@ -68,12 +55,12 @@ class Exercise < ApplicationRecord
     # Model solution is passed if test results are passed
     sandbox_results[:passed] = false unless test_output['status'] == 'PASSED'
 
-    # Update exercises sandbox_results
+    # Update exercise's sandbox_results
     save!
   end
 
   def exercise_errors(test_output, token)
-    test_results(test_output)
+    test_results(test_output) if token == 'MODEL_KISSA'
     compile_errors(test_output, token)
   end
 
@@ -108,7 +95,7 @@ class Exercise < ApplicationRecord
       sandbox_results[:model_results_received] = true
     end
     sandbox_results[:message] += if sandbox_status == 'finished' && passed then 'Kaikki OK.'
-                                 elsif sandbox_status == 'finished' && compiled then 'Testit eivät menneet läpi.'
+                                 elsif sandbox_status == 'finished' && compiled && token == 'MODEL_KISSA' then 'Testit eivät menneet läpi.'
                                  else
                                    'Koodi ei kääntynyt.'
                                  end
@@ -122,7 +109,7 @@ class Exercise < ApplicationRecord
 
     status == 'finished' && passed ? finished! : error!
 
-    create_zip if finished?
+    # create_zip if finished?
   end
 
   # TODO: fix this method
