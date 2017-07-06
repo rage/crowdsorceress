@@ -23,19 +23,18 @@ class ExerciseVerifierJob < ApplicationJob
   def create_tar_files(exercise)
     exercise.create_submission
 
-    # TODO: change command for proper tarball
-    `cd langs-tmp/model/ && tar -cpf ../../submission_generation/packages/ModelSolutionPackage#{exercise.id}.tar * && cd ../..`
-    `cd langs-tmp/stub/ && tar -cpf ../../submission_generation/packages/StubPackage#{exercise.id}.tar * && cd ../..`
+    `cd ./submission_generation/tmp/Submission_#{exercise.id}/model/ && tar -cpf ../../../packages/ModelSolutionPackage_#{exercise.id}.tar * && cd ../../../..`
+    `cd ./submission_generation/tmp/Submission_#{exercise.id}/stub/ && tar -cpf ../../../packages/StubPackage_#{exercise.id}.tar * && cd ../../../..`
   end
 
   def send_exercise_to_sandbox(exercise)
     create_tar_files(exercise)
 
     # Send stub to sandbox
-    send_package_to_sandbox('Testataan tehtäväpohjaa', 0.3, exercise, 'KISSA_STUB', "StubPackage#{exercise.id}.tar")
+    send_package_to_sandbox('Testataan tehtäväpohjaa', 0.3, exercise, 'KISSA_STUB', "StubPackage_#{exercise.id}.tar")
 
     # Send model solution to sandbox
-    send_package_to_sandbox('Testataan malliratkaisua', 0.6, exercise, 'MODEL_KISSA', "ModelSolutionPackage#{exercise.id}.tar")
+    send_package_to_sandbox('Testataan malliratkaisua', 0.6, exercise, 'MODEL_KISSA', "ModelSolutionPackage_#{exercise.id}.tar")
   end
 
   def send_package_to_sandbox(message, progress, exercise, token, package_name)

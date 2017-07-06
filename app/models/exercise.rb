@@ -18,15 +18,17 @@ class Exercise < ApplicationRecord
   def create_submission
     # muisto: self.code = code.gsub(%r{\/\/\sBEGIN SOLUTION\n(.*?\n)*\/\/\sEND SOLUTION}, '')
 
-    write_to_file('submission_generation/Submission/src/Submission.java', MainClassGenerator.new, 'Submission')
-    write_to_file('submission_generation/Submission/test/SubmissionTest.java', TestGenerator.new, 'Submission')
+    FileUtils.cp_r 'submission_generation/Submission/', "submission_generation/tmp/Submission_#{id}/"
+
+    write_to_file("submission_generation/tmp/Submission_#{id}/src/Submission.java", MainClassGenerator.new, 'Submission')
+    write_to_file("submission_generation/tmp/Submission_#{id}/test/SubmissionTest.java", TestGenerator.new, 'Submission')
 
     create_model_solution_and_stub
   end
 
   def create_model_solution_and_stub
-    TMCLangs.prepare_solutions
-    TMCLangs.prepare_stubs
+    TMCLangs.prepare_solutions(self)
+    TMCLangs.prepare_stubs(self)
   end
 
   def write_to_file(filename, generator, class_name)
@@ -113,35 +115,25 @@ class Exercise < ApplicationRecord
 
     status == 'finished' && passed ? finished! : error!
 
-    # create_zip if finished?
+    clean_up if finished?
   end
 
-  # TODO: fix this method
-  # def create_zip
-  #   stub_zipfile_name = "./packages/Stub#{id}.zip"
-  #   modelsolution_zipfile_name = "./packages/Submission#{id}.zip"
-  #
-  #   stub_input = ['lib/testrunner/tmc-junit-runner.jar', 'lib/edu-test-utils-0.4.2.jar', 'lib/junit-4.10.jar',
-  #                 'nbproject/private/private.properties', 'nbproject/private/private.xml', 'nbproject/build-impl.xml',
-  #                 'nbproject/genfiles.properties', 'nbproject/project.properties', 'nbproject/project.xml',
-  #                 'src/Stub.java', 'test/StubTest.java', 'build.xml']
-  #
-  #   modelsolution_input = ['lib/testrunner/tmc-junit-runner.jar', 'lib/edu-test-utils-0.4.2.jar', 'lib/junit-4.10.jar',
-  #                          'nbproject/private/private.properties', 'nbproject/private/private.xml', 'nbproject/build-impl.xml',
-  #                          'nbproject/genfiles.properties', 'nbproject/project.properties', 'nbproject/project.xml',
-  #                          'src/Submission.java', 'test/ModelSolutionTest.java', 'build.xml']
-  #
-  #   Zip::File.open(stub_zipfile_name, Zip::File::CREATE) do |zipfile|
-  #     stub_input.each do |name|
-  #       #TODO change path
-  #       zipfile.add(name, './langs-tmp/stub/' + name)
-  #     end
-  #   end
-  #
-  #   Zip::File.open(modelsolution_zipfile_name, Zip::File::CREATE) do |zipfile|
-  #     modelsolution_input.each do |name|
-  #       zipfile.add(name, './Submission/' + name)
-  #     end
-  #   end
-  # end
+  def clean_up
+    create_zip("./submission_generation/packages/Stub_#{id}.zip", 'stub')
+    create_zip("./submission_generation/packages/ModelSolution_#{id}.zip", 'model')
+
+    FileUtils.remove_dir("./submission_generation/tmp/Submission_#{id}")
+  end
+
+  def create_zip(zipfile_name, file)
+    input_files = ['lib/testrunner/tmc-junit-runner.jar', 'lib/edu-test-utils-0.4.2.jar', 'lib/junit-4.10.jar',
+                   'nbproject/build-impl.xml', 'nbproject/genfiles.properties', 'nbproject/project.properties',
+                   'nbproject/project.xml', 'src/Submission.java', 'test/SubmissionTest.java', 'build.xml']
+
+    Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
+      input_files.each do |name|
+        zipfile.add(name, "./submission_generation/tmp/Submission_#{id}/#{file}/" + name)
+      end
+    end
+  end
 end

@@ -25,6 +25,5 @@ coverage/
 submission_generation/packages/*
 !submission_generation/packages/.gitkeep
 
-langs-tmp/
-submission_generation/Submission/src/Submission.java
-submission_generation/Submission/test/SubmissionTest.java
+submission_generation/tmp/*
+!submission_generation/tmp/.gitkeep

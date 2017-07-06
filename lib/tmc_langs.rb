@@ -6,12 +6,12 @@ class TMCLangs
     tmc_langs_cli_target_path.join(filename)
   end
 
-  def self.prepare_solutions
-    `java -jar #{langs_path.to_s} prepare-solutions --exercisePath ./submission_generation/Submission/ --outputPath ./langs-tmp/model`
+  def self.prepare_solutions(exercise)
+    `java -jar #{langs_path.to_s} prepare-solutions --exercisePath ./submission_generation/tmp/Submission_#{exercise.id}/ --outputPath ./submission_generation/tmp/Submission_#{exercise.id}/model/`
   end
 
-  def self.prepare_stubs
-    `java -jar #{langs_path.to_s} prepare-stubs --exercisePath ./submission_generation/Submission/ --outputPath ./langs-tmp/stub`
+  def self.prepare_stubs(exercise)
+    `java -jar #{langs_path.to_s} prepare-stubs --exercisePath ./submission_generation/tmp/Submission_#{exercise.id}/ --outputPath ./submission_generation/tmp/Submission_#{exercise.id}/stub/`
   end
 
   private_class_method

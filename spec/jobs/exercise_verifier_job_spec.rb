@@ -7,7 +7,8 @@ RSpec.describe ExerciseVerifierJob, type: :job do
     let(:exercise) { FactoryGirl.create(:exercise) }
     before :each do
       allow_any_instance_of(ExerciseVerifierJob).to receive(:sandbox_post)
-      allow_any_instance_of(Exercise).to receive(:create_model_solution_and_stub)
+      # allow_any_instance_of(ExerciseVerifierJob).to receive(:create_tar_files)
+      # allow_any_instance_of(Exercise).to receive(:create_model_solution_and_stub)
     end
 
     it 'enqueues a job' do
@@ -23,6 +24,10 @@ RSpec.describe ExerciseVerifierJob, type: :job do
 
       ExerciseVerifierJob.perform_now(exercise)
       expect(exercise.status).to eq('testing_model_solution')
+
+      FileUtils.remove_dir("submission_generation/tmp/Submission_#{exercise.id}")
+      FileUtils.remove_entry("submission_generation/packages/ModelSolutionPackage_#{exercise.id}.tar")
+      FileUtils.remove_entry("submission_generation/packages/StubPackage_#{exercise.id}.tar")
     end
   end
 end
