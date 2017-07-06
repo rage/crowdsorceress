@@ -26,5 +26,5 @@ packages/*
 !packages/.gitkeep
 
 langs-tmp/
-Submission/src/Submission.java
-Submission/test/SubmissionTest.java
+submission_generation/Submission/src/Submission.java
+submission_generation/Submission/test/SubmissionTest.java
