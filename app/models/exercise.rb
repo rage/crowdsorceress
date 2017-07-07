@@ -124,13 +124,6 @@ class Exercise < ApplicationRecord
   end
 
   def clean_up
-    create_zip("./submission_generation/packages/Stub_#{id}.zip", 'stub')
-    create_zip("./submission_generation/packages/ModelSolution_#{id}.zip", 'model')
-
-    FileUtils.remove_dir("./submission_generation/tmp/Submission_#{id}")
-  end
-
-  def create_zip(zipfile_name, file)
     if File.exist?("./submission_generation/packages/Stub_#{id}.zip")
       FileUtils.rm("./submission_generation/packages/Stub_#{id}.zip")
     end
@@ -139,6 +132,13 @@ class Exercise < ApplicationRecord
       FileUtils.rm("./submission_generation/packages/ModelSolution_#{id}.zip" )
     end
 
+    create_zip("./submission_generation/packages/Stub_#{id}.zip", 'stub')
+    create_zip("./submission_generation/packages/ModelSolution_#{id}.zip", 'model')
+
+    FileUtils.remove_dir("./submission_generation/tmp/Submission_#{id}")
+  end
+
+  def create_zip(zipfile_name, file)
     input_files = ['lib/testrunner/tmc-junit-runner.jar', 'lib/edu-test-utils-0.4.2.jar', 'lib/junit-4.10.jar',
                    'nbproject/build-impl.xml', 'nbproject/genfiles.properties', 'nbproject/project.properties',
                    'nbproject/project.xml', 'src/Submission.java', 'test/SubmissionTest.java', 'build.xml']
