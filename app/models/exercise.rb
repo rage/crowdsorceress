@@ -131,6 +131,14 @@ class Exercise < ApplicationRecord
   end
 
   def create_zip(zipfile_name, file)
+    if File.exist?("./submission_generation/packages/Stub_#{id}.zip")
+      FileUtils.rm("./submission_generation/packages/Stub_#{id}.zip")
+    end
+
+    if File.exist?("./submission_generation/packages/ModelSolution_#{id}.zip")
+      FileUtils.rm("./submission_generation/packages/ModelSolution_#{id}.zip" )
+    end
+
     input_files = ['lib/testrunner/tmc-junit-runner.jar', 'lib/edu-test-utils-0.4.2.jar', 'lib/junit-4.10.jar',
                    'nbproject/build-impl.xml', 'nbproject/genfiles.properties', 'nbproject/project.properties',
                    'nbproject/project.xml', 'src/Submission.java', 'test/SubmissionTest.java', 'build.xml']

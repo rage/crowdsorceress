@@ -20,6 +20,7 @@ class ExercisesController < ApplicationController
   def create
     @exercise = Exercise.find_or_initialize_by(user: current_user, assignment_id: params[:exercise][:assignment_id])
     @exercise.attributes = exercise_params
+    @exercise.error_messages = []
 
     return render_error_page(status: 409, text: 'Assignment already being processed') if @exercise.in_progress?
 
