@@ -4,11 +4,7 @@ require 'rails_helper'
 require 'stdout_example'
 
 RSpec.describe Exercise, type: :model do
-  describe '.create_file' do
-    before :each do
-      allow_any_instance_of(Exercise).to receive(:create_model_solution_and_stub)
-    end
-
+  describe '.create_submission' do
     subject(:exercise) { FactoryGirl.create(:exercise) }
 
     it 'creates a submission' do
@@ -20,45 +16,11 @@ RSpec.describe Exercise, type: :model do
       FileUtils.remove_dir("submission_generation/tmp/Submission_#{exercise.id}")
     end
 
-    it 'creates a submission with proper content' do
-      pending('Test that submission has right contents')
+    it 'creates a submission with proper contents' do
+      exercise.create_submission
 
-      src_contents = File.read('submission_generation/Submission/src/Submission.java')
-      expect(src_contents).to eq('public class Submission {
-
-  public static void main(String[] args) {
-
-  }
-
-  public static String metodi(String input) {
-    asd
-  }
-}
-')
-
-      test_contents = File.read('submission_generation/Submission/test/SubmissionTest.java')
-      expect(test_contents).to eq('import fi.helsinki.cs.tmc.edutestutils.Points;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
-
-@Points("01-11")
-public class SubmissionTest {
-
-  public SubmissionTest() {
-
-  }
-
-  @Test
-  public void test1() {
-    toimii("lol", "lolled");
-  }
-
-
-  private void toimii(String input, String output) {
-    assertEquals(output, Submission.metodi(input));
-  }
-}
-')
+      directory = Dir.new("submission_generation/tmp/Submission_#{exercise.id}")
+      expect(directory.entries).to include('model', 'stub')
 
       FileUtils.remove_dir("submission_generation/tmp/Submission_#{exercise.id}")
     end

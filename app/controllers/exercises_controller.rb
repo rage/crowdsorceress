@@ -18,6 +18,8 @@ class ExercisesController < ApplicationController
 
   # POST /exercises
   def create
+    return render_error_page(status: 400, text: 'Assignment must exist') if params[:exercise][:assignment_id].nil?
+
     @exercise = Exercise.find_or_initialize_by(user: current_user, assignment_id: params[:exercise][:assignment_id])
     @exercise.attributes = exercise_params
     @exercise.error_messages = []

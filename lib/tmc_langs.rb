@@ -7,11 +7,13 @@ class TMCLangs
   end
 
   def self.prepare_solutions(exercise)
-    `java -jar #{langs_path.to_s} prepare-solutions --exercisePath ./submission_generation/tmp/Submission_#{exercise.id}/ --outputPath ./submission_generation/tmp/Submission_#{exercise.id}/model/`
+    `java -jar #{langs_path.to_s} prepare-solutions --exercisePath ./submission_generation/tmp/Submission_#{exercise.id}/ \
+--outputPath ./submission_generation/tmp/Submission_#{exercise.id}/model/`
   end
 
   def self.prepare_stubs(exercise)
-    `java -jar #{langs_path.to_s} prepare-stubs --exercisePath ./submission_generation/tmp/Submission_#{exercise.id}/ --outputPath ./submission_generation/tmp/Submission_#{exercise.id}/stub/`
+    `java -jar #{langs_path.to_s} prepare-stubs --exercisePath ./submission_generation/tmp/Submission_#{exercise.id}/ \
+--outputPath ./submission_generation/tmp/Submission_#{exercise.id}/stub/`
   end
 
   private_class_method
