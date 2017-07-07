@@ -18,7 +18,7 @@ class Exercise < ApplicationRecord
   def create_submission
     # muisto: self.code = code.gsub(%r{\/\/\sBEGIN SOLUTION\n(.*?\n)*\/\/\sEND SOLUTION}, '')
 
-    FileUtils.cp_r 'submission_generation/Submission/', "submission_generation/tmp/Submission_#{id}/"
+    FileUtils.cp_r 'submission_generation/SubmissionTemplate/', "submission_generation/tmp/Submission_#{id}/"
 
     write_to_file("submission_generation/tmp/Submission_#{id}/src/Submission.java", MainClassGenerator.new, 'Submission')
     write_to_file("submission_generation/tmp/Submission_#{id}/test/SubmissionTest.java", TestGenerator.new, 'Submission')
