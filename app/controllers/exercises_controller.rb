@@ -18,7 +18,12 @@ class ExercisesController < ApplicationController
 
   # POST /exercises
   def create
-    @exercise = current_user.exercises.new(exercise_params)
+    @exercise = Exercise.find_or_initialize_by(user: current_user, assignment_id: params[:assignment_id])
+    @exercise.attributes = exercise_params
+
+    return render_error_page(status: 409, text: 'Assignment already being processed') if @exercise.in_progress?
+
+    @exercise.status_undefined!
     @exercise.sandbox_results = { status: '', message: '', passed: true, model_results_received: false, stub_results_received: false }
 
     if @exercise.save

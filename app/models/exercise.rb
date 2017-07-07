@@ -136,4 +136,8 @@ class Exercise < ApplicationRecord
       end
     end
   end
+
+  def in_progress?
+    %i[saved testing_stub testing_model_solution].include?(status)
+  end
 end
