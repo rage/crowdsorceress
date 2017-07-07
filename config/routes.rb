@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  resources :peer_review_question_answers
+  resources :peer_review_questions
+  resources :peer_reviews
   resources :assignments
   resources :users
   resources :exercise_types
