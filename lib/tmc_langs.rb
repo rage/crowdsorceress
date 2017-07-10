@@ -7,7 +7,7 @@ class TMCLangs
   end
 
   def self.prepare_solutions(exercise)
-    `java -jar #{langs_path.to_s} prepare-solutions --exercisePath #{Rails.root.join('submission_generation', 'tmp', "Submission_#{exercise.id}")} \
+    `java -jar #{langs_path.to_s} prepare-solutions --exercisePath #{Rails.root.join('submission_generation', 'tmp', "Submission_#{exercise.id}").to_s} \
 --outputPath ./submission_generation/tmp/Submission_#{exercise.id}/model/`
   end
 

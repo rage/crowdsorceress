@@ -44,9 +44,9 @@ class ApplicationController < ActionController::API
     raise ApplicationController::NotAuthorized unless admin? || current_user == user
   end
 
-  def info_for_paper_trail
-    { ip: request.remote_ip }
-  end
+  # def info_for_paper_trail
+  #   { ip: request.remote_ip }
+  # end
 
   private
 

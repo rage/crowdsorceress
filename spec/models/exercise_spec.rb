@@ -45,10 +45,10 @@ RSpec.describe Exercise, type: :model do
                                                                   'message' => 'ComparisonFailure: expected:<Hello[lolled]> but was: <Hello [lol]>',
                                                                   'valgrindFailed' => false, 'points' => ['01-11'],
                                                                   'exception' => ['expected:<Hello[lolled]> but was: <Hello [lol]>'] }],
-                                              'logs' => { 'stdout' => [109, 111, 105, 10], 'stderr' => [] } }, 'MODEL_KISSA')
+                                              'logs' => { 'stdout' => [109, 111, 105, 10], 'stderr' => [] } }, 'MODEL')
         # Handle stubs results
         exercise.handle_results('finished', { 'status' => 'COMPILE_FAILED', 'testResults' => [],
-                                              'logs' => { 'stdout' => StdoutExample.new.example, 'stderr' => [] } }, 'KISSA_STUB')
+                                              'logs' => { 'stdout' => StdoutExample.new.example, 'stderr' => [] } }, 'STUB')
 
         expect(exercise.sandbox_results[:passed]).to be(false)
         expect(exercise.sandbox_results[:status]).not_to be('finished')

@@ -7,6 +7,8 @@ class Exercise < ApplicationRecord
   require 'zip'
   require 'tmc_langs'
 
+  has_paper_trail
+
   validates :description, presence: true
   validates :testIO, presence: true
   validates :code, presence: true
@@ -16,15 +18,15 @@ class Exercise < ApplicationRecord
   enum status: %i[status_undefined saved testing_stub testing_model_solution finished error]
 
   def create_submission
-    if !Dir.exist?(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}"))
-    then FileUtils.cp_r Rails.root.join('submission_generation', 'SubmissionTemplate'), Rails.root.join('submission_generation', 'tmp', "Submission_#{id}/")
+    if !Dir.exist?(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}").to_s)
+    then FileUtils.cp_r Rails.root.join('submission_generation', 'SubmissionTemplate').to_s, Rails.root.join('submission_generation', 'tmp', "Submission_#{id}/").to_s
     else
-      FileUtils.remove_dir(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", 'model'))
-      FileUtils.remove_dir(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", 'stub'))
+      FileUtils.remove_dir(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", 'model').to_s)
+      FileUtils.remove_dir(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", 'stub').to_s)
     end
 
-    write_to_file(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", 'src', 'Submission.java'), MainClassGenerator.new, 'Submission')
-    write_to_file(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", 'test', 'SubmissionTest.java'), TestGenerator.new, 'Submission')
+    write_to_file(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", 'src', 'Submission.java').to_s, MainClassGenerator.new, 'Submission')
+    write_to_file(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", 'test', 'SubmissionTest.java').to_s, TestGenerator.new, 'Submission')
 
     create_model_solution_and_stub
   end
@@ -103,11 +105,19 @@ class Exercise < ApplicationRecord
       sandbox_results[:message] += ' Malliratkaisun tulokset: '
       sandbox_results[:model_results_received] = true
     end
-    sandbox_results[:message] += if sandbox_status == 'finished' && passed then 'Kaikki OK.'
-                                 elsif sandbox_status == 'finished' && compiled && token == 'MODEL' then 'Testit eivät menneet läpi.'
-                                 else
-                                   'Koodi ei kääntynyt.'
-                                 end
+
+    if token == 'MODEL'
+      sandbox_results[:message] += if sandbox_status == 'finished' && passed then 'Kaikki OK.'
+                                   elsif sandbox_status == 'finished' && compiled then 'Testit eivät menneet läpi.'
+                                   else
+                                     'Koodi ei kääntynyt.'
+                                   end
+    elsif token == 'STUB'
+      sandbox_results[:message] += if sandbox_status == 'finished' && compiled then 'Kaikki OK.'
+                                   else
+                                     'Koodi ei kääntynyt.'
+                                   end
+    end
   end
 
   def send_results_to_frontend(status, progress, passed)
@@ -122,28 +132,28 @@ class Exercise < ApplicationRecord
   end
 
   def clean_up
-    if File.exist?("./submission_generation/packages/Stub_#{id}.zip")
-      FileUtils.rm("./submission_generation/packages/Stub_#{id}.zip")
+    version_number = versions.last.id
+    if !Dir.exist?(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}").to_s)
+      Dir.mkdir(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}").to_s)
     end
 
-    if File.exist?("./submission_generation/packages/ModelSolution_#{id}.zip")
-      FileUtils.rm("./submission_generation/packages/ModelSolution_#{id}.zip")
-    end
+    Dir.mkdir(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}", "exercise_#{id}"))
 
-    create_zip("./submission_generation/packages/Stub_#{id}.zip", 'stub')
-    create_zip("./submission_generation/packages/ModelSolution_#{id}.zip", 'model')
+    create_zip(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}", "exercise_#{id}", "Stub_#{id}_v_#{version_number}.zip").to_s, 'stub')
+    create_zip(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}", "exercise_#{id}", "ModelSolution_#{id}_v_#{version_number}.zip").to_s, 'model')
 
-    FileUtils.remove_dir("./submission_generation/tmp/Submission_#{id}")
+    FileUtils.remove_dir(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}").to_s)
   end
 
   def create_zip(zipfile_name, file)
-    input_files = ['lib/testrunner/tmc-junit-runner.jar', 'lib/edu-test-utils-0.4.2.jar', 'lib/junit-4.10.jar',
-                   'nbproject/build-impl.xml', 'nbproject/genfiles.properties', 'nbproject/project.properties',
-                   'nbproject/project.xml', 'src/Submission.java', 'test/SubmissionTest.java', 'build.xml']
+    input_files = ['/lib/testrunner/tmc-junit-runner.jar', '/lib/edu-test-utils-0.4.2.jar', '/lib/junit-4.10.jar',
+                   '/nbproject/build-impl.xml', '/nbproject/genfiles.properties', '/nbproject/project.properties',
+                   '/nbproject/project.xml', '/src/Submission.java', '/test/SubmissionTest.java', '/build.xml']
 
     Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
       input_files.each do |name|
-        zipfile.add(name, "./submission_generation/tmp/Submission_#{id}/#{file}/" + name)
+        zipfile.add(name, Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", "#{file}", "#{name}").to_s)
+        byebug
       end
     end
   end

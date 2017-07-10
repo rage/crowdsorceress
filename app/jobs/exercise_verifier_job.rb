@@ -23,8 +23,11 @@ class ExerciseVerifierJob < ApplicationJob
   def create_tar_files(exercise)
     exercise.create_submission
 
-    `cd ./submission_generation/tmp/Submission_#{exercise.id}/model/ && tar -cpf ../../../packages/ModelSolutionPackage_#{exercise.id}.tar * && cd ../../../..`
-    `cd ./submission_generation/tmp/Submission_#{exercise.id}/stub/ && tar -cpf ../../../packages/StubPackage_#{exercise.id}.tar * && cd ../../../..`
+    `cd #{Rails.root.join('submission_generation', 'tmp', "Submission_#{exercise.id}", 'model').to_s} && tar -cpf \
+#{Rails.root.join('submission_generation', 'packages', "ModelSolutionPackage_#{exercise.id}.tar").to_s} *`
+
+    `cd #{Rails.root.join('submission_generation', 'tmp', "Submission_#{exercise.id}", 'stub').to_s} && tar -cpf \
+#{Rails.root.join('submission_generation', 'packages', "StubPackage_#{exercise.id}.tar").to_s} *`
   end
 
   def send_exercise_to_sandbox(exercise)
@@ -44,7 +47,7 @@ class ExerciseVerifierJob < ApplicationJob
 
     token == 'STUB' ? exercise.testing_stub! : exercise.testing_model_solution!
 
-    File.open(Rails.root.join('submission_generation', 'packages', package_name), 'r') do |tar_file|
+    File.open(Rails.root.join('submission_generation', 'packages', package_name).to_s, 'r') do |tar_file|
       sandbox_post(tar_file, exercise, token)
     end
   end
