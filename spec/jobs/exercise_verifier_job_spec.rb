@@ -17,7 +17,7 @@ RSpec.describe ExerciseVerifierJob, type: :job do
     end
 
     it 'sends exercise to backend' do
-      exercise.sandbox_results = { status: '', message: '', passed: true,
+      exercise.sandbox_results = { status: '', message: '', passed: false,
                                    model_results_received: false, stub_results_received: false }
 
       ExerciseVerifierJob.perform_now(exercise)

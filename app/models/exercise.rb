@@ -6,8 +6,9 @@ class Exercise < ApplicationRecord
 
   require 'zip'
   require 'tmc_langs'
+  require 'sandbox_results_handler'
 
-  has_paper_trail
+  has_paper_trail ignore: %i[updated_at status error_messages sandbox_results]
 
   validates :description, presence: true
   validates :testIO, presence: true
@@ -19,7 +20,8 @@ class Exercise < ApplicationRecord
 
   def create_submission
     if !Dir.exist?(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}").to_s)
-    then FileUtils.cp_r Rails.root.join('submission_generation', 'SubmissionTemplate').to_s, Rails.root.join('submission_generation', 'tmp', "Submission_#{id}/").to_s
+    then FileUtils.cp_r Rails.root.join('submission_generation', 'SubmissionTemplate').to_s,
+                        Rails.root.join('submission_generation', 'tmp', "Submission_#{id}").to_s
     else
       FileUtils.remove_dir(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", 'model').to_s)
       FileUtils.remove_dir(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", 'stub').to_s)
@@ -46,77 +48,11 @@ class Exercise < ApplicationRecord
   end
 
   def handle_results(sandbox_status, test_output, token)
-    exercise_errors(test_output, token)
-    generate_data_for_frontend(sandbox_status, test_output, token)
+    SandboxResultsHandler.new(self).handle(sandbox_status, test_output, token)
 
     if sandbox_results[:model_results_received] && sandbox_results[:stub_results_received]
     then send_results_to_frontend(sandbox_results[:status], 1, sandbox_results[:passed])
     else send_results_to_frontend('in progress', 0.8, false)
-    end
-  end
-
-  def generate_data_for_frontend(sandbox_status, test_output, token)
-    generate_message(sandbox_status, test_output['status'] == 'PASSED', test_output['status'] != 'COMPILE_FAILED', token)
-
-    # Status will be 'finished' if both stub results and model solution results are finished in sandbox
-    if sandbox_results[:status] == '' || sandbox_results[:status] == 'finished'
-      sandbox_results[:status] = sandbox_status
-    end
-
-    # Model solution is passed if test results are passed
-    sandbox_results[:passed] = true unless test_output['status'] != 'PASSED'
-
-    # Update exercise's sandbox_results
-    save!
-  end
-
-  def exercise_errors(test_output, token)
-    test_results(test_output) if token == 'MODEL'
-    compile_errors(test_output, token)
-  end
-
-  def test_results(test_output)
-    # Push test results into exercise's error messages
-    return if test_output['testResults'].empty? || test_output['testResults'].first['successful']
-    error_messages.push 'Virheet testeissä: '
-    test_output['testResults'].each do |e|
-      error_messages.push e['message']
-    end
-  end
-
-  def compile_errors(test_output, token)
-    # Push compile errors into exercise's error messages
-    return unless test_output['status'] == 'COMPILE_FAILED'
-
-    token == 'STUB' ? (error_messages.push 'Tehtäväpohja ei kääntynyt: ') : (error_messages.push 'Malliratkaisu ei kääntynyt: ')
-
-    error_message_lines = test_output['logs']['stdout'].pack('c*').slice(/(?<=do-compile:\n)(.*?\n)*(.*$)/).split(/\n/)
-    error_message_lines.each do |line|
-      error_messages.push line
-    end
-  end
-
-  # Generate message that will be sent to frontend
-  def generate_message(sandbox_status, passed, compiled, token)
-    if token == 'STUB'
-      sandbox_results[:message] += ' Tehtäväpohjan tulokset: '
-      sandbox_results[:stub_results_received] = true
-    else
-      sandbox_results[:message] += ' Malliratkaisun tulokset: '
-      sandbox_results[:model_results_received] = true
-    end
-
-    if token == 'MODEL'
-      sandbox_results[:message] += if sandbox_status == 'finished' && passed then 'Kaikki OK.'
-                                   elsif sandbox_status == 'finished' && compiled then 'Testit eivät menneet läpi.'
-                                   else
-                                     'Koodi ei kääntynyt.'
-                                   end
-    elsif token == 'STUB'
-      sandbox_results[:message] += if sandbox_status == 'finished' && compiled then 'Kaikki OK.'
-                                   else
-                                     'Koodi ei kääntynyt.'
-                                   end
     end
   end
 
@@ -132,28 +68,32 @@ class Exercise < ApplicationRecord
   end
 
   def clean_up
-    version_number = versions.last.id
-    if !Dir.exist?(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}").to_s)
-      Dir.mkdir(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}").to_s)
-    end
+    create_directories_for_zips
 
-    Dir.mkdir(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}", "exercise_#{id}"))
-
-    create_zip(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}", "exercise_#{id}", "Stub_#{id}_v_#{version_number}.zip").to_s, 'stub')
-    create_zip(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}", "exercise_#{id}", "ModelSolution_#{id}_v_#{version_number}.zip").to_s, 'model')
+    create_zip(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}",
+                               "exercise_#{id}", "Stub_#{id}.#{versions.last.id}.zip").to_s, 'stub')
+    create_zip(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}",
+                               "exercise_#{id}", "ModelSolution_#{id}.#{versions.last.id}.zip").to_s, 'model')
 
     FileUtils.remove_dir(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}").to_s)
   end
 
+  def create_directories_for_zips
+    return if Dir.exist?(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}").to_s)
+    Dir.mkdir(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}").to_s)
+
+    return if Dir.exist?(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}", "exercise_#{id}").to_s)
+    Dir.mkdir(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}", "exercise_#{id}"))
+  end
+
   def create_zip(zipfile_name, file)
-    input_files = ['/lib/testrunner/tmc-junit-runner.jar', '/lib/edu-test-utils-0.4.2.jar', '/lib/junit-4.10.jar',
-                   '/nbproject/build-impl.xml', '/nbproject/genfiles.properties', '/nbproject/project.properties',
-                   '/nbproject/project.xml', '/src/Submission.java', '/test/SubmissionTest.java', '/build.xml']
+    input_files = ['lib/testrunner/tmc-junit-runner.jar', 'lib/edu-test-utils-0.4.2.jar', 'lib/junit-4.10.jar',
+                   'nbproject/build-impl.xml', 'nbproject/genfiles.properties', 'nbproject/project.properties',
+                   'nbproject/project.xml', 'src/Submission.java', 'test/SubmissionTest.java', 'build.xml']
 
     Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
       input_files.each do |name|
-        zipfile.add(name, Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", "#{file}", "#{name}").to_s)
-        byebug
+        zipfile.add(name, Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", file.to_s, name.to_s).to_s)
       end
     end
   end

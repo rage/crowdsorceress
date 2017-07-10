@@ -17,7 +17,28 @@ class ExerciseVerifierJob < ApplicationJob
       return
     end
 
-    send_exercise_to_sandbox(exercise)
+    if !exercise_modified?(exercise)
+      exercise.error_messages.push('Tapahtui virhe: Muokkaamaton tehtävä lähetettiin uudelleen')
+      SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{exercise.user_id}_exercise:_#{exercise.id}",
+                                           JSON[{ 'status' => 'error', 'message' => 'Tee tehtävään jotain muutoksia!',
+                                                  'progress' => 1, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
+      exercise.error!
+    else
+      send_exercise_to_sandbox(exercise)
+    end
+  end
+
+  def exercise_modified?(exercise)
+    if Dir.exist?(Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment.id}")) &&
+       Dir.exist?(Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment.id}", "exercise_#{exercise.id}"))
+      if Dir.entries(Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment.id}",
+                                     "exercise_#{exercise.id}")).include?("ModelSolution_#{exercise.id}.#{exercise.versions.last.id}.zip") ||
+         Dir.entries(Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment.id}",
+                                     "exercise_#{exercise.id}")).include?("Stub_#{exercise.id}.#{exercise.versions.last.id}.zip")
+        then return false
+      end
+    end
+    true
   end
 
   def create_tar_files(exercise)
