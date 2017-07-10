@@ -2,6 +2,7 @@
 
 class PeerReviewsController < ApplicationController
   before_action :set_peer_review, only: %i[show update destroy]
+  before_action :ensure_signed_in!, only: %i[create]
 
   # GET /peer_reviews
   def index
@@ -17,12 +18,22 @@ class PeerReviewsController < ApplicationController
 
   # POST /peer_reviews
   def create
-    @peer_review = PeerReview.new(peer_review_params)
+    @exercise = current_user.exercises.find_by!(assignment_id: params[:exercise][:assignment_id])
 
-    if @peer_review.save
-      render json: @peer_review, status: :created, location: @peer_review
-    else
-      render json: @peer_review.errors, status: :unprocessable_entity
+    @peer_review = current_user.peer_reviews.find_or_initialize_by(exercise: @exercise, comment: params[:peer_review][:comment])
+
+    PeerReview.transaction do
+      if @peer_review.save
+        render json: @peer_review, status: :created, location: @peer_review
+
+        @reviews = params[:peer_review][:answers]
+
+        @questions = @exercise.assignment.exercise_type.peer_review_questions
+
+        @questions.each { |q| @peer_review.peer_review_question_answers.create! peer_review_question: q, grade: @reviews[q.question] }
+      else
+        render json: @peer_review.errors, status: :unprocessable_entity
+      end
     end
   end
 
@@ -49,6 +60,6 @@ class PeerReviewsController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def peer_review_params
-    params.require(:peer_review).permit(:user_id, :exercise_id, :comment)
+    params.require(:peer_review).permit(:exercise_id, :comment, :answers)
   end
 end

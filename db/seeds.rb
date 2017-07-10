@@ -16,3 +16,9 @@ Assignment.create description: 'Tulosta tekoäly', exercise_type: type2
 
 type3 = ExerciseType.create name: 'string_stdout'
 Assignment.create description: 'Käytä tekoäly', exercise_type: type3
+a = Assignment.create description: 'Luo tekoäly', exercise_type: type
+Exercise.create code: 'int luku = 1; \n String kissa = \"koira \"; \n return \"Palautusarvo \" ', assignment: a, testIO: { input: 'Hello', output: 'Hello testi'}
+PeerReviewQuestion.create question: 'Tehtävänannon mielekkyys', exercise_type: type
+PeerReviewQuestion.create question: 'Testien kattavuus', exercise_type: type
+PeerReviewQuestion.create question: 'Tehtävänannon selkeys', exercise_type: type
+PeerReviewQuestion.create question: 'Epätodennäköisen pitkä ja luultavasti vaikeasti ymmärrettävä vertaisarviointikysymys', exercise_type: type
