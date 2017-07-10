@@ -16,17 +16,15 @@ class Exercise < ApplicationRecord
   enum status: %i[status_undefined saved testing_stub testing_model_solution finished error]
 
   def create_submission
-    # muisto: self.code = code.gsub(%r{\/\/\sBEGIN SOLUTION\n(.*?\n)*\/\/\sEND SOLUTION}, '')
-
-    if !Dir.exist?("submission_generation/tmp/Submission_#{id}/")
-    then FileUtils.cp_r 'submission_generation/SubmissionTemplate/', "submission_generation/tmp/Submission_#{id}/"
+    if !Dir.exist?(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}"))
+    then FileUtils.cp_r Rails.root.join('submission_generation', 'SubmissionTemplate'), Rails.root.join('submission_generation', 'tmp', "Submission_#{id}/")
     else
-      FileUtils.remove_dir("./submission_generation/tmp/Submission_#{id}/model")
-      FileUtils.remove_dir("./submission_generation/tmp/Submission_#{id}/stub")
+      FileUtils.remove_dir(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", 'model'))
+      FileUtils.remove_dir(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", 'stub'))
     end
 
-    write_to_file("submission_generation/tmp/Submission_#{id}/src/Submission.java", MainClassGenerator.new, 'Submission')
-    write_to_file("submission_generation/tmp/Submission_#{id}/test/SubmissionTest.java", TestGenerator.new, 'Submission')
+    write_to_file(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", 'src', 'Submission.java'), MainClassGenerator.new, 'Submission')
+    write_to_file(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", 'test', 'SubmissionTest.java'), TestGenerator.new, 'Submission')
 
     create_model_solution_and_stub
   end
@@ -64,20 +62,20 @@ class Exercise < ApplicationRecord
     end
 
     # Model solution is passed if test results are passed
-    sandbox_results[:passed] = false unless test_output['status'] == 'PASSED'
+    sandbox_results[:passed] = true unless test_output['status'] != 'PASSED'
 
     # Update exercise's sandbox_results
     save!
   end
 
   def exercise_errors(test_output, token)
-    test_results(test_output) if token == 'MODEL_KISSA'
+    test_results(test_output) if token == 'MODEL'
     compile_errors(test_output, token)
   end
 
   def test_results(test_output)
     # Push test results into exercise's error messages
-    return if test_output['testResults'].empty?
+    return if test_output['testResults'].empty? || test_output['testResults'].first['successful']
     error_messages.push 'Virheet testeissä: '
     test_output['testResults'].each do |e|
       error_messages.push e['message']
@@ -88,7 +86,7 @@ class Exercise < ApplicationRecord
     # Push compile errors into exercise's error messages
     return unless test_output['status'] == 'COMPILE_FAILED'
 
-    token == 'KISSA_STUB' ? (error_messages.push 'Tehtäväpohja ei kääntynyt: ') : (error_messages.push 'Malliratkaisu ei kääntynyt: ')
+    token == 'STUB' ? (error_messages.push 'Tehtäväpohja ei kääntynyt: ') : (error_messages.push 'Malliratkaisu ei kääntynyt: ')
 
     error_message_lines = test_output['logs']['stdout'].pack('c*').slice(/(?<=do-compile:\n)(.*?\n)*(.*$)/).split(/\n/)
     error_message_lines.each do |line|
@@ -98,7 +96,7 @@ class Exercise < ApplicationRecord
 
   # Generate message that will be sent to frontend
   def generate_message(sandbox_status, passed, compiled, token)
-    if token == 'KISSA_STUB'
+    if token == 'STUB'
       sandbox_results[:message] += ' Tehtäväpohjan tulokset: '
       sandbox_results[:stub_results_received] = true
     else
@@ -106,7 +104,7 @@ class Exercise < ApplicationRecord
       sandbox_results[:model_results_received] = true
     end
     sandbox_results[:message] += if sandbox_status == 'finished' && passed then 'Kaikki OK.'
-                                 elsif sandbox_status == 'finished' && compiled && token == 'MODEL_KISSA' then 'Testit eivät menneet läpi.'
+                                 elsif sandbox_status == 'finished' && compiled && token == 'MODEL' then 'Testit eivät menneet läpi.'
                                  else
                                    'Koodi ei kääntynyt.'
                                  end

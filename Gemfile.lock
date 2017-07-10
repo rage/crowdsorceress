@@ -204,7 +204,7 @@ DEPENDENCIES
   rest-client (~> 1.8)
   rspec-mocks (~> 3.4, >= 3.4.1)
   rspec-rails (~> 3.5)
-  rubyzip
+  rubyzip (~> 1.2, >= 1.2.1)
   sidekiq
   simplecov
   spring

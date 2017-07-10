@@ -27,7 +27,7 @@ class ExercisesController < ApplicationController
     return render_error_page(status: 409, text: 'Assignment already being processed') if @exercise.in_progress?
 
     @exercise.status_undefined!
-    @exercise.sandbox_results = { status: '', message: '', passed: true, model_results_received: false, stub_results_received: false }
+    @exercise.sandbox_results = { status: '', message: '', passed: false, model_results_received: false, stub_results_received: false }
 
     if @exercise.save
       ExerciseVerifierJob.perform_later @exercise

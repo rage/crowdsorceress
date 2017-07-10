@@ -31,10 +31,10 @@ class ExerciseVerifierJob < ApplicationJob
     create_tar_files(exercise)
 
     # Send stub to sandbox
-    send_package_to_sandbox('Testataan tehtäväpohjaa', 0.3, exercise, 'KISSA_STUB', "StubPackage_#{exercise.id}.tar")
+    send_package_to_sandbox('Testataan tehtäväpohjaa', 0.3, exercise, 'STUB', "StubPackage_#{exercise.id}.tar")
 
     # Send model solution to sandbox
-    send_package_to_sandbox('Testataan malliratkaisua', 0.6, exercise, 'MODEL_KISSA', "ModelSolutionPackage_#{exercise.id}.tar")
+    send_package_to_sandbox('Testataan malliratkaisua', 0.6, exercise, 'MODEL', "ModelSolutionPackage_#{exercise.id}.tar")
   end
 
   def send_package_to_sandbox(message, progress, exercise, token, package_name)
@@ -42,9 +42,9 @@ class ExerciseVerifierJob < ApplicationJob
                                          JSON[{ 'status' => 'in progress', 'message' => message, 'progress' => progress,
                                                 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
 
-    token == 'KISSA_STUB' ? exercise.testing_stub! : exercise.testing_model_solution!
+    token == 'STUB' ? exercise.testing_stub! : exercise.testing_model_solution!
 
-    File.open('./submission_generation/packages/' + package_name, 'r') do |tar_file|
+    File.open(Rails.root.join('submission_generation', 'packages', package_name), 'r') do |tar_file|
       sandbox_post(tar_file, exercise, token)
     end
   end

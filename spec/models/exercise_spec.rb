@@ -36,7 +36,7 @@ RSpec.describe Exercise, type: :model do
            // BEGIN SOLUTION
            return "Hello " + input;
            // END SOLUTION'
-        exercise.sandbox_results = { status: '', message: '', passed: true,
+        exercise.sandbox_results = { status: '', message: '', passed: false,
                                      model_results_received: false, stub_results_received: false }
 
         # Handle model solutions results
