@@ -38,9 +38,9 @@ class MainClassGenerator
     end
 
     input_output_code = <<~eos
-    public static #{output_type} metodi(#{input_type} input) {
-        #{exercise.code}
-    }
+      public static #{output_type} metodi(#{input_type} input) {
+          #{exercise.code}
+      }
 eos
 
     format(TEMPLATE, class_name: class_name, input_output_code: input_output_code, code: '')

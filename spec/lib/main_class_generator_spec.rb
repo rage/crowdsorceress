@@ -6,7 +6,7 @@ TEMPLATE = <<~eos
   public class DoesThisEvenCompile {
 
     public static void main(String[] args) {
-      
+
     }
 
     public static %<IOtype>s metodi(%<IOtype>s input) {
