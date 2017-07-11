@@ -82,8 +82,9 @@ class Exercise < ApplicationRecord
   end
 
   def create_directories_for_zips
-    return if Dir.exist?(assignment_target_path.to_s)
-    Dir.mkdir(assignment_target_path.to_s)
+    unless Dir.exist?(assignment_target_path.to_s)
+      Dir.mkdir(assignment_target_path.to_s)
+    end
 
     return if Dir.exist?(assignment_target_path.join("exercise_#{id}").to_s)
     Dir.mkdir(assignment_target_path.join("exercise_#{id}").to_s)

@@ -11,7 +11,8 @@ TEMPLATE = <<~eos
 
     public static %<IOtype>s metodi(%<IOtype>s input) {
       %<code>s
-    }
+  }
+
   }
 eos
 
