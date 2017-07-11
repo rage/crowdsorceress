@@ -1,0 +1,4 @@
+#!/bin/sh
+git submodule update --init --recursive
+cd ext/tmc-langs
+mvn package -DskipTests=true

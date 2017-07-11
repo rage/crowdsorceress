@@ -22,9 +22,8 @@ vendor/bundle
 coverage/
 .idea/
 
+submission_generation/packages/*
+!submission_generation/packages/.gitkeep
 
-ModelSolution/src/ModelSolution.java
-ModelSolution/test/ModelSolutionTest.java
-Stub/src/Stub.java
-ModelSolutionPackage.tar
-StubPackage.tar
+submission_generation/tmp/*
+!submission_generation/tmp/.gitkeep

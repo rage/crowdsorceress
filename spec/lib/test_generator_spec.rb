@@ -7,8 +7,11 @@ TEST_TEMPLATE = <<~eos
   import static org.junit.Assert.assertEquals;
   import org.junit.Test;
 
+
   @Points("01-11")
   public class DoesThisEvenCompileTest {
+
+
 
     public DoesThisEvenCompileTest() {
 

@@ -53,9 +53,11 @@ gem 'oauth2', '~> 1.2'
 
 gem 'sidekiq'
 
-gem 'minitar', '~> 0.6.1'
+gem 'rubyzip', '~> 1.2', '>= 1.2.1'
 
 gem 'http-cookie', '~> 1.0', '>= 1.0.3'
 gem 'mime-types'
 gem 'netrc', '~> 0.11.0'
 gem 'rest-client', '~> 1.8'
+
+gem 'paper_trail'

@@ -3,17 +3,18 @@
 require 'rails_helper'
 
 TEMPLATE = <<~eos
-  public class DoesThisEvenCompile {
+public class DoesThisEvenCompile {
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
 
-    }
-
-    public static %<IOtype>s metodi(%<IOtype>s input) {
-      %<code>s
-    }
   }
-eos
+
+  public static %<IOtype>s metodi(%<IOtype>s input) {
+  %<code>s
+ }
+
+}
+  eos
 
 RSpec.describe MainClassGenerator do
   describe 'Input to output generator' do

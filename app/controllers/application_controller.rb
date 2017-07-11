@@ -20,6 +20,10 @@ class ApplicationController < ActionController::API
     render_error_page(status: 401, text: 'Please log in')
   end
 
+  rescue_from ActiveRecord::RecordNotFound do |ex|
+    render_error_page(status: 400, text: ex.message)
+  end
+
   def ensure_signed_in!
     return if current_user
 
@@ -42,10 +46,6 @@ class ApplicationController < ActionController::API
 
   def only_user_and_admins!(user)
     raise ApplicationController::NotAuthorized unless admin? || current_user == user
-  end
-
-  def info_for_paper_trail
-    { ip: request.remote_ip }
   end
 
   private
