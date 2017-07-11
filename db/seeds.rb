@@ -10,3 +10,6 @@
 
 type = ExerciseType.create name: 'string_string'
 Assignment.create description: 'Luo tekoäly', exercise_type: type
+
+type2 = ExerciseType.create name: 'stdin_stdout'
+Assignment.create description: 'Tulosta tekoäly', exercise_type: type2

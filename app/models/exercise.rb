@@ -79,8 +79,9 @@ class Exercise < ApplicationRecord
   end
 
   def create_directories_for_zips
-    return if Dir.exist?(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}").to_s)
-    Dir.mkdir(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}").to_s)
+    if !Dir.exist?(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}").to_s)
+      Dir.mkdir(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}").to_s)
+    end
 
     return if Dir.exist?(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}", "exercise_#{id}").to_s)
     Dir.mkdir(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}", "exercise_#{id}"))
