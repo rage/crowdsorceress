@@ -29,13 +29,12 @@ class ExerciseVerifierJob < ApplicationJob
   end
 
   def exercise_modified?(exercise)
-    if Dir.exist?(Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment.id}")) &&
-       Dir.exist?(Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment.id}", "exercise_#{exercise.id}"))
-      if Dir.entries(Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment.id}",
-                                     "exercise_#{exercise.id}")).include?("ModelSolution_#{exercise.id}.#{exercise.versions.last.id}.zip") ||
-         Dir.entries(Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment.id}",
-                                     "exercise_#{exercise.id}")).include?("Stub_#{exercise.id}.#{exercise.versions.last.id}.zip")
-        then return false
+    if Dir.exist?(assignment_target_path(exercise)) && Dir.exist?(assignment_target_path(exercise).join("exercise_#{exercise.id}"))
+      if Dir.entries(assignment_target_path(exercise).join("exercise_#{exercise.id}"))
+            .include?("ModelSolution_#{exercise.id}.#{exercise.versions.last.id}.zip") ||
+         Dir.entries(assignment_target_path(exercise).join("exercise_#{exercise.id}"))
+            .include?("Stub_#{exercise.id}.#{exercise.versions.last.id}.zip")
+      then return false
       end
     end
     true
@@ -44,11 +43,8 @@ class ExerciseVerifierJob < ApplicationJob
   def create_tar_files(exercise)
     exercise.create_submission
 
-    `cd #{Rails.root.join('submission_generation', 'tmp', "Submission_#{exercise.id}", 'model').to_s} && tar -cpf \
-#{Rails.root.join('submission_generation', 'packages', "ModelSolutionPackage_#{exercise.id}.tar").to_s} *`
-
-    `cd #{Rails.root.join('submission_generation', 'tmp', "Submission_#{exercise.id}", 'stub').to_s} && tar -cpf \
-#{Rails.root.join('submission_generation', 'packages', "StubPackage_#{exercise.id}.tar").to_s} *`
+    `cd #{tmp_submission_target_path(exercise).join('model').to_s} && tar -cpf #{packages_target_path.join("ModelSolutionPackage_#{exercise.id}.tar").to_s} *`
+    `cd #{tmp_submission_target_path(exercise).join('stub').to_s} && tar -cpf #{packages_target_path.join("StubPackage_#{exercise.id}.tar").to_s} *`
   end
 
   def send_exercise_to_sandbox(exercise)
@@ -68,7 +64,7 @@ class ExerciseVerifierJob < ApplicationJob
 
     token == 'STUB' ? exercise.testing_stub! : exercise.testing_model_solution!
 
-    File.open(Rails.root.join('submission_generation', 'packages', package_name).to_s, 'r') do |tar_file|
+    File.open(packages_target_path.join(package_name).to_s, 'r') do |tar_file|
       sandbox_post(tar_file, exercise, token)
     end
   end
@@ -93,5 +89,17 @@ class ExerciseVerifierJob < ApplicationJob
 
   def results_url(exercise)
     "#{ENV['BASE_URL']}/exercises/#{exercise.id}/results"
+  end
+
+  def assignment_target_path(exercise)
+    Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment.id}")
+  end
+
+  def packages_target_path
+    Rails.root.join('submission_generation', 'packages')
+  end
+
+  def tmp_submission_target_path(exercise)
+    Rails.root.join('submission_generation', 'tmp', "Submission_#{exercise.id}")
   end
 end

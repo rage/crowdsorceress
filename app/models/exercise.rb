@@ -18,17 +18,22 @@ class Exercise < ApplicationRecord
 
   enum status: %i[status_undefined saved testing_stub testing_model_solution finished error]
 
+  def reset!
+    self.error_messages = []
+    status_undefined!
+    self.sandbox_results = { status: '', message: '', passed: false, model_results_received: false, stub_results_received: false }
+  end
+
   def create_submission
-    if !Dir.exist?(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}").to_s)
-    then FileUtils.cp_r Rails.root.join('submission_generation', 'SubmissionTemplate').to_s,
-                        Rails.root.join('submission_generation', 'tmp', "Submission_#{id}").to_s
+    if !Dir.exist?(submission_target_path.to_s)
+    then FileUtils.cp_r Rails.root.join('submission_generation', 'SubmissionTemplate').to_s, submission_target_path.to_s
     else
-      FileUtils.remove_dir(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", 'model').to_s)
-      FileUtils.remove_dir(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", 'stub').to_s)
+      FileUtils.remove_dir(submission_target_path.join('model').to_s)
+      FileUtils.remove_dir(submission_target_path.join('stub').to_s)
     end
 
-    write_to_file(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", 'src', 'Submission.java').to_s, MainClassGenerator.new, 'Submission')
-    write_to_file(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", 'test', 'SubmissionTest.java').to_s, TestGenerator.new, 'Submission')
+    write_to_file(submission_target_path.join('src', 'Submission.java').to_s, MainClassGenerator.new, 'Submission')
+    write_to_file(submission_target_path.join('test', 'SubmissionTest.java').to_s, TestGenerator.new, 'Submission')
 
     create_model_solution_and_stub
   end
@@ -70,20 +75,18 @@ class Exercise < ApplicationRecord
   def clean_up
     create_directories_for_zips
 
-    create_zip(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}",
-                               "exercise_#{id}", "Stub_#{id}.#{versions.last.id}.zip").to_s, 'stub')
-    create_zip(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}",
-                               "exercise_#{id}", "ModelSolution_#{id}.#{versions.last.id}.zip").to_s, 'model')
+    create_zip(assignment_target_path.join("exercise_#{id}", "Stub_#{id}.#{versions.last.id}.zip").to_s, 'stub')
+    create_zip(assignment_target_path.join("exercise_#{id}", "ModelSolution_#{id}.#{versions.last.id}.zip").to_s, 'model')
 
-    FileUtils.remove_dir(Rails.root.join('submission_generation', 'tmp', "Submission_#{id}").to_s)
+    FileUtils.remove_dir(submission_target_path.to_s)
   end
 
   def create_directories_for_zips
-    return if Dir.exist?(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}").to_s)
-    Dir.mkdir(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}").to_s)
+    return if Dir.exist?(assignment_target_path.to_s)
+    Dir.mkdir(assignment_target_path.to_s)
 
-    return if Dir.exist?(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}", "exercise_#{id}").to_s)
-    Dir.mkdir(Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}", "exercise_#{id}"))
+    return if Dir.exist?(assignment_target_path.join("exercise_#{id}").to_s)
+    Dir.mkdir(assignment_target_path.join("exercise_#{id}").to_s)
   end
 
   def create_zip(zipfile_name, file)
@@ -93,12 +96,20 @@ class Exercise < ApplicationRecord
 
     Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
       input_files.each do |name|
-        zipfile.add(name, Rails.root.join('submission_generation', 'tmp', "Submission_#{id}", file.to_s, name.to_s).to_s)
+        zipfile.add(name, submission_target_path.join(file.to_s, name.to_s).to_s)
       end
     end
   end
 
   def in_progress?
     %i[saved testing_stub testing_model_solution].include?(status)
+  end
+
+  def assignment_target_path
+    Rails.root.join('submission_generation', 'packages', "assignment_#{assignment.id}")
+  end
+
+  def submission_target_path
+    Rails.root.join('submission_generation', 'tmp', "Submission_#{id}")
   end
 end

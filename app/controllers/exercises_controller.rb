@@ -3,6 +3,7 @@
 class ExercisesController < ApplicationController
   before_action :set_exercise, only: %i[show update destroy results]
   before_action :ensure_signed_in!, only: %i[create]
+  before_action :set_assignment, only: :create
 
   # GET /exercises
   def index
@@ -18,16 +19,12 @@ class ExercisesController < ApplicationController
 
   # POST /exercises
   def create
-    return render_error_page(status: 400, text: 'Assignment must exist') if params[:exercise][:assignment_id].nil?
-
-    @exercise = Exercise.find_or_initialize_by(user: current_user, assignment_id: params[:exercise][:assignment_id])
+    @exercise = current_user.exercises.find_or_initialize_by(assignment: @assignment)
     @exercise.attributes = exercise_params
-    @exercise.error_messages = []
 
     return render_error_page(status: 409, text: 'Assignment already being processed') if @exercise.in_progress?
 
-    @exercise.status_undefined!
-    @exercise.sandbox_results = { status: '', message: '', passed: false, model_results_received: false, stub_results_received: false }
+    @exercise.reset!
 
     if @exercise.save
       ExerciseVerifierJob.perform_later @exercise
@@ -69,6 +66,10 @@ class ExercisesController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_exercise
     @exercise = Exercise.find(params[:id])
+  end
+
+  def set_assignment
+    @assignment = Assignment.find(params[:exercise][:assignment_id])
   end
 
   # Only allow a trusted parameter "white list" through.
