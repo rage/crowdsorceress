@@ -72,6 +72,10 @@ class TestGenerator
     generate_string(exercise, template_params)
   end
 
+  def string_to_stdout(exercise, class_name)
+
+  end
+
   def input_to_output(exercise, type, class_name) # input and output both exist
     if type == 'string_string'
       input_type = 'String'

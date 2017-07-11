@@ -26,6 +26,16 @@ eos
     format(TEMPLATE, code: exercise.code, class_name: class_name, input_output_code: '')
   end
 
+  def string_to_stdout(exercise, class_name)
+    input_output_code = <<-eos
+    public static void metodi(String input) {
+        #{exercise.code}
+    }
+eos
+
+    format(TEMPLATE, class_name: class_name, input_output_code: input_output_code, code: '')
+  end
+
   def input_to_output(exercise, type, class_name) # input and output both exist
     if type == 'string_string'
       input_type = 'String'
