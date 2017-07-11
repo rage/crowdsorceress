@@ -3,18 +3,18 @@
 require 'rails_helper'
 
 TEMPLATE = <<~eos
-public class DoesThisEvenCompile {
+  public class DoesThisEvenCompile {
 
-  public static void main(String[] args) {
+      public static void main(String[] args) {
+
+      }
+
+      public static %<IOtype>s metodi(%<IOtype>s input) {
+          %<code>s
+      }
 
   }
-
-  public static %<IOtype>s metodi(%<IOtype>s input) {
-  %<code>s
- }
-
-}
-  eos
+eos
 
 RSpec.describe MainClassGenerator do
   describe 'Input to output generator' do
@@ -39,7 +39,10 @@ RSpec.describe MainClassGenerator do
       exercise.assignment.exercise_type.name = 'int_int'
       io = [{ input: '4', output: '5' }]
       exercise.testIO = io
-      exercise.code = 'return 5;'
+      exercise.code = <<~eos
+        int kissa = 6;
+        return 5;
+eos
 
       expect(subject.generate(exercise, 'DoesThisEvenCompile')).to eq(format(TEMPLATE, IOtype: 'int', code: exercise.code))
     end

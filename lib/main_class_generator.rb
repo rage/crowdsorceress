@@ -4,13 +4,13 @@ class MainClassGenerator
   TEMPLATE = <<~eos
     public class %<class_name>s {
 
-      public static void main(String[] args) {
+        public static void main(String[] args) {
     %<code>s
-      }
+        }
 
-      %<input_output_code>s
+    %<input_output_code>s
     }
-  eos
+eos
 
   def generate(exercise, class_name)
     type = exercise.assignment.exercise_type.name
@@ -37,10 +37,10 @@ class MainClassGenerator
       output_type = 'int'
     end
 
-    input_output_code = <<~eos
+    input_output_code = <<-eos
     public static #{output_type} metodi(#{input_type} input) {
-      #{exercise.code}
-     }
+        #{exercise.code}
+    }
 eos
 
     format(TEMPLATE, class_name: class_name, input_output_code: input_output_code, code: '')
