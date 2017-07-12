@@ -2,6 +2,8 @@
 
 class MainClassGenerator
   TEMPLATE = <<~eos
+    import java.util.Scanner;
+
     public class %<class_name>s {
 
         public static void main(String[] args) {
@@ -9,6 +11,7 @@ class MainClassGenerator
         }
 
     %<input_output_code>s
+
     }
 eos
 
@@ -19,6 +22,8 @@ eos
       stdin_to_stdout(exercise, class_name)
     elsif %w[string_string int_int].include?(type)
       input_to_output(exercise, type, class_name)
+    elsif type == 'string_stdout'
+      string_to_stdout(exercise, class_name)
     end
   end
 
@@ -31,6 +36,7 @@ eos
     public static void metodi(String input) {
         #{exercise.code}
     }
+
 eos
 
     format(TEMPLATE, class_name: class_name, input_output_code: input_output_code, code: '')
@@ -51,6 +57,7 @@ eos
     public static #{output_type} metodi(#{input_type} input) {
         #{exercise.code}
     }
+
 eos
 
     format(TEMPLATE, class_name: class_name, input_output_code: input_output_code, code: '')

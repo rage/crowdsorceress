@@ -14,5 +14,5 @@ Assignment.create description: 'Luo tekoäly', exercise_type: type
 type2 = ExerciseType.create name: 'stdin_stdout'
 Assignment.create description: 'Tulosta tekoäly', exercise_type: type2
 
-type3 = ExerciseType.create name: string_stdout
+type3 = ExerciseType.create name: 'string_stdout'
 Assignment.create description: 'Käytä tekoäly', exercise_type: type3

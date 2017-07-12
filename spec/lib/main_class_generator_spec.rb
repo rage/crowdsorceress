@@ -3,15 +3,15 @@
 require 'rails_helper'
 
 TEMPLATE = <<~eos
+  import java.util.Scanner;
+
   public class DoesThisEvenCompile {
 
       public static void main(String[] args) {
-
+  %<code>s
       }
 
-      public static %<IOtype>s metodi(%<IOtype>s input) {
-          %<code>s
-      }
+  %<method>s
 
   }
 eos
@@ -31,8 +31,15 @@ RSpec.describe MainClassGenerator do
       exercise.testIO = io
       exercise.code = 'return "asdasdasd";'
 
+      method = <<-eos
+    public static String metodi(String input) {
+        #{exercise.code}
+    }
+
+eos
+
       expect(subject).to respond_to(:generate).with(2).arguments
-      expect(subject.generate(exercise, 'DoesThisEvenCompile')).to eq(format(TEMPLATE, IOtype: 'String', code: exercise.code))
+      expect(subject.generate(exercise, 'DoesThisEvenCompile')).to eq(format(TEMPLATE, code: '', method: method))
     end
 
     it 'generates a proper main class when ExerciseType is "int_int"' do
@@ -44,7 +51,65 @@ RSpec.describe MainClassGenerator do
         return 5;
 eos
 
-      expect(subject.generate(exercise, 'DoesThisEvenCompile')).to eq(format(TEMPLATE, IOtype: 'int', code: exercise.code))
+      method = <<-eos
+    public static int metodi(int input) {
+        #{exercise.code}
+    }
+
+eos
+
+      expect(subject.generate(exercise, 'DoesThisEvenCompile')).to eq(format(TEMPLATE, code: '', method: method))
+    end
+  end
+
+  describe 'String to stdout generator' do
+    exercise = FactoryGirl.create(:exercise)
+    exercise.assignment.exercise_type.name = 'string_stdout'
+
+    subject { MainClassGenerator.new }
+
+    it 'is valid' do
+      expect(subject).not_to be(nil)
+    end
+
+    it 'generates a proper main class' do
+      io = [{ input: 'asd', output: 'asdasdasd' }]
+      exercise.testIO = io
+      exercise.code = 'System.out.print("jea");'
+
+      method = <<-eos
+    public static void metodi(String input) {
+        #{exercise.code}
+    }
+
+eos
+
+      expect(subject).to respond_to(:generate).with(2).arguments
+      expect(subject.generate(exercise, 'DoesThisEvenCompile')).to eq(format(TEMPLATE, code: '', method: method))
+    end
+  end
+
+  describe 'Stdin to stdout generator' do
+    exercise = FactoryGirl.create(:exercise)
+    exercise.assignment.exercise_type.name = 'stdin_stdout'
+
+    subject { MainClassGenerator.new }
+
+    it 'is valid' do
+      expect(subject).not_to be(nil)
+    end
+
+    it 'generates a proper main class' do
+      io = [{ input: 'asd', output: 'asdasdasd' }]
+      exercise.testIO = io
+      exercise.code = <<~eos
+        Scanner lukija = new Scanner(System.in);
+        String rivi = lukija.nextLine();
+        System.out.print(rivi);
+eos
+
+      expect(subject).to respond_to(:generate).with(2).arguments
+      expect(subject.generate(exercise, 'DoesThisEvenCompile')).to eq(format(TEMPLATE, code: exercise.code, method: ''))
     end
   end
 end
