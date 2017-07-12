@@ -24,6 +24,10 @@ class ApplicationController < ActionController::API
     render_error_page(status: 400, text: ex.message)
   end
 
+  rescue_from ActiveSupport::MessageVerifier::InvalidSignature do
+    render_error_page(status: 400, text: 'Invalid secret token')
+  end
+
   def ensure_signed_in!
     return if current_user
 

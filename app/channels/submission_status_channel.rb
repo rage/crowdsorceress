@@ -15,28 +15,32 @@ class SubmissionStatusChannel < ApplicationCable::Channel
   def receive(data)
     return unless data['ping']
 
-    SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{current_user.id}_exercise:_#{current_exercise.id}", JSON[submission_state(current_exercise)])
+    SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{current_user.id}_exercise:_#{current_exercise.id}", JSON[message(current_exercise)])
   end
 
-  def submission_state(exercise)
+  def message(exercise)
     if exercise.nil? || exercise.status_undefined?
-      { 'status' => 'in progress', 'message' => '(response to ping:) Yhteys tietokantaan ok, odotetaan',
-        'progress' => 0, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }
+      message_generator('in progress', '(response to ping:) Yhteys tietokantaan ok, odotetaan', 0, false, exercise)
     elsif exercise.saved?
-      { 'status' => 'in progress', 'message' => '(response to ping:) Tehtävä tallennettu tietokantaan',
-        'progress' => 0.1, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }
+      message_generator('in progress', '(response to ping:) Tehtävä tallennettu tietokantaan', 0.1, false, exercise)
     elsif exercise.testing_stub?
-      { 'status' => 'in progress', 'message' => '(response to ping:) Testataan tehtäväpohjaa',
-        'progress' => 0.3, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }
+      message_generator('in progress', '(response to ping:) Testataan tehtäväpohjaa', 0.3, false, exercise)
     elsif exercise.testing_model_solution?
-      { 'status' => 'in progress', 'message' => '(response to ping:) Testataan malliratkaisua',
-        'progress' => 0.6, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }
+      message_generator('in progress', '(response to ping:) Testataan malliratkaisua', 0.6, false, exercise)
     elsif exercise.finished?
-      { 'status' => 'finished', 'message' => '(response to ping:) Valmis',
-        'progress' => 1, 'result' => { 'OK' => true, 'error' => exercise.error_messages } }
+      message_generator('finished', '(response to ping:) Valmis, kaikki on ok', 1, true, exercise)
     elsif exercise.error?
-      { 'status' => 'error', 'message' => '(response to ping:) Tapahtui hirvittävä virhe',
-        'progress' => 1, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }
+      if exercise.sandbox_results[:message].size > 0
+        message = '(response to ping:)' + exercise.sandbox_results[:message].to_s
+      else
+        message = '(response to ping:) Tehtävän lähetyksessä tapahtui virhe'
+      end
+      message_generator('error', message, 1, false, exercise)
     end
   end
+
+  def message_generator(status, message, progress, ok, exercise)
+    { 'status' => status, 'message' => message, 'progress' => progress, 'result' => { 'OK' => ok, 'error' => exercise.error_messages}}
+  end
 end
+

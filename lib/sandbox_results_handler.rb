@@ -5,15 +5,15 @@ class SandboxResultsHandler
     @exercise = exercise
   end
 
-  def handle(sandbox_status, test_output, token)
-    test_results(test_output) if token == 'MODEL'
-    compile_errors(test_output, token)
+  def handle(sandbox_status, test_output, package_type)
+    test_results(test_output) if package_type == 'MODEL'
+    compile_errors(test_output, package_type)
 
-    generate_data_for_frontend(sandbox_status, test_output, token)
+    generate_data_for_frontend(sandbox_status, test_output, package_type)
   end
 
-  def generate_data_for_frontend(sandbox_status, test_output, token)
-    generate_message(sandbox_status, test_output['status'] == 'PASSED', test_output['status'] != 'COMPILE_FAILED', token)
+  def generate_data_for_frontend(sandbox_status, test_output, package_type)
+    generate_message(sandbox_status, test_output['status'] == 'PASSED', test_output['status'] != 'COMPILE_FAILED', package_type)
 
     set_status_and_passed_state(sandbox_status, test_output)
 
@@ -40,10 +40,10 @@ class SandboxResultsHandler
     end
   end
 
-  def compile_errors(test_output, token)
+  def compile_errors(test_output, package_type)
     return unless test_output['status'] == 'COMPILE_FAILED'
 
-    token == 'STUB' ? (@exercise.error_messages.push 'Tehtäväpohja ei kääntynyt: ') : (@exercise.error_messages.push 'Malliratkaisu ei kääntynyt: ')
+    package_type == 'STUB' ? (@exercise.error_messages.push 'Tehtäväpohja ei kääntynyt: ') : (@exercise.error_messages.push 'Malliratkaisu ei kääntynyt: ')
 
     error_message_lines = test_output['logs']['stdout'].pack('c*').slice(/(?<=do-compile:\n)(.*?\n)*(.*$)/).split(/\n/)
     error_message_lines.each do |line|
@@ -52,10 +52,10 @@ class SandboxResultsHandler
   end
 
   # Generate message that will be sent to frontend
-  def generate_message(sandbox_status, passed, compiled, token)
-    if token == 'MODEL'
+  def generate_message(sandbox_status, passed, compiled, package_type)
+    if package_type == 'MODEL'
       model_message(sandbox_status, passed, compiled)
-    elsif token == 'STUB'
+    elsif package_type == 'STUB'
       stub_message(sandbox_status, compiled)
     end
   end
