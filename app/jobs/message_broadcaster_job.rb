@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 class MessageBroadcasterJob < ApplicationJob
   queue_as :default
 
   def perform(exercise)
-    # Do something later
     SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{exercise.user_id}_exercise:_#{exercise.id}",
                                          JSON[message(exercise)])
   end
@@ -19,16 +20,16 @@ class MessageBroadcasterJob < ApplicationJob
     elsif exercise.finished?
       message_generator('finished', 'Valmis, kaikki on ok', 1, true, exercise)
     elsif exercise.error?
-      if exercise.sandbox_results[:message].size > 0
-        message = exercise.sandbox_results[:message]
-      else
-        message = 'Tehtävän lähetyksessä tapahtui virhe'
-      end
+      message = if !exercise.sandbox_results[:message].empty?
+                  exercise.sandbox_results[:message]
+                else
+                  'Tehtävän lähetyksessä tapahtui virhe'
+                end
       message_generator('error', message, 1, false, exercise)
     end
   end
 
   def message_generator(status, message, progress, ok, exercise)
-    { 'status' => status, 'message' => message, 'progress' => progress, 'result' => { 'OK' => ok, 'error' => exercise.error_messages}}
+    { 'status' => status, 'message' => message, 'progress' => progress, 'result' => { 'OK' => ok, 'error' => exercise.error_messages } }
   end
 end

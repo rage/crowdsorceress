@@ -28,9 +28,6 @@ class ExercisesController < ApplicationController
 
     if @exercise.save
       ExerciseVerifierJob.perform_later @exercise
-      # SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{current_user.id}_exercise:_#{@exercise.id}",
-      #                                      JSON[{ 'status' => 'in progress', 'message' => 'Tehtävä tallennettu tietokantaan', 'progress' => 0.1,
-      #                                             'result' => { 'OK' => false, 'error' => @exercise.error_messages } }])
       @exercise.saved!
       MessageBroadcasterJob.perform_now(@exercise)
 
@@ -81,9 +78,6 @@ class ExercisesController < ApplicationController
     begin verifier.verify(secret_token)
     rescue ActiveSupport::MessageVerifier::InvalidSignature
       exercise.error_messages.push 'Tehtävän lähetys epäonnistui virheellisen avaimen vuoksi'
-      # SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{exercise.user_id}_exercise:_#{exercise.id}",
-      #                                        JSON[{ 'status' => 'error', 'message' => 'Tehtävän lähetys epäonnistui virheellisen avaimen vuoksi',
-      #                                               'progress' => 1, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
       exercise.error!
       MessageBroadcasterJob.perform_now(@exercise)
       raise InvalidSignature

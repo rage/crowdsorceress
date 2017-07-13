@@ -60,7 +60,6 @@ class Exercise < ApplicationRecord
     SandboxResultsHandler.new(self).handle(sandbox_status, test_output, package_type)
 
     if sandbox_results[:model_results_received] && sandbox_results[:stub_results_received]
-    then
       status == 'finished' && passed ? finished! : error!
       send_results_to_frontend(sandbox_results[:status], 1, sandbox_results[:passed])
     else send_results_to_frontend('in progress', 0.8, false)
@@ -68,12 +67,12 @@ class Exercise < ApplicationRecord
   end
 
   def send_results_to_frontend(status, progress, passed)
-    # results = { 'status' => status, 'message' => sandbox_results[:message], 'progress' => progress,
-    #             'result' => { 'OK' => passed, 'error' => error_messages } }
+    results = { 'status' => status, 'message' => sandbox_results[:message], 'progress' => progress,
+                'result' => { 'OK' => passed, 'error' => error_messages } }
 
-    # SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{user_id}_exercise:_#{id}", JSON[results])
+    SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{user_id}_exercise:_#{id}", JSON[results])
 
-    MessageBroadcasterJob.perform_now(self)
+    # MessageBroadcasterJob.perform_now(self)
 
     clean_up if finished?
   end

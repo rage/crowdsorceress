@@ -30,17 +30,16 @@ class SubmissionStatusChannel < ApplicationCable::Channel
     elsif exercise.finished?
       message_generator('finished', '(response to ping:) Valmis, kaikki on ok', 1, true, exercise)
     elsif exercise.error?
-      if exercise.sandbox_results[:message].size > 0
-        message = '(response to ping:)' + exercise.sandbox_results[:message].to_s
-      else
-        message = '(response to ping:) Tehtävän lähetyksessä tapahtui virhe'
-      end
+      message = if !exercise.sandbox_results[:message].empty?
+                  '(response to ping:)' + exercise.sandbox_results[:message].to_s
+                else
+                  '(response to ping:) Tehtävän lähetyksessä tapahtui virhe'
+                end
       message_generator('error', message, 1, false, exercise)
     end
   end
 
   def message_generator(status, message, progress, ok, exercise)
-    { 'status' => status, 'message' => message, 'progress' => progress, 'result' => { 'OK' => ok, 'error' => exercise.error_messages}}
+    { 'status' => status, 'message' => message, 'progress' => progress, 'result' => { 'OK' => ok, 'error' => exercise.error_messages } }
   end
 end
-

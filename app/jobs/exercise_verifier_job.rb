@@ -19,9 +19,6 @@ class ExerciseVerifierJob < ApplicationJob
 
     if !exercise_modified?(exercise)
       exercise.error_messages.push('Tapahtui virhe: Muokkaamaton tehtävä lähetettiin uudelleen')
-      # SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{exercise.user_id}_exercise:_#{exercise.id}",
-      #                                      JSON[{ 'status' => 'error', 'message' => 'Tee tehtävään jotain muutoksia!',
-      #                                             'progress' => 1, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
       exercise.error!
       MessageBroadcasterJob.perform_now(exercise)
     else
@@ -58,11 +55,7 @@ class ExerciseVerifierJob < ApplicationJob
     send_package_to_sandbox('Testataan malliratkaisua', 0.6, exercise, 'MODEL', "ModelSolutionPackage_#{exercise.id}.tar")
   end
 
-  def send_package_to_sandbox(message, progress, exercise, package_type, package_name)
-    # SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{exercise.user_id}_exercise:_#{exercise.id}",
-    #                                      JSON[{ 'status' => 'in progress', 'message' => message, 'progress' => progress,
-    #                                             'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
-
+  def send_package_to_sandbox(_message, _progress, exercise, package_type, package_name)
     package_type == 'STUB' ? exercise.testing_stub! : exercise.testing_model_solution!
 
     MessageBroadcasterJob.perform_now(exercise)
@@ -87,9 +80,6 @@ class ExerciseVerifierJob < ApplicationJob
 
     return unless response.code != 200
     exercise.error_messages.push 'Ongelmia palvelimessa, yritä jonkin ajan päästä uudelleen'
-    # SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{exercise.user_id}_exercise:_#{exercise.id}",
-    #                                      JSON[{ 'status' => 'error', 'message' => 'Ongelmia palvelimessa, yritä jonkin ajan päästä uudelleen.',
-    #                                             'progress' => 1, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
     MessageBroadcasterJob.perform_now(exercise)
   end
 
