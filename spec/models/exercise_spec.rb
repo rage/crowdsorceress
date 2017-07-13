@@ -2,11 +2,12 @@
 
 require 'rails_helper'
 require 'stdout_example'
+require 'zip'
 
 RSpec.describe Exercise, type: :model do
-  describe '.create_submission' do
-    subject(:exercise) { FactoryGirl.create(:exercise) }
+  subject(:exercise) { FactoryGirl.create(:exercise) }
 
+  describe '.create_submission' do
     it 'creates a submission' do
       exercise.create_submission
 
@@ -27,8 +28,6 @@ RSpec.describe Exercise, type: :model do
   end
 
   describe '.handle_results' do
-    subject(:exercise) { FactoryGirl.create(:exercise) }
-
     context 'stub does not compile and tests fail' do
       it 'handles sandbox results properly' do
         exercise.code =
@@ -57,5 +56,41 @@ RSpec.describe Exercise, type: :model do
         expect(exercise.error_messages).to include('ComparisonFailure: expected:<Hello[lolled]> but was: <Hello [lol]>', 'Tehtäväpohja ei kääntynyt: ')
       end
     end
+  end
+
+  describe '.create_zip' do
+    it 'creates a zip when an exercise has passed tests' do
+      exercise.create_submission
+      exercise.clean_up
+
+      expect(File).to exist(exercise_target_path.join("ModelSolution_#{exercise.id}.#{exercise.versions.last.id}.zip"))
+      expect(File).to exist(exercise_target_path.join("Stub_#{exercise.id}.#{exercise.versions.last.id}.zip"))
+
+      FileUtils.remove_dir("submission_generation/packages/assignment_#{exercise.assignment.id}/")
+    end
+
+    it 'creates a zip with proper contents' do
+      exercise.create_submission
+      exercise.clean_up
+
+      Zip::File.open(exercise_target_path.join("ModelSolution_#{exercise.id}.#{exercise.versions.last.id}.zip")) do |zip_file|
+        zip_file.each do |file|
+          file_path = File.join(exercise_target_path, file.name)
+          FileUtils.mkdir_p(File.dirname(file_path))
+          zip_file.extract(file, file_path) unless File.exist?(file_path)
+        end
+      end
+
+      expect(File).to exist(exercise_target_path.join('src', 'Submission.java'))
+      expect(File).to exist(exercise_target_path.join('lib', 'testrunner', 'tmc-junit-runner.jar'))
+
+      FileUtils.remove_dir("submission_generation/packages/assignment_#{exercise.assignment.id}/")
+    end
+  end
+
+  private
+
+  def exercise_target_path
+    Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment.id}", "exercise_#{exercise.id}")
   end
 end
