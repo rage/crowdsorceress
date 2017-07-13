@@ -2,15 +2,18 @@
 
 class MainClassGenerator
   TEMPLATE = <<~eos
+    import java.util.Scanner;
+
     public class %<class_name>s {
 
-      public static void main(String[] args) {
+        public static void main(String[] args) {
     %<code>s
-      }
+        }
 
-      %<input_output_code>s
+    %<input_output_code>s
+
     }
-  eos
+eos
 
   def generate(exercise, class_name)
     type = exercise.assignment.exercise_type.name
@@ -19,11 +22,24 @@ class MainClassGenerator
       stdin_to_stdout(exercise, class_name)
     elsif %w[string_string int_int].include?(type)
       input_to_output(exercise, type, class_name)
+    elsif type == 'string_stdout'
+      string_to_stdout(exercise, class_name)
     end
   end
 
   def stdin_to_stdout(exercise, class_name)
     format(TEMPLATE, code: exercise.code, class_name: class_name, input_output_code: '')
+  end
+
+  def string_to_stdout(exercise, class_name)
+    input_output_code = <<-eos
+    public static void metodi(String input) {
+        #{exercise.code}
+    }
+
+eos
+
+    format(TEMPLATE, class_name: class_name, input_output_code: input_output_code, code: '')
   end
 
   def input_to_output(exercise, type, class_name) # input and output both exist
@@ -37,10 +53,11 @@ class MainClassGenerator
       output_type = 'int'
     end
 
-    input_output_code = <<~eos
+    input_output_code = <<-eos
     public static #{output_type} metodi(#{input_type} input) {
-      #{exercise.code}
-     }
+        #{exercise.code}
+    }
+
 eos
 
     format(TEMPLATE, class_name: class_name, input_output_code: input_output_code, code: '')

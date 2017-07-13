@@ -10,7 +10,12 @@ class TestGenerator
   eos
 
   TEST_TEMPLATE = <<~eos
-    %<imports>s
+    import fi.helsinki.cs.tmc.edutestutils.MockStdio;
+    import fi.helsinki.cs.tmc.edutestutils.Points;
+    import fi.helsinki.cs.tmc.edutestutils.ReflectionUtils;
+    import org.junit.Rule;
+    import org.junit.Test;
+    import static org.junit.Assert.assertEquals;
 
     @Points("01-11")
     public class %<class_name>sTest {
@@ -32,8 +37,10 @@ class TestGenerator
     type = exercise.assignment.exercise_type.name
     if type == 'stdin_stdout'
       stdin_to_stdout(exercise, class_name)
-    else
+    elsif %w[string_string int_int].include? type
       input_to_output(exercise, type, class_name)
+    elsif type == 'string_stdout'
+      string_to_stdout(exercise, class_name)
     end
   end
 
@@ -44,16 +51,6 @@ class TestGenerator
     mock_stdio_init = <<~eos
       @Rule
       public MockStdio io = new MockStdio();
-    eos
-
-    imports = <<~eos
-      import fi.helsinki.cs.tmc.edutestutils.MockStdio;
-      import fi.helsinki.cs.tmc.edutestutils.Points;
-      import fi.helsinki.cs.tmc.edutestutils.ReflectionUtils;
-      import org.junit.Rule;
-      import org.junit.Test;
-      import static org.junit.Assert.assertTrue;
-      import static org.junit.Assert.assertEquals;
     eos
 
     test_code = <<~eos
@@ -67,7 +64,29 @@ class TestGenerator
     eos
 
     template_params = { input_type: input_type, output_type: output_type, class_name: class_name, test_code: test_code,
-                        mock_stdio_init: mock_stdio_init, imports: imports }
+                        mock_stdio_init: mock_stdio_init }
+
+    generate_string(exercise, template_params)
+  end
+
+  def string_to_stdout(exercise, class_name)
+    input_type = 'String'
+    output_type = 'String'
+
+    mock_stdio_init = <<~eos
+      @Rule
+      public MockStdio io = new MockStdio();
+    eos
+
+    test_code = <<~eos
+      #{class_name}.metodi(input);
+
+      String out = io.getSysOut();
+      assertEquals(output, out);
+    eos
+
+    template_params = { input_type: input_type, output_type: output_type, class_name: class_name, test_code: test_code,
+                        mock_stdio_init: mock_stdio_init }
 
     generate_string(exercise, template_params)
   end
@@ -83,13 +102,7 @@ class TestGenerator
 
     test_code = "assertEquals(output, #{class_name}.metodi(input));"
 
-    imports = <<~eos
-      import fi.helsinki.cs.tmc.edutestutils.Points;
-      import static org.junit.Assert.assertEquals;
-      import org.junit.Test;
-    eos
-
-    template_params = { input_type: input_type, output_type: output_type, class_name: class_name, test_code: test_code, mock_stdio_init: '', imports: imports }
+    template_params = { input_type: input_type, output_type: output_type, class_name: class_name, test_code: test_code, mock_stdio_init: '' }
 
     generate_string(exercise, template_params)
   end

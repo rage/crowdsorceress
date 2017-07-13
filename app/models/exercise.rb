@@ -25,17 +25,21 @@ class Exercise < ApplicationRecord
   end
 
   def create_submission
+    check_if_already_submitted
+
+    write_to_file(submission_target_path.join('src', 'Submission.java').to_s, MainClassGenerator.new, 'Submission')
+    write_to_file(submission_target_path.join('test', 'SubmissionTest.java').to_s, TestGenerator.new, 'Submission')
+
+    create_model_solution_and_stub
+  end
+
+  def check_if_already_submitted
     if !Dir.exist?(submission_target_path.to_s)
     then FileUtils.cp_r Rails.root.join('submission_generation', 'SubmissionTemplate').to_s, submission_target_path.to_s
     else
       FileUtils.remove_dir(submission_target_path.join('model').to_s)
       FileUtils.remove_dir(submission_target_path.join('stub').to_s)
     end
-
-    write_to_file(submission_target_path.join('src', 'Submission.java').to_s, MainClassGenerator.new, 'Submission')
-    write_to_file(submission_target_path.join('test', 'SubmissionTest.java').to_s, TestGenerator.new, 'Submission')
-
-    create_model_solution_and_stub
   end
 
   def create_model_solution_and_stub
