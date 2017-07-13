@@ -7,7 +7,7 @@ require 'zip'
 RSpec.describe Exercise, type: :model do
   subject(:exercise) { FactoryGirl.create(:exercise) }
 
-  describe '.create_submission' do
+  describe 'when receiving a new submission' do
     it 'creates a submission' do
       exercise.create_submission
 
@@ -27,8 +27,8 @@ RSpec.describe Exercise, type: :model do
     end
   end
 
-  describe '.handle_results' do
-    context 'stub does not compile and tests fail' do
+  describe 'when receiving results from sandbox' do
+    context 'when stub does not compile and tests fail' do
       it 'handles sandbox results properly' do
         exercise.code =
           'System.out.println("moi");
@@ -58,8 +58,8 @@ RSpec.describe Exercise, type: :model do
     end
   end
 
-  describe '.create_zip' do
-    it 'creates a zip when an exercise has passed tests' do
+  describe 'when all exercise\'s tests have passed on sandbox' do
+    it 'creates a zip' do
       exercise.create_submission
       exercise.clean_up
 
