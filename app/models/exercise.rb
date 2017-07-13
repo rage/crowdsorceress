@@ -16,7 +16,7 @@ class Exercise < ApplicationRecord
 
   serialize :sandbox_results, Hash
 
-  enum status: %i[status_undefined saved testing_stub testing_model_solution finished error]
+  enum status: %i[status_undefined saved testing_stub testing_model_solution half_done finished error]
 
   def reset!
     self.error_messages = []
@@ -60,19 +60,15 @@ class Exercise < ApplicationRecord
     SandboxResultsHandler.new(self).handle(sandbox_status, test_output, package_type)
 
     if sandbox_results[:model_results_received] && sandbox_results[:stub_results_received]
-      status == 'finished' && passed ? finished! : error!
-      send_results_to_frontend(sandbox_results[:status], 1, sandbox_results[:passed])
-    else send_results_to_frontend('in progress', 0.8, false)
+      sandbox_status == 'finished' && sandbox_results[:passed] ? finished! : error!
+    else
+      half_done!
     end
+    send_results_to_frontend
   end
 
-  def send_results_to_frontend(status, progress, passed)
-    results = { 'status' => status, 'message' => sandbox_results[:message], 'progress' => progress,
-                'result' => { 'OK' => passed, 'error' => error_messages } }
-
-    SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{user_id}_exercise:_#{id}", JSON[results])
-
-    # MessageBroadcasterJob.perform_now(self)
+  def send_results_to_frontend
+    MessageBroadcasterJob.perform_now(self)
 
     clean_up if finished?
   end

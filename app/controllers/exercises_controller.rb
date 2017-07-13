@@ -3,7 +3,7 @@
 class ExercisesController < ApplicationController
   before_action :set_exercise, only: %i[show update destroy results]
   before_action :ensure_signed_in!, only: %i[create]
-  before_action :set_assignment, only: :create
+  before_action :set_assignment, only: %i[create]
 
   # GET /exercises
   def index
