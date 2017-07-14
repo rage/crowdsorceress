@@ -43,6 +43,34 @@ ActiveRecord::Schema.define(version: 20170710083827) do
     t.text "sandbox_results"
   end
 
+  create_table "peer_review_question_answers", force: :cascade do |t|
+    t.integer "grade", null: false
+    t.bigint "peer_review_id"
+    t.bigint "peer_review_question_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["peer_review_id"], name: "index_peer_review_question_answers_on_peer_review_id"
+    t.index ["peer_review_question_id"], name: "index_peer_review_question_answers_on_peer_review_question_id"
+  end
+
+  create_table "peer_review_questions", force: :cascade do |t|
+    t.string "question", null: false
+    t.bigint "exercise_type_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["exercise_type_id"], name: "index_peer_review_questions_on_exercise_type_id"
+  end
+
+  create_table "peer_reviews", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "exercise_id"
+    t.text "comment", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["exercise_id"], name: "index_peer_reviews_on_exercise_id"
+    t.index ["user_id"], name: "index_peer_reviews_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "first_name"
@@ -65,4 +93,9 @@ ActiveRecord::Schema.define(version: 20170710083827) do
   end
 
   add_foreign_key "assignments", "exercise_types"
+  add_foreign_key "peer_review_question_answers", "peer_review_questions"
+  add_foreign_key "peer_review_question_answers", "peer_reviews"
+  add_foreign_key "peer_review_questions", "exercise_types"
+  add_foreign_key "peer_reviews", "exercises"
+  add_foreign_key "peer_reviews", "users"
 end

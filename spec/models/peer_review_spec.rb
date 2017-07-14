@@ -2,5 +2,5 @@
 
 require 'rails_helper'
 
-RSpec.describe Assignment, type: :model do
+RSpec.describe PeerReview, type: :model do
 end
