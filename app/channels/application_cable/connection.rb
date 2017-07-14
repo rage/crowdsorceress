@@ -14,8 +14,8 @@ module ApplicationCable
     private
 
     def find_verified_user
-      if current_user == UpstreamUser.new(request.params[:oauth_token]).get
-        current_user
+      if upstream_user
+        upstream_user
       else
         reject_unauthorized_connection
       end
@@ -23,6 +23,10 @@ module ApplicationCable
 
     def find_exercise
       Exercise.find(request.params[:exercise_id])
+    end
+
+    def upstream_user
+      @upstream_user ||= UpstreamUser.new(request.params[:oauth_token]).get
     end
   end
 end

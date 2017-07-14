@@ -10,6 +10,7 @@ RSpec.describe PeerReviewsController, type: :controller do
   let(:another_exercise) { FactoryGirl.create(:exercise, user: user) }
 
   it 'is created correctly' do
+    exercise.update(code: 'asdf')
     expect { post_create(exercise) }.to change { PeerReview.count }.by(1)
   end
 

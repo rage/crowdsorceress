@@ -3,7 +3,7 @@
 class PeerReviewsController < ApplicationController
   before_action :set_peer_review, only: %i[show update destroy]
   before_action :ensure_signed_in!, only: %i[create]
-  before_action :set_exercise, only: :create
+  before_action :set_exercise, only: %i[create send_zip find_version_number]
 
   # GET /peer_reviews
   def index
@@ -19,6 +19,8 @@ class PeerReviewsController < ApplicationController
 
   # POST /peer_reviews
   def create
+    send_zip
+
     @peer_review = current_user.peer_reviews.find_or_initialize_by(exercise: @exercise, comment: params[:peer_review][:comment])
 
     PeerReview.transaction do
@@ -29,6 +31,29 @@ class PeerReviewsController < ApplicationController
         render json: @peer_review.errors, status: :unprocessable_entity
       end
     end
+  end
+
+  def send_zip
+    exercise_target_path = Rails.root.join('submission_generation', 'packages', "assignment_#{@exercise.assignment.id}", "exercise_#{@exercise.id}")
+    version_number = find_version_number
+
+    modelsolution_zip_path = exercise_target_path.join("ModelSolution_#{@exercise.id}.#{version_number}.zip")
+    send_file modelsolution_zip_path
+    stub_zip_path = exercise_target_path.join("Stub_#{@exercise.id}.#{version_number}.zip")
+    send_file stub_zip_path
+  end
+
+  def find_version_number
+    # byebug
+    e = @exercise
+    byebug
+    if @exercise.versions.last.reify != nil
+      e = @exercise.versions.last.reify
+    end
+    while !e.finished? do
+      e = e.paper_trail.previous_version
+    end
+    e.save!
   end
 
   def create_questions
