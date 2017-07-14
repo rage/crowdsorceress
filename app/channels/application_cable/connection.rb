@@ -22,7 +22,7 @@ module ApplicationCable
     end
 
     def find_exercise
-      Exercise.find(request.params[:exercise_id]
+      Exercise.find(request.params[:exercise_id])
     end
   end
 end
