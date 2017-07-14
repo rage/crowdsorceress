@@ -45,12 +45,12 @@ class SandboxResultsHandler
 
     package_type == 'STUB' ? (@exercise.error_messages.push 'Tehtäväpohja ei kääntynyt: ') : (@exercise.error_messages.push 'Malliratkaisu ei kääntynyt: ')
 
-    error_message_lines.each do |line|
+    error_message_lines(test_output).each do |line|
       @exercise.error_messages.push line
     end
   end
 
-  def error_message_lines
+  def error_message_lines(test_output)
     test_output['logs']['stdout'].pack('c*').slice(/(?<=do-compile:\n)(.*?\n)*(.*$)/).split(/\n/)
   end
 
