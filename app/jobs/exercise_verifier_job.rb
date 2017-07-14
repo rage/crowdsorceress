@@ -19,10 +19,8 @@ class ExerciseVerifierJob < ApplicationJob
 
     if !exercise_modified?(exercise)
       exercise.error_messages.push('Tapahtui virhe: Muokkaamaton tehtävä lähetettiin uudelleen')
-      SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{exercise.user_id}_exercise:_#{exercise.id}",
-                                           JSON[{ 'status' => 'error', 'message' => 'Tee tehtävään jotain muutoksia!',
-                                                  'progress' => 1, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
       exercise.error!
+      MessageBroadcasterJob.perform_now(exercise)
     else
       send_exercise_to_sandbox(exercise)
     end
@@ -57,30 +55,32 @@ class ExerciseVerifierJob < ApplicationJob
     send_package_to_sandbox('Testataan malliratkaisua', 0.6, exercise, 'MODEL', "ModelSolutionPackage_#{exercise.id}.tar")
   end
 
-  def send_package_to_sandbox(message, progress, exercise, token, package_name)
-    SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{exercise.user_id}_exercise:_#{exercise.id}",
-                                         JSON[{ 'status' => 'in progress', 'message' => message, 'progress' => progress,
-                                                'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
+  def send_package_to_sandbox(_message, _progress, exercise, package_type, package_name)
+    package_type == 'STUB' ? exercise.testing_stub! : exercise.testing_model_solution!
 
-    token == 'STUB' ? exercise.testing_stub! : exercise.testing_model_solution!
+    MessageBroadcasterJob.perform_now(exercise)
 
     File.open(packages_target_path.join(package_name).to_s, 'r') do |tar_file|
-      sandbox_post(tar_file, exercise, token)
+      sandbox_post(tar_file, exercise, package_type)
     end
   end
 
   private
 
-  def sandbox_post(tar_file, exercise, token)
-    response = RestClient.post post_url, file: tar_file, notify: results_url(exercise), token: token
+  def secret_token(exercise, package_type)
+    verifier = ActiveSupport::MessageVerifier.new(Rails.application.secrets[:secret_key_base])
+
+    verifier.generate(exercise.id) + package_type
+  end
+
+  def sandbox_post(tar_file, exercise, package_type)
+    response = RestClient.post post_url, file: tar_file, notify: results_url(exercise), token: secret_token(exercise, package_type)
 
     `rm #{tar_file.path}`
 
     return unless response.code != 200
-    exercise.error_messages.push 'Error in posting exercise to sandbox'
-    SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{exercise.user_id}_exercise:_#{exercise.id}",
-                                         JSON[{ 'status' => 'error', 'message' => 'Ongelmia palvelimessa, yritä jonkin ajan päästä uudelleen.',
-                                                'progress' => 1, 'result' => { 'OK' => false, 'error' => exercise.error_messages } }])
+    exercise.error_messages.push 'Ongelmia palvelimessa, yritä jonkin ajan päästä uudelleen'
+    MessageBroadcasterJob.perform_now(exercise)
   end
 
   def post_url

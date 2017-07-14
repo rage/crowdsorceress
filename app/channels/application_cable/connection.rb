@@ -22,8 +22,7 @@ module ApplicationCable
     end
 
     def find_exercise
-      raise 'Exercise was somehow not found' if current_exercise != Exercise.find(request.params[:exercise_id])
-      current_exercise
+      Exercise.find(request.params[:exercise_id])
     end
   end
 end
