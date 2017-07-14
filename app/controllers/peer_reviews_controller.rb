@@ -19,8 +19,6 @@ class PeerReviewsController < ApplicationController
 
   # POST /peer_reviews
   def create
-    send_zip
-
     @peer_review = current_user.peer_reviews.find_or_initialize_by(exercise: @exercise, comment: params[:peer_review][:comment])
 
     PeerReview.transaction do
@@ -33,27 +31,16 @@ class PeerReviewsController < ApplicationController
     end
   end
 
-  def send_zip
+  def send_zip # TODO: CHANGE THIS ACCORDING TO LAPPU
     exercise_target_path = Rails.root.join('submission_generation', 'packages', "assignment_#{@exercise.assignment.id}", "exercise_#{@exercise.id}")
-    version_number = find_version_number
 
-    modelsolution_zip_path = exercise_target_path.join("ModelSolution_#{@exercise.id}.#{version_number}.zip")
+    model_filename = Dir.entries(exercise_target_path).select { |o| o.start_with?('ModelSolution') }.last
+    modelsolution_zip_path = exercise_target_path.join(model_filename)
     send_file modelsolution_zip_path
-    stub_zip_path = exercise_target_path.join("Stub_#{@exercise.id}.#{version_number}.zip")
-    send_file stub_zip_path
-  end
 
-  def find_version_number
-    # byebug
-    e = @exercise
-    byebug
-    if @exercise.versions.last.reify != nil
-      e = @exercise.versions.last.reify
-    end
-    while !e.finished? do
-      e = e.paper_trail.previous_version
-    end
-    e.save!
+    stub_filename = Dir.entries(exercise_target_path).select { |o| o.start_with?('Stub') }.last
+    stub_zip_path = exercise_target_path.join(stub_filename)
+    send_file stub_zip_path
   end
 
   def create_questions
