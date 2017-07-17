@@ -3,7 +3,7 @@
 class PeerReviewsController < ApplicationController
   before_action :set_peer_review, only: %i[show update destroy]
   before_action :ensure_signed_in!, only: %i[create]
-  before_action :set_exercise, only: %i[create send_zip find_version_number]
+  before_action :set_exercise, only: %i[create send_zip]
 
   # GET /peer_reviews
   def index

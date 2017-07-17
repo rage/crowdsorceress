@@ -63,7 +63,6 @@ RSpec.describe Exercise, type: :model do
     it 'creates a zip' do
       exercise.create_submission
       ZipHandler.new(exercise).clean_up
-      exercise.finished!
 
       expect(File).to exist(exercise_target_path.join("ModelSolution_#{exercise.id}.#{exercise.versions.last.id}.zip"))
       expect(File).to exist(exercise_target_path.join("Stub_#{exercise.id}.#{exercise.versions.last.id}.zip"))
