@@ -31,14 +31,14 @@ class PeerReviewsController < ApplicationController
     end
   end
 
-  def send_zip # TODO: CHANGE THIS ACCORDING TO LAPPU
+  def send_zip
     exercise_target_path = Rails.root.join('submission_generation', 'packages', "assignment_#{@exercise.assignment.id}", "exercise_#{@exercise.id}")
 
-    model_filename = Dir.entries(exercise_target_path).select { |o| o.start_with?('ModelSolution') }.last
+    model_filename = Dir.entries(exercise_target_path).find { |o| o.start_with?('ModelSolution') && o.end_with?('.zip') }
     modelsolution_zip_path = exercise_target_path.join(model_filename)
     send_file modelsolution_zip_path
 
-    stub_filename = Dir.entries(exercise_target_path).select { |o| o.start_with?('Stub') }.last
+    stub_filename = Dir.entries(exercise_target_path).find { |o| o.start_with?('Stub') && o.end_with?('.zip') }
     stub_zip_path = exercise_target_path.join(stub_filename)
     send_file stub_zip_path
   end

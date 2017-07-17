@@ -3,6 +3,7 @@
 require 'rails_helper'
 require 'stdout_example'
 require 'zip'
+require 'zip_handler'
 
 RSpec.describe Exercise, type: :model do
   subject(:exercise) { FactoryGirl.create(:exercise) }
@@ -61,7 +62,7 @@ RSpec.describe Exercise, type: :model do
   describe 'when all exercise\'s tests have passed on sandbox' do
     it 'creates a zip' do
       exercise.create_submission
-      exercise.clean_up
+      ZipHandler.new(exercise).clean_up
       exercise.finished!
 
       expect(File).to exist(exercise_target_path.join("ModelSolution_#{exercise.id}.#{exercise.versions.last.id}.zip"))
@@ -72,7 +73,7 @@ RSpec.describe Exercise, type: :model do
 
     it 'creates a zip with proper contents' do
       exercise.create_submission
-      exercise.clean_up
+      ZipHandler.new(exercise).clean_up
 
       Zip::File.open(exercise_target_path.join("ModelSolution_#{exercise.id}.#{exercise.versions.last.id}.zip")) do |zip_file|
         zip_file.each do |file|
