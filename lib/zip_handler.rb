@@ -15,9 +15,9 @@ class ZipHandler
     FileUtils.remove_dir(submission_target_path.to_s)
   end
 
+  private
+
   def create_directories_for_zips
-    FileUtils.mkdir_p(assignment_target_path.to_s)
-    FileUtils.mkdir_p(exercise_target_path.to_s)
     FileUtils.mkdir_p(exercise_target_path.join('oldies').to_s)
   end
 
@@ -48,8 +48,6 @@ class ZipHandler
       end
     end
   end
-
-  private
 
   def assignment_target_path
     Rails.root.join('submission_generation', 'packages', "assignment_#{@exercise.assignment.id}")
