@@ -3,7 +3,7 @@
 class PeerReviewsController < ApplicationController
   before_action :set_peer_review, only: %i[show update destroy]
   before_action :ensure_signed_in!, only: %i[create]
-  before_action :set_exercise, only: :create
+  before_action :set_exercise, only: %i[create send_zip]
 
   # GET /peer_reviews
   def index
@@ -29,6 +29,16 @@ class PeerReviewsController < ApplicationController
         render json: @peer_review.errors, status: :unprocessable_entity
       end
     end
+  end
+
+  def send_model_zip
+    model_filename = Dir.entries(exercise_target_path).find { |o| o.start_with('ModelSolution') && end_with?('.zip') }
+    send_file template_zip_path(model_filename)
+  end
+
+  def send_stub_zip
+    stub_filename = Dir.entries(exercise_target_path).find { |o| o.start_with?('Stub') && o.end_with?('.zip') }
+    send_file template_zip_path(stub_filename)
   end
 
   def create_questions
@@ -68,5 +78,13 @@ class PeerReviewsController < ApplicationController
   def peer_review_params
     params.require(:peer_review).permit(:comment, :answers)
     params.require(:exercise).permit(:exercise_id)
+  end
+
+  def exercise_target_path
+    Rails.root.join('submission_generation', 'packages', "assignment_#{@exercise.assignment.id}", "exercise_#{@exercise.id}")
+  end
+
+  def template_zip_path(zip_name)
+    exercise_target_path.join(zip_name)
   end
 end

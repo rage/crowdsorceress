@@ -28,14 +28,15 @@ class ExerciseVerifierJob < ApplicationJob
 
   def exercise_modified?(exercise)
     if Dir.exist?(assignment_target_path(exercise)) && Dir.exist?(assignment_target_path(exercise).join("exercise_#{exercise.id}"))
-      if Dir.entries(assignment_target_path(exercise).join("exercise_#{exercise.id}"))
-            .include?("ModelSolution_#{exercise.id}.#{exercise.versions.last.id}.zip") ||
-         Dir.entries(assignment_target_path(exercise).join("exercise_#{exercise.id}"))
-            .include?("Stub_#{exercise.id}.#{exercise.versions.last.id}.zip")
-      then return false
+      if directory_includes_file(exercise, 'ModelSolution') || directory_includes_file(exercise, 'Stub')
+        return false
       end
     end
     true
+  end
+
+  def directory_includes_file(exercise, package_type)
+    Dir.entries(assignment_target_path(exercise).join("exercise_#{exercise.id}")).include?("#{package_type}_#{exercise.id}.#{exercise.versions.last.id}.zip")
   end
 
   def create_tar_files(exercise)
