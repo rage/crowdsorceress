@@ -31,16 +31,14 @@ class PeerReviewsController < ApplicationController
     end
   end
 
-  def send_zip
-    exercise_target_path = Rails.root.join('submission_generation', 'packages', "assignment_#{@exercise.assignment.id}", "exercise_#{@exercise.id}")
+  def send_model_zip
+    model_filename = Dir.entries(exercise_target_path).find { |o| o.start_with('ModelSolution') && end_with?('.zip') }
+    send_file template_zip_path(model_filename)
+  end
 
-    model_filename = Dir.entries(exercise_target_path).find { |o| o.start_with?('ModelSolution') && o.end_with?('.zip') }
-    modelsolution_zip_path = exercise_target_path.join(model_filename)
-    send_file modelsolution_zip_path
-
+  def send_stub_zip
     stub_filename = Dir.entries(exercise_target_path).find { |o| o.start_with?('Stub') && o.end_with?('.zip') }
-    stub_zip_path = exercise_target_path.join(stub_filename)
-    send_file stub_zip_path
+    send_file template_zip_path(stub_filename)
   end
 
   def create_questions
@@ -80,5 +78,13 @@ class PeerReviewsController < ApplicationController
   def peer_review_params
     params.require(:peer_review).permit(:comment, :answers)
     params.require(:exercise).permit(:exercise_id)
+  end
+
+  def exercise_target_path
+    Rails.root.join('submission_generation', 'packages', "assignment_#{@exercise.assignment.id}", "exercise_#{@exercise.id}")
+  end
+
+  def template_zip_path(zip_name)
+    exercise_target_path.join(zip_name)
   end
 end

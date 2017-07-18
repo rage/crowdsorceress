@@ -16,14 +16,9 @@ class ZipHandler
   end
 
   def create_directories_for_zips
-    check_directory_existence(assignment_target_path.to_s)
-    check_directory_existence(exercise_target_path.to_s)
-    check_directory_existence(exercise_target_path.join('oldies').to_s)
-  end
-
-  def check_directory_existence(path)
-    return if Dir.exist?(path)
-    Dir.mkdir(path)
+    FileUtils.mkdir_p(assignment_target_path.to_s)
+    FileUtils.mkdir_p(exercise_target_path.to_s)
+    FileUtils.mkdir_p(exercise_target_path.join('oldies').to_s)
   end
 
   def retire_zips
