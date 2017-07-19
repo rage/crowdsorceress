@@ -26,7 +26,7 @@ class ExercisesController < ApplicationController
 
     # return render_error_page(status: 409, text: 'Assignment already being processed') if @exercise.in_progress?
     if @exercise.in_progress?
-    @exercise.error!
+    @exercise.processing!
     @exercise.error_messages.push 'Assignment already being processed'
     MessageBroadcasterJob.perform_now(@exercise)
     render json: {exercise: @exercise}

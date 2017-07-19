@@ -33,6 +33,8 @@ class SubmissionStatusChannel < ApplicationCable::Channel
       message_generator('finished', '(response to ping:) Valmis, kaikki on ok', 1, true, exercise)
     elsif exercise.error?
       error_message(exercise)
+    elsif exercise.processing?
+      message_generator('finished', '(response to ping:) Edellisen lähetetyn tehtävän käsittely on vielä kesken, odota', 0.05, false, exercise )
     end
   end
 
@@ -40,7 +42,7 @@ class SubmissionStatusChannel < ApplicationCable::Channel
     message = if !exercise.sandbox_results[:message].empty?
                 exercise.sandbox_results[:message]
               else
-                'Tehtävän lähetyksessä tapahtui virhe'
+                '(response to ping:) Tehtävän lähetyksessä tapahtui virhe'
               end
     message_generator('error', message, 1, false, exercise)
   end

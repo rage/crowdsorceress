@@ -23,6 +23,8 @@ class MessageBroadcasterJob < ApplicationJob
       message_generator('finished', 'Valmis, kaikki on ok', 1, true, exercise)
     elsif exercise.error?
       error_message(exercise)
+    elsif exercise.processing?
+      message_generator('finished', 'Edellisen lähetetyn tehtävän käsittely on vielä kesken, odota', 0.05, false, exercise )
     end
   end
 
