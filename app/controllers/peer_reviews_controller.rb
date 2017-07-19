@@ -33,14 +33,15 @@ class PeerReviewsController < ApplicationController
 
   def send_model_zip
     exercise = Exercise.find(params[:id])
-    model_filename = Dir.entries(exercise_target_path(exercise)).find { |o| o.start_with('ModelSolution') && end_with?('.zip') }
-    send_file template_zip_path(model_filename)
+    byebug
+    model_filename = Dir.entries(exercise_target_path(exercise)).find { |o| o.start_with?('ModelSolution') && o.end_with?('.zip') }
+    send_file template_zip_path(exercise, model_filename)
   end
 
   def send_stub_zip
     exercise = Exercise.find(params[:id])
     stub_filename = Dir.entries(exercise_target_path(exercise)).find { |o| o.start_with?('Stub') && o.end_with?('.zip') }
-    send_file template_zip_path(stub_filename)
+    send_file template_zip_path(exercise, stub_filename)
   end
 
   def create_question_answers
@@ -94,7 +95,7 @@ class PeerReviewsController < ApplicationController
     Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment.id}", "exercise_#{exercise.id}")
   end
 
-  def template_zip_path(zip_name)
-    exercise_target_path.join(zip_name)
+  def template_zip_path(exercise, zip_name)
+    exercise_target_path(exercise).join(zip_name)
   end
 end
