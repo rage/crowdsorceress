@@ -7,3 +7,5 @@ class PeerReview < ApplicationRecord
 
   validates :comment, presence: true
 end
+
+#  counter_cache: true

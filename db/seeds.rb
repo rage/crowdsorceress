@@ -17,6 +17,7 @@ Assignment.create description: 'Tulosta tekoäly', exercise_type: type2
 type3 = ExerciseType.create name: 'string_stdout'
 Assignment.create description: 'Käytä tekoäly', exercise_type: type3
 a = Assignment.create description: 'Luo tekoäly', exercise_type: type
+
 Exercise.create(
   code: 'int luku = 1; \n String kissa = \"koira \"; \n return \"Palautusarvo \" ',
   assignment: a,

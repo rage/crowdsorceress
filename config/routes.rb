@@ -11,4 +11,8 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   post 'exercises/:id/results', to: 'exercises#sandbox_results'
+
+  get 'peer_reviews/assignments/:id/request_exercise', to: 'peer_reviews#draw_exercise'
+
+  get 'peer_reviews/exercises/:id/stub_zip', to: 'peer_reviews#send_stub_zip'
 end

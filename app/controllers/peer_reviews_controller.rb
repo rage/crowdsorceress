@@ -24,7 +24,7 @@ class PeerReviewsController < ApplicationController
     PeerReview.transaction do
       if @peer_review.save
         render json: @peer_review, status: :created, location: @peer_review
-        create_questions
+        create_question_answers
       else
         render json: @peer_review.errors, status: :unprocessable_entity
       end
@@ -41,7 +41,7 @@ class PeerReviewsController < ApplicationController
     send_file template_zip_path(stub_filename)
   end
 
-  def create_questions
+  def create_question_answers
     @reviews = params[:peer_review][:answers]
 
     @questions = @exercise.assignment.exercise_type.peer_review_questions
@@ -61,6 +61,14 @@ class PeerReviewsController < ApplicationController
   # DELETE /peer_reviews/1
   def destroy
     @peer_review.destroy
+  end
+
+  # GET /peer_reviews/assignments/id/request_exercise
+  def draw_exercise # tai give_random_exercise tai get
+    exercise = Exercise.find_by(assignment: Assignment.find(params[:id]), status: 'finished') # TODO: randomize. for example give exercise with few reviews
+    pr_questions = exercise.assignment.exercise_type.peer_review_questions
+
+    render json: { exercise: exercise, peer_review_guestions: pr_questions }
   end
 
   private
