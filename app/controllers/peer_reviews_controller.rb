@@ -3,7 +3,7 @@
 class PeerReviewsController < ApplicationController
   before_action :set_peer_review, only: %i[show update destroy]
   before_action :ensure_signed_in!, only: %i[create]
-  before_action :set_exercise, only: %i[create send_zip]
+  before_action :set_exercise, only: %i[create]
 
   # GET /peer_reviews
   def index
@@ -32,12 +32,14 @@ class PeerReviewsController < ApplicationController
   end
 
   def send_model_zip
-    model_filename = Dir.entries(exercise_target_path).find { |o| o.start_with('ModelSolution') && end_with?('.zip') }
+    exercise = Exercise.find(params[:id])
+    model_filename = Dir.entries(exercise_target_path(exercise)).find { |o| o.start_with('ModelSolution') && end_with?('.zip') }
     send_file template_zip_path(model_filename)
   end
 
   def send_stub_zip
-    stub_filename = Dir.entries(exercise_target_path).find { |o| o.start_with?('Stub') && o.end_with?('.zip') }
+    exercise = Exercise.find(params[:id])
+    stub_filename = Dir.entries(exercise_target_path(exercise)).find { |o| o.start_with?('Stub') && o.end_with?('.zip') }
     send_file template_zip_path(stub_filename)
   end
 
@@ -88,8 +90,8 @@ class PeerReviewsController < ApplicationController
     params.require(:exercise).permit(:exercise_id)
   end
 
-  def exercise_target_path
-    Rails.root.join('submission_generation', 'packages', "assignment_#{@exercise.assignment.id}", "exercise_#{@exercise.id}")
+  def exercise_target_path(exercise)
+    Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment.id}", "exercise_#{exercise.id}")
   end
 
   def template_zip_path(zip_name)

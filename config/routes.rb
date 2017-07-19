@@ -15,4 +15,5 @@ Rails.application.routes.draw do
   get 'peer_reviews/assignments/:id/request_exercise', to: 'peer_reviews#draw_exercise'
 
   get 'peer_reviews/exercises/:id/stub_zip', to: 'peer_reviews#send_stub_zip'
+  get 'peer_reviews/exercises/:id/model_zip', to: 'peer_reviews#send_model_zip'
 end
