@@ -67,7 +67,8 @@ class PeerReviewsController < ApplicationController
   end
 
   # GET /peer_reviews/assignments/id/request_exercise
-  def draw_exercise # tai give_random_exercise tai get
+  def assign_exercise # tai give_random_exercise tai get
+    # TODO: use draw_exercise in peer review model
     exercise = Exercise.find_by(assignment: Assignment.find(params[:id]), status: 'finished') # TODO: randomize. for example give exercise with few reviews
     pr_questions = exercise.assignment.exercise_type.peer_review_questions
 

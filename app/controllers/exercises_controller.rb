@@ -22,9 +22,6 @@ class ExercisesController < ApplicationController
     @exercise = current_user.exercises.find_or_initialize_by(assignment: @assignment)
     @exercise.attributes = exercise_params
 
-    puts 'Exercise ' + @exercise.id.to_s + ' status: ' + @exercise.status
-
-    # return render_error_page(status: 409, text: 'Assignment already being processed') if @exercise.in_progress?
     if @exercise.in_progress?
     @exercise.processing!
     @exercise.error_messages.push 'Assignment already being processed'
