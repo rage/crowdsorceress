@@ -3,6 +3,7 @@
 class Exercise < ApplicationRecord
   belongs_to :assignment
   belongs_to :user
+  has_many :peer_reviews
 
   require 'zip'
   require 'tmc_langs'

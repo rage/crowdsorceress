@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PeerReviewsController < ApplicationController
-  before_action :set_peer_review, only: %i[show update destroy]
+  before_action :set_peer_review, only: %i[show update destroy assign_exercise]
   before_action :ensure_signed_in!, only: %i[create]
   before_action :set_exercise, only: %i[create]
 
@@ -33,7 +33,6 @@ class PeerReviewsController < ApplicationController
 
   def send_model_zip
     exercise = Exercise.find(params[:id])
-    byebug
     model_filename = Dir.entries(exercise_target_path(exercise)).find { |o| o.start_with?('ModelSolution') && o.end_with?('.zip') }
     send_file template_zip_path(exercise, model_filename)
   end
@@ -67,9 +66,10 @@ class PeerReviewsController < ApplicationController
   end
 
   # GET /peer_reviews/assignments/id/request_exercise
-  def assign_exercise # tai give_random_exercise tai get
-    # TODO: use draw_exercise in peer review model
-    exercise = Exercise.find_by(assignment: Assignment.find(params[:id]), status: 'finished') # TODO: randomize. for example give exercise with few reviews
+  def assign_exercise
+    exercise = Exercise.find_by(assignment: Assignment.find(params[:id]), status: 'finished')
+    assignment = Assignment.find(params[:id])
+    @peer_review.draw_exercise(assignment)
     pr_questions = exercise.assignment.exercise_type.peer_review_questions
 
     render json: { exercise: exercise, peer_review_guestions: pr_questions }
