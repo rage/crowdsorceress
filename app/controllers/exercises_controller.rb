@@ -26,6 +26,10 @@ class ExercisesController < ApplicationController
 
     @exercise.reset!
 
+    params[:exercise][:tags].each do |tag|
+      @exercise.tags.find_or_initialize_by(name: tag)
+    end
+
     if @exercise.save
       ExerciseVerifierJob.perform_later @exercise
       @exercise.saved!
@@ -97,6 +101,6 @@ class ExercisesController < ApplicationController
   def exercise_params
     # Allow any slate state for now...
     desc_params = params['exercise']['description'].permit!
-    params.require(:exercise).permit(:code, :assignment_id, testIO: %i[input output]).merge(description: desc_params)
+    params.require(:exercise).permit(:code, :assignment_id, :tags, testIO: %i[input output]).merge(description: desc_params)
   end
 end

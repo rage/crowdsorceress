@@ -13,6 +13,12 @@ RSpec.describe PeerReviewsController, type: :controller do
   let(:exercise) { FactoryGirl.create(:exercise, user: user) }
   let(:another_exercise) { FactoryGirl.create(:exercise, user: user) }
 
+  context 'when submitting again for same exercise' do
+    it 'also creates tags in case exercise didnt have it' do
+      expect { post_create(exercise) }.to change { Tag.count }.by(1)
+    end
+  end
+
   it 'is created correctly' do
     expect { post_create(exercise) }.to change { PeerReview.count }.by(1)
   end
@@ -39,21 +45,26 @@ RSpec.describe PeerReviewsController, type: :controller do
 
   it 'is not created without a comment or answer' do
     exercise = FactoryGirl.create(:exercise, user: FactoryGirl.create(:user))
-    post :create, params: { peer_review: { asd: 'asd' }, exercise: { exercise_id: exercise.id } }
+    post :create, params: { peer_review: { asd: 'asd' }, exercise: { exercise_id: exercise.id, tags: ['asd'] } }
     expect(response.status).to eq(422)
   end
 
   it 'sends zips' do
-    FileUtils.mkdir_p(Rails.root.join('submission_generation', 'packages', 'assignment_1', 'exercise_1').to_s)
-    FileUtils.touch(Rails.root.join('submission_generation', 'packages', 'assignment_1', 'exercise_1', 'ModelSolution_1.1.zip').to_s)
-    FileUtils.touch(Rails.root.join('submission_generation', 'packages', 'assignment_1', 'exercise_1', 'Stub_1.1.zip').to_s)
+    FileUtils.mkdir_p(Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment_id}", "exercise_#{exercise.id}").to_s)
+    FileUtils.touch(Rails.root.join(
+      'submission_generation', 'packages', "assignment_#{exercise.assignment_id}", "exercise_#{exercise.id}", "ModelSolution_#{exercise.id}.1.zip"
+      ).to_s)
+    FileUtils.touch(Rails.root.join(
+      'submission_generation', 'packages', "assignment_#{exercise.assignment_id}", "exercise_#{exercise.id}", "Stub_#{exercise.id}.1.zip"
+    ).to_s)
 
-    get :send_model_zip, params: { id: 1 }
+    get :send_model_zip, params: { id: exercise.id }
     expect(response.status).to eq(204)
-    get :send_stub_zip, params: { id: 1 }
+    get :send_stub_zip, params: { id: exercise.id }
     expect(response.status).to eq(204)
 
-    FileUtils.remove_dir(Rails.root.join('submission_generation', 'packages', 'assignment_1').to_s)
+    FileUtils.remove_dir(Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment_id}").to_s)
+
   end
 
   it 'assigns an exercise for reviewing' do
@@ -73,7 +84,7 @@ RSpec.describe PeerReviewsController, type: :controller do
   def post_create(exercise)
     answers = { peer_review_question_question: 5 }
 
-    exercise_params = { exercise_id: exercise.id }
+    exercise_params = { exercise_id: exercise.id, tags: ['tagi'] }
     peer_review_params = { comment: 'Hyvin menee', answers: answers }
     post :create, params: { exercise: exercise_params, peer_review: peer_review_params }
   end

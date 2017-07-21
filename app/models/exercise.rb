@@ -4,6 +4,8 @@ class Exercise < ApplicationRecord
   belongs_to :assignment
   belongs_to :user
   has_many :peer_reviews
+  has_many :exercises_tags, dependent: :destroy
+  has_many :tags, through: :exercises_tags
 
   require 'zip'
   require 'tmc_langs'

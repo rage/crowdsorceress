@@ -21,6 +21,10 @@ class PeerReviewsController < ApplicationController
   def create
     @peer_review = current_user.peer_reviews.find_or_initialize_by(exercise: @exercise, comment: params[:peer_review][:comment])
 
+    params[:exercise][:tags].each do |tag|
+      @peer_review.tags.find_or_initialize_by(name: tag.downcase)
+    end
+
     PeerReview.transaction do
       if @peer_review.save
         render json: @peer_review, status: :created, location: @peer_review
@@ -90,7 +94,7 @@ class PeerReviewsController < ApplicationController
   # Only allow a trusted parameter "white list" through.
   def peer_review_params
     params.require(:peer_review).permit(:comment, :answers)
-    params.require(:exercise).permit(:exercise_id)
+    params.require(:exercise).permit(:exercise_id, :tags)
   end
 
   def exercise_target_path(exercise)
