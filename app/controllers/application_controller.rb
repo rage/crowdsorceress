@@ -28,6 +28,12 @@ class ApplicationController < ActionController::API
     render_error_page(status: 400, text: 'Invalid secret token')
   end
 
+  NoMethodError = Class.new(StandardError)
+
+  rescue_from ApplicationController::NoMethodError do
+    render_error_page(status: 400, text: 'No exercises for this assignment')
+  end
+
   def ensure_signed_in!
     return if current_user
 

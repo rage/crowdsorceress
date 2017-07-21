@@ -5,6 +5,10 @@ require 'rails_helper'
 RSpec.describe PeerReviewsController, type: :controller do
   let(:user) { FactoryGirl.create(:user) }
   before { allow(controller).to receive(:current_user) { user } }
+  before :each do
+    allow_any_instance_of(PeerReviewsController).to receive(:send_zip)
+  end
+
   let(:peer_review_question_question) { 'Testien kattavuus' }
   let(:exercise) { FactoryGirl.create(:exercise, user: user) }
   let(:another_exercise) { FactoryGirl.create(:exercise, user: user) }
@@ -37,6 +41,24 @@ RSpec.describe PeerReviewsController, type: :controller do
     exercise = FactoryGirl.create(:exercise, user: FactoryGirl.create(:user))
     post :create, params: { peer_review: { asd: 'asd' }, exercise: { exercise_id: exercise.id } }
     expect(response.status).to eq(422)
+  end
+
+  it 'sends zips' do
+    get :send_model_zip, params: { id: 1 }
+    expect(response.status).to eq(204)
+    get :send_stub_zip, params: { id: 1 }
+    expect(response.status).to eq(204)
+  end
+
+  it 'assigns an exercise for reviewing' do
+    exercise.update status: 'finished'
+    get :assign_exercise, params: { assignment_id: exercise.assignment_id }
+    expect(response.status).to eq(200)
+  end
+
+  it 'raises exception when requesting exercise for assignment that has no finished exercises' do
+    Assignment.first.exercises = []
+    expect { get :assign_exercise, params: { assignment_id: Assignment.first } }.to raise_error(NoMethodError)
   end
 
   private

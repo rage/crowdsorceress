@@ -22,7 +22,7 @@ class ExercisesController < ApplicationController
     @exercise = current_user.exercises.find_or_initialize_by(assignment: @assignment)
     @exercise.attributes = exercise_params
 
-    check_progress_status
+    return if exercise_in_progress
 
     @exercise.reset!
 
@@ -84,12 +84,15 @@ class ExercisesController < ApplicationController
     end
   end
 
-  def check_progress_status
-    return unless @exercise.in_progress?
-    @exercise.processing!
-    @exercise.error_messages.push 'Assignment already being processed'
-    MessageBroadcasterJob.perform_now(@exercise)
-    render json: { exercise: @exercise }
+  def exercise_in_progress
+    if @exercise.in_progress?
+      @exercise.processing!
+      @exercise.error_messages.push 'Assignment already being processed'
+      MessageBroadcasterJob.perform_now(@exercise)
+      render json: { exercise: @exercise }
+      true
+    else false
+    end
   end
 
   # Use callbacks to share common setup or constraints between actions.

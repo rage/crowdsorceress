@@ -12,7 +12,7 @@ Rails.application.routes.draw do
 
   post 'exercises/:id/results', to: 'exercises#sandbox_results'
 
-  get 'peer_reviews/assignments/:id/request_exercise', to: 'peer_reviews#assign_exercise'
+  get 'peer_reviews/assignments/:assignment_id/request_exercise', to: 'peer_reviews#assign_exercise'
 
   get 'peer_reviews/exercises/:id/stub_zip', to: 'peer_reviews#send_stub_zip'
   get 'peer_reviews/exercises/:id/model_zip', to: 'peer_reviews#send_model_zip'
