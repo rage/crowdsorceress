@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ExercisesController < ApplicationController
-  before_action :set_exercise, only: %i[show update destroy results]
+  before_action :set_exercise, only: %i[show update destroy results check_progress_status]
   before_action :ensure_signed_in!, only: %i[create]
   before_action :set_assignment, only: %i[create]
 
@@ -22,13 +22,7 @@ class ExercisesController < ApplicationController
     @exercise = current_user.exercises.find_or_initialize_by(assignment: @assignment)
     @exercise.attributes = exercise_params
 
-    if @exercise.in_progress?
-      @exercise.processing!
-      @exercise.error_messages.push 'Assignment already being processed'
-      MessageBroadcasterJob.perform_now(@exercise)
-      render json: { exercise: @exercise }
-      return
-    end
+    check_progress_status
 
     @exercise.reset!
 
@@ -88,6 +82,14 @@ class ExercisesController < ApplicationController
       MessageBroadcasterJob.perform_now(@exercise)
       raise InvalidSignature
     end
+  end
+
+  def check_progress_status
+    return unless @exercise.in_progress?
+    @exercise.processing!
+    @exercise.error_messages.push 'Assignment already being processed'
+    MessageBroadcasterJob.perform_now(@exercise)
+    render json: { exercise: @exercise }
   end
 
   # Use callbacks to share common setup or constraints between actions.

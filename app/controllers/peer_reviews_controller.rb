@@ -67,9 +67,8 @@ class PeerReviewsController < ApplicationController
 
   # GET /peer_reviews/assignments/id/request_exercise
   def assign_exercise
-    exercise = Exercise.find_by(assignment: Assignment.find(params[:id]), status: 'finished')
     assignment = Assignment.find(params[:id])
-    @peer_review.draw_exercise(assignment)
+    exercise = @peer_review.draw_exercise(assignment)
     pr_questions = exercise.assignment.exercise_type.peer_review_questions
 
     render json: { exercise: exercise, peer_review_guestions: pr_questions }
