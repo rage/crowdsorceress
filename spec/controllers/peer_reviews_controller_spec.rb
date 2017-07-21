@@ -44,10 +44,16 @@ RSpec.describe PeerReviewsController, type: :controller do
   end
 
   it 'sends zips' do
+    FileUtils.mkdir_p(Rails.root.join('submission_generation', 'packages', 'assignment_1', 'exercise_1').to_s)
+    FileUtils.touch(Rails.root.join('submission_generation', 'packages', 'assignment_1', 'exercise_1', 'ModelSolution_1.1.zip').to_s)
+    FileUtils.touch(Rails.root.join('submission_generation', 'packages', 'assignment_1', 'exercise_1', 'Stub_1.1.zip').to_s)
+
     get :send_model_zip, params: { id: 1 }
     expect(response.status).to eq(204)
     get :send_stub_zip, params: { id: 1 }
     expect(response.status).to eq(204)
+
+    FileUtils.remove_dir(Rails.root.join('submission_generation', 'packages', 'assignment_1').to_s)
   end
 
   it 'assigns an exercise for reviewing' do
