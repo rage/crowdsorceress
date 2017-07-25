@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ExercisesController < ApplicationController
-  before_action :set_exercise, only: %i[show update destroy results]
+  before_action :set_exercise, only: %i[show update destroy results check_progress_status]
   before_action :ensure_signed_in!, only: %i[create]
   before_action :set_assignment, only: %i[create]
 
@@ -22,7 +22,7 @@ class ExercisesController < ApplicationController
     @exercise = current_user.exercises.find_or_initialize_by(assignment: @assignment)
     @exercise.attributes = exercise_params
 
-    return render_error_page(status: 409, text: 'Assignment already being processed') if @exercise.in_progress?
+    return if @exercise.in_progress?
 
     @exercise.reset!
 

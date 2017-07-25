@@ -3,6 +3,7 @@
 class Exercise < ApplicationRecord
   belongs_to :assignment
   belongs_to :user
+  has_many :peer_reviews
 
   require 'zip'
   require 'tmc_langs'
@@ -74,7 +75,7 @@ class Exercise < ApplicationRecord
   end
 
   def in_progress?
-    %i[saved testing_stub testing_model_solution].include?(status)
+    %w[saved testing_stub testing_model_solution half_done].include?(status)
   end
 
   def submission_target_path

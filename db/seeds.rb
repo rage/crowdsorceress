@@ -9,20 +9,30 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 type = ExerciseType.create name: 'string_string'
-Assignment.create description: 'Luo tekoäly', exercise_type: type
+a1 = Assignment.create description: 'Luo tekoäly', exercise_type: type
 
 type2 = ExerciseType.create name: 'stdin_stdout'
 Assignment.create description: 'Tulosta tekoäly', exercise_type: type2
 
 type3 = ExerciseType.create name: 'string_stdout'
 Assignment.create description: 'Käytä tekoäly', exercise_type: type3
-a = Assignment.create description: 'Luo tekoäly', exercise_type: type
+
 Exercise.create(
   code: 'int luku = 1; \n String kissa = \"koira \"; \n return \"Palautusarvo \" ',
-  assignment: a,
+  assignment: a1,
   testIO: { input: 'Hello', output: 'Hello testi' }
 )
 PeerReviewQuestion.create question: 'Tehtävänannon mielekkyys', exercise_type: type
 PeerReviewQuestion.create question: 'Testien kattavuus', exercise_type: type
 PeerReviewQuestion.create question: 'Tehtävänannon selkeys', exercise_type: type
 PeerReviewQuestion.create question: 'Epätodennäköisen pitkä ja luultavasti vaikeasti ymmärrettävä vertaisarviointikysymys', exercise_type: type
+
+PeerReviewQuestion.create question: 'Tehtävä on toteutettu hyvällä maulla', exercise_type: type2
+PeerReviewQuestion.create question: 'Testien ja koodin oikeellisuus', exercise_type: type2
+PeerReviewQuestion.create question: 'Tehtävänannon selkeys', exercise_type: type2
+PeerReviewQuestion.create question: 'Tehtävän parhaustaso', exercise_type: type2
+
+PeerReviewQuestion.create question: 'Tehtävänannon mielekkyys', exercise_type: type3
+PeerReviewQuestion.create question: 'Tehtävän tyylikkyys', exercise_type: type3
+PeerReviewQuestion.create question: 'Testi-IO:n järkevyys', exercise_type: type3
+PeerReviewQuestion.create question: 'Tehtävän parhaustaso', exercise_type: type3

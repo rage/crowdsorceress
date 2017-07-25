@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# :nocov:
 class UsersController < ApplicationController
   before_action :set_user, only: %i[show update destroy]
   before_action :only_admins!, only: %i[index show]
@@ -54,4 +53,3 @@ class UsersController < ApplicationController
     params.require(:user).permit(:email, :first_name, :last_name, :administrator, :username)
   end
 end
-# :nocov:

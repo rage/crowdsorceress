@@ -3,7 +3,7 @@
 class PeerReviewsController < ApplicationController
   before_action :set_peer_review, only: %i[show update destroy]
   before_action :ensure_signed_in!, only: %i[create]
-  before_action :set_exercise, only: %i[create send_zip]
+  before_action :set_exercise, only: %i[create]
 
   # GET /peer_reviews
   def index
@@ -24,7 +24,7 @@ class PeerReviewsController < ApplicationController
     PeerReview.transaction do
       if @peer_review.save
         render json: @peer_review, status: :created, location: @peer_review
-        create_questions
+        create_question_answers
       else
         render json: @peer_review.errors, status: :unprocessable_entity
       end
@@ -32,16 +32,18 @@ class PeerReviewsController < ApplicationController
   end
 
   def send_model_zip
-    model_filename = Dir.entries(exercise_target_path).find { |o| o.start_with('ModelSolution') && end_with?('.zip') }
-    send_file template_zip_path(model_filename)
+    exercise = Exercise.find(params[:id])
+    model_filename = Dir.entries(exercise_target_path(exercise)).find { |o| o.start_with?('ModelSolution') && o.end_with?('.zip') }
+    send_file template_zip_path(exercise, model_filename)
   end
 
   def send_stub_zip
-    stub_filename = Dir.entries(exercise_target_path).find { |o| o.start_with?('Stub') && o.end_with?('.zip') }
-    send_file template_zip_path(stub_filename)
+    exercise = Exercise.find(params[:id])
+    stub_filename = Dir.entries(exercise_target_path(exercise)).find { |o| o.start_with?('Stub') && o.end_with?('.zip') }
+    send_file template_zip_path(exercise, stub_filename)
   end
 
-  def create_questions
+  def create_question_answers
     @reviews = params[:peer_review][:answers]
 
     @questions = @exercise.assignment.exercise_type.peer_review_questions
@@ -63,6 +65,17 @@ class PeerReviewsController < ApplicationController
     @peer_review.destroy
   end
 
+  # GET /peer_reviews/assignments/assignment_id/request_exercise
+  def assign_exercise
+    assignment = Assignment.find(params[:assignment_id])
+    peer_review = PeerReview.new
+    exercise = peer_review.draw_exercise(assignment)
+
+    raise NoExerciseError if exercise.nil?
+    pr_questions = exercise.assignment.exercise_type.peer_review_questions
+    render json: { exercise: exercise, peer_review_guestions: pr_questions }
+  end
+
   private
 
   def set_exercise
@@ -80,11 +93,11 @@ class PeerReviewsController < ApplicationController
     params.require(:exercise).permit(:exercise_id)
   end
 
-  def exercise_target_path
-    Rails.root.join('submission_generation', 'packages', "assignment_#{@exercise.assignment.id}", "exercise_#{@exercise.id}")
+  def exercise_target_path(exercise)
+    Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment.id}", "exercise_#{exercise.id}")
   end
 
-  def template_zip_path(zip_name)
-    exercise_target_path.join(zip_name)
+  def template_zip_path(exercise, zip_name)
+    exercise_target_path(exercise).join(zip_name)
   end
 end

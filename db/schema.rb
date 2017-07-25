@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170710083827) do
+ActiveRecord::Schema.define(version: 20170721074857) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 20170710083827) do
     t.integer "status", default: 0
     t.string "error_messages", default: [], array: true
     t.text "sandbox_results"
+    t.integer "peer_reviews_count", default: 0
   end
 
   create_table "peer_review_question_answers", force: :cascade do |t|
