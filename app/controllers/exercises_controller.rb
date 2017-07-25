@@ -87,7 +87,6 @@ class ExercisesController < ApplicationController
   def exercise_in_progress
     if @exercise.in_progress?
       @exercise.processing!
-      @exercise.error_messages.push 'Assignment already being processed'
       MessageBroadcasterJob.perform_now(@exercise)
       render json: { exercise: @exercise }
       true

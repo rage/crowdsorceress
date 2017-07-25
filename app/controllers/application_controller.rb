@@ -28,9 +28,9 @@ class ApplicationController < ActionController::API
     render_error_page(status: 400, text: 'Invalid secret token')
   end
 
-  NoMethodError = Class.new(StandardError)
+  NoExerciseError = Class.new(StandardError)
 
-  rescue_from ApplicationController::NoMethodError do
+  rescue_from ApplicationController::NoExerciseError do
     render_error_page(status: 400, text: 'No exercises for this assignment')
   end
 

@@ -62,9 +62,10 @@ RSpec.describe PeerReviewsController, type: :controller do
     expect(response.status).to eq(200)
   end
 
-  it 'raises exception when requesting exercise for assignment that has no finished exercises' do
+  it 'handles error when requesting an exercise for assignment that has no finished exercises' do
     Assignment.first.exercises = []
-    expect { get :assign_exercise, params: { assignment_id: Assignment.first } }.to raise_error(NoMethodError)
+    response = get :assign_exercise, params: { assignment_id: Assignment.first.id }
+    expect(response.status).to eq(400)
   end
 
   private

@@ -70,7 +70,11 @@ class PeerReviewsController < ApplicationController
     assignment = Assignment.find(params[:assignment_id])
     peer_review = PeerReview.new
     exercise = peer_review.draw_exercise(assignment)
-    pr_questions = exercise.assignment.exercise_type.peer_review_questions
+    begin
+      pr_questions = exercise.assignment.exercise_type.peer_review_questions
+    rescue
+      raise NoExerciseError
+    end
 
     render json: { exercise: exercise, peer_review_guestions: pr_questions }
   end
