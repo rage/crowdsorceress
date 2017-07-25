@@ -8,6 +8,9 @@ class PeerReview < ApplicationRecord
   validates :comment, presence: true
 
   def draw_exercise(assignment)
-    assignment.exercises.where(status: :finished).order('peer_reviews_count, RANDOM()').first
+    assignment.exercises
+              .where(status: :finished)
+              .order('peer_reviews_count, RANDOM()')
+              .first
   end
 end

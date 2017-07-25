@@ -34,13 +34,13 @@ class PeerReviewsController < ApplicationController
   def send_model_zip
     exercise = Exercise.find(params[:id])
     model_filename = Dir.entries(exercise_target_path(exercise)).find { |o| o.start_with?('ModelSolution') && o.end_with?('.zip') }
-    send_zip template_zip_path(exercise, model_filename)
+    send_file template_zip_path(exercise, model_filename)
   end
 
   def send_stub_zip
     exercise = Exercise.find(params[:id])
     stub_filename = Dir.entries(exercise_target_path(exercise)).find { |o| o.start_with?('Stub') && o.end_with?('.zip') }
-    send_zip template_zip_path(exercise, stub_filename)
+    send_file template_zip_path(exercise, stub_filename)
   end
 
   def create_question_answers
@@ -70,20 +70,13 @@ class PeerReviewsController < ApplicationController
     assignment = Assignment.find(params[:assignment_id])
     peer_review = PeerReview.new
     exercise = peer_review.draw_exercise(assignment)
-    begin
-      pr_questions = exercise.assignment.exercise_type.peer_review_questions
-    rescue
-      raise NoExerciseError
-    end
 
+    raise NoExerciseError if exercise.nil?
+    pr_questions = exercise.assignment.exercise_type.peer_review_questions
     render json: { exercise: exercise, peer_review_guestions: pr_questions }
   end
 
   private
-
-  def send_zip(path)
-    send_file path
-  end
 
   def set_exercise
     @exercise = Exercise.find(params[:exercise][:exercise_id])

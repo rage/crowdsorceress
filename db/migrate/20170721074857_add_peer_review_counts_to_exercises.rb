@@ -14,7 +14,7 @@ class AddPeerReviewCountsToExercises < ActiveRecord::Migration[5.1]
   def data
     execute <<-SQL.squish
         UPDATE exercises
-           SET peer_reviews_count = (SELECT count(1)
+           SET peer_reviews_count = (SELECT count(*)
                                    FROM peer_reviews
                                   WHERE peer_reviews.exercise_id = exercises.id)
     SQL

@@ -6,7 +6,7 @@ RSpec.describe PeerReviewsController, type: :controller do
   let(:user) { FactoryGirl.create(:user) }
   before { allow(controller).to receive(:current_user) { user } }
   before :each do
-    allow_any_instance_of(PeerReviewsController).to receive(:send_zip)
+    allow_any_instance_of(PeerReviewsController).to receive(:send_file)
   end
 
   let(:peer_review_question_question) { 'Testien kattavuus' }
