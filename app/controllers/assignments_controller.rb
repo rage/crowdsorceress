@@ -12,7 +12,8 @@ class AssignmentsController < ApplicationController
 
   # GET /assignments/1
   def show
-    render json: @assignment
+    tags = @assignment.fetch_recommended_tags
+    render json: {assignment: @assignment, tags: tags }
   end
 
   # POST /assignments

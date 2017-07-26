@@ -2,5 +2,5 @@
 
 class ExercisesTag < ApplicationRecord
   belongs_to :exercise
-  belongs_to :tag
+  belongs_to :tag # counter_cache: true
 end

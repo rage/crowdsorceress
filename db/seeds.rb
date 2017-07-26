@@ -36,3 +36,15 @@ PeerReviewQuestion.create question: 'Tehtävänannon mielekkyys', exercise_type:
 PeerReviewQuestion.create question: 'Tehtävän tyylikkyys', exercise_type: type3
 PeerReviewQuestion.create question: 'Testi-IO:n järkevyys', exercise_type: type3
 PeerReviewQuestion.create question: 'Tehtävän parhaustaso', exercise_type: type3
+
+Tag.create name: 'java', recommended: true
+Tag.create name: 'for-loop', recommended: true
+Tag.create name: 'while-loop'
+Tag.create name: 'error', recommended: true
+Tag.create name: 'scanner'
+Tag.create name: 'metodi', recommended: true
+Tag.create name: 'luokka'
+Tag.create name: 'olio', recommended: true
+Tag.create name: 'muuttuja'
+Tag.create name: 'shit'
+Tag.create name: 'hangover'

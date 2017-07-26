@@ -53,7 +53,7 @@ RSpec.describe PeerReviewsController, type: :controller do
     FileUtils.mkdir_p(Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment_id}", "exercise_#{exercise.id}").to_s)
     FileUtils.touch(Rails.root.join(
       'submission_generation', 'packages', "assignment_#{exercise.assignment_id}", "exercise_#{exercise.id}", "ModelSolution_#{exercise.id}.1.zip"
-      ).to_s)
+    ).to_s)
     FileUtils.touch(Rails.root.join(
       'submission_generation', 'packages', "assignment_#{exercise.assignment_id}", "exercise_#{exercise.id}", "Stub_#{exercise.id}.1.zip"
     ).to_s)

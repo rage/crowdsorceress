@@ -27,7 +27,7 @@ class ExercisesController < ApplicationController
     @exercise.reset!
 
     params[:exercise][:tags].each do |tag|
-      @exercise.tags.find_or_initialize_by(name: tag)
+      @exercise.tags.find_or_initialize_by(name: tag.downcase)
     end
 
     if @exercise.save
