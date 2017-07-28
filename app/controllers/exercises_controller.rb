@@ -22,13 +22,18 @@ class ExercisesController < ApplicationController
     @exercise = current_user.exercises.find_or_initialize_by(assignment: @assignment)
     @exercise.attributes = exercise_params
 
-    return if @exercise.in_progress?
+    if @exercise.in_progress?
+      render json: { message: 'Exercise is already in progress', status: 400 }
+      return
+    end
 
     @exercise.reset!
+
 
     params[:exercise][:tags].each do |tag|
       @exercise.tags.find_or_initialize_by(name: tag.downcase)
     end
+
 
     if @exercise.save
       ExerciseVerifierJob.perform_later @exercise
