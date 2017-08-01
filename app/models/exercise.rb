@@ -7,7 +7,6 @@ class Exercise < ApplicationRecord
   has_many :exercises_tags, dependent: :destroy
   has_many :tags, through: :exercises_tags
 
-  require 'zip'
   require 'tmc_langs'
   require 'sandbox_results_handler'
   require 'zip_handler'
