@@ -48,11 +48,13 @@ class PeerReviewsController < ApplicationController
   end
 
   def create_question_answers
-    @reviews = params[:peer_review][:answers]
+    reviews = params[:peer_review][:answers]
 
-    @questions = @exercise.assignment.exercise_type.peer_review_questions
+    questions = @exercise.assignment.exercise_type.peer_review_questions
 
-    @questions.each { |q| @peer_review.peer_review_question_answers.create! peer_review_question: q, grade: @reviews[q.question] }
+    questions.each do |q|
+      @peer_review.peer_review_question_answers.create!(peer_review_question: q, grade: reviews[q.question])
+    end
   end
 
   # PATCH/PUT /peer_reviews/1
@@ -78,7 +80,7 @@ class PeerReviewsController < ApplicationController
     raise NoExerciseError if exercise.nil?
     pr_questions = exercise.assignment.exercise_type.peer_review_questions
     tags = peer_review.fetch_recommended_tags
-    render json: { exercise: exercise, peer_review_guestions: pr_questions, tags: tags }
+    render json: { exercise: exercise, peer_review_questions: pr_questions, tags: tags }
   end
 
   private
