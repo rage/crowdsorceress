@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :tag do
-    name 'tai'
+    name 'tag'
   end
 
   factory :exercise_type do

@@ -15,8 +15,4 @@ class PeerReview < ApplicationRecord
               .order('peer_reviews_count, RANDOM()')
               .first
   end
-
-  def fetch_recommended_tags
-    Tag.where recommended: true
-  end
 end

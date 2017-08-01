@@ -74,12 +74,11 @@ class PeerReviewsController < ApplicationController
   # GET /peer_reviews/assignments/assignment_id/request_exercise
   def assign_exercise
     assignment = Assignment.find(params[:assignment_id])
-    peer_review = PeerReview.new
-    exercise = peer_review.draw_exercise(assignment)
+    exercise = PeerReview.new.draw_exercise(assignment)
 
     raise NoExerciseError if exercise.nil?
     pr_questions = exercise.assignment.exercise_type.peer_review_questions
-    tags = peer_review.fetch_recommended_tags
+    tags = Tag.where(recommended: true)
     render json: { exercise: exercise, peer_review_questions: pr_questions, tags: tags }
   end
 

@@ -2,5 +2,5 @@
 
 class PeerReviewsTag < ApplicationRecord
   belongs_to :peer_review
-  belongs_to :tag # counter_cache: true
+  belongs_to :tag
 end

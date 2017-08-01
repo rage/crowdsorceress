@@ -12,7 +12,7 @@ class AssignmentsController < ApplicationController
 
   # GET /assignments/1
   def show
-    tags = @assignment.fetch_recommended_tags
+    tags = Tag.where recommended: true
     render json: { assignment: @assignment, tags: tags }
   end
 
