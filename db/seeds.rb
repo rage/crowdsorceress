@@ -46,5 +46,3 @@ Tag.create name: 'metodi', recommended: true
 Tag.create name: 'luokka'
 Tag.create name: 'olio', recommended: true
 Tag.create name: 'muuttuja'
-Tag.create name: 'shit'
-Tag.create name: 'hangover'
