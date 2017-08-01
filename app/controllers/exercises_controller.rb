@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ExercisesController < ApplicationController
-  before_action :set_exercise, only: %i[show update destroy results check_progress_status]
+  before_action :set_exercise, only: %i[show update destroy results]
   before_action :ensure_signed_in!, only: %i[create]
   before_action :set_assignment, only: %i[create]
 
@@ -29,11 +29,7 @@ class ExercisesController < ApplicationController
 
     @exercise.reset!
 
-
-    params[:exercise][:tags].each do |tag|
-      @exercise.tags.find_or_initialize_by(name: tag.downcase)
-    end
-
+    add_tags
 
     if @exercise.save
       ExerciseVerifierJob.perform_later @exercise
@@ -100,6 +96,12 @@ class ExercisesController < ApplicationController
 
   def set_assignment
     @assignment = Assignment.find(params[:exercise][:assignment_id])
+  end
+
+  def add_tags
+    params[:exercise][:tags].each do |tag|
+      @exercise.tags.find_or_initialize_by(name: tag.downcase)
+    end
   end
 
   # Only allow a trusted parameter "white list" through.

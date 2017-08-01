@@ -64,7 +64,6 @@ RSpec.describe PeerReviewsController, type: :controller do
     expect(response.status).to eq(204)
 
     FileUtils.remove_dir(Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment_id}").to_s)
-
   end
 
   it 'assigns an exercise for reviewing' do
