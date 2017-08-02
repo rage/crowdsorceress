@@ -12,7 +12,7 @@ class AssignmentsController < ApplicationController
 
   # GET /assignments/1
   def show
-    render json: @assignment
+    render json: { assignment: @assignment, tags: Tag.recommended }
   end
 
   # POST /assignments

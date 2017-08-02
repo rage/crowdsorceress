@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170721074857) do
+ActiveRecord::Schema.define(version: 20170726085309) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,13 @@ ActiveRecord::Schema.define(version: 20170721074857) do
     t.integer "peer_reviews_count", default: 0
   end
 
+  create_table "exercises_tags", force: :cascade do |t|
+    t.bigint "tag_id"
+    t.bigint "exercise_id"
+    t.index ["exercise_id"], name: "index_exercises_tags_on_exercise_id"
+    t.index ["tag_id"], name: "index_exercises_tags_on_tag_id"
+  end
+
   create_table "peer_review_question_answers", force: :cascade do |t|
     t.integer "grade", null: false
     t.bigint "peer_review_id"
@@ -72,6 +79,20 @@ ActiveRecord::Schema.define(version: 20170721074857) do
     t.index ["user_id"], name: "index_peer_reviews_on_user_id"
   end
 
+  create_table "peer_reviews_tags", force: :cascade do |t|
+    t.bigint "tag_id"
+    t.bigint "peer_review_id"
+    t.index ["peer_review_id"], name: "index_peer_reviews_tags_on_peer_review_id"
+    t.index ["tag_id"], name: "index_peer_reviews_tags_on_tag_id"
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "recommended", default: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "first_name"
@@ -94,9 +115,13 @@ ActiveRecord::Schema.define(version: 20170721074857) do
   end
 
   add_foreign_key "assignments", "exercise_types"
+  add_foreign_key "exercises_tags", "exercises"
+  add_foreign_key "exercises_tags", "tags"
   add_foreign_key "peer_review_question_answers", "peer_review_questions"
   add_foreign_key "peer_review_question_answers", "peer_reviews"
   add_foreign_key "peer_review_questions", "exercise_types"
   add_foreign_key "peer_reviews", "exercises"
   add_foreign_key "peer_reviews", "users"
+  add_foreign_key "peer_reviews_tags", "peer_reviews"
+  add_foreign_key "peer_reviews_tags", "tags"
 end

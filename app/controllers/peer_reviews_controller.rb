@@ -21,6 +21,10 @@ class PeerReviewsController < ApplicationController
   def create
     @peer_review = current_user.peer_reviews.find_or_initialize_by(exercise: @exercise, comment: params[:peer_review][:comment])
 
+    params[:exercise][:tags].each do |tag|
+      @peer_review.tags.find_or_initialize_by(name: tag.downcase)
+    end
+
     PeerReview.transaction do
       if @peer_review.save
         render json: @peer_review, status: :created, location: @peer_review
@@ -44,11 +48,13 @@ class PeerReviewsController < ApplicationController
   end
 
   def create_question_answers
-    @reviews = params[:peer_review][:answers]
+    reviews = params[:peer_review][:answers]
 
-    @questions = @exercise.assignment.exercise_type.peer_review_questions
+    questions = @exercise.assignment.exercise_type.peer_review_questions
 
-    @questions.each { |q| @peer_review.peer_review_question_answers.create! peer_review_question: q, grade: @reviews[q.question] }
+    questions.each do |q|
+      @peer_review.peer_review_question_answers.create!(peer_review_question: q, grade: reviews[q.question])
+    end
   end
 
   # PATCH/PUT /peer_reviews/1
@@ -68,12 +74,11 @@ class PeerReviewsController < ApplicationController
   # GET /peer_reviews/assignments/assignment_id/request_exercise
   def assign_exercise
     assignment = Assignment.find(params[:assignment_id])
-    peer_review = PeerReview.new
-    exercise = peer_review.draw_exercise(assignment)
+    exercise = PeerReview.new.draw_exercise(assignment)
 
     raise NoExerciseError if exercise.nil?
     pr_questions = exercise.assignment.exercise_type.peer_review_questions
-    render json: { exercise: exercise, peer_review_guestions: pr_questions }
+    render json: { exercise: exercise, peer_review_questions: pr_questions, tags: Tag.recommended }
   end
 
   private
@@ -90,7 +95,7 @@ class PeerReviewsController < ApplicationController
   # Only allow a trusted parameter "white list" through.
   def peer_review_params
     params.require(:peer_review).permit(:comment, :answers)
-    params.require(:exercise).permit(:exercise_id)
+    params.require(:exercise).permit(:exercise_id, :tags)
   end
 
   def exercise_target_path(exercise)

@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 FactoryGirl.define do
+  factory :tag do
+    name 'tag'
+  end
+
   factory :exercise_type do
     name 'string_string'
     test_template 'asd'
