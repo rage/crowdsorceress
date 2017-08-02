@@ -29,7 +29,7 @@ class ExercisesController < ApplicationController
 
     @exercise.reset!
 
-    add_tags
+    @exercise.add_tags(params[:exercise][:tags])
 
     if @exercise.save
       ExerciseVerifierJob.perform_later @exercise
@@ -96,12 +96,6 @@ class ExercisesController < ApplicationController
 
   def set_assignment
     @assignment = Assignment.find(params[:exercise][:assignment_id])
-  end
-
-  def add_tags
-    params[:exercise][:tags].each do |tag|
-      @exercise.tags.find_or_initialize_by(name: tag.downcase)
-    end
   end
 
   # Only allow a trusted parameter "white list" through.

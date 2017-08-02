@@ -8,11 +8,13 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-code_template1 = 'public class Submission {\n\n    public static void main(String[] args) {\n\n    }\n\n    public static String metodi(String input) {\n\n    }\n}'
+code_template1 = 'public class Submission {\n\n    public static void main(String[] args) {\n\n    }\n\n
+public static String metodi(String input) {\n\n    }\n}'
 
 code_template2 = 'public class Submission {\n\n    public static void main(String[] args) {\n\n    }\n}'
 
-code_template3 = 'import java.util.Scanner;\n\npublic class Submission {\n\n    public static void main(String[] args) {\n\n    }\n\n    public static void metodi(String input) {\n\n    }\n}'
+code_template3 = 'import java.util.Scanner;\n\npublic class Submission {\n\n    public static void main(String[] args) {\n\n
+}\n\n    public static void metodi(String input) {\n\n    }\n}'
 
 type = ExerciseType.create name: 'string_string', code_template: code_template1
 a1 = Assignment.create description: 'Luo tekoäly', exercise_type: type

@@ -11,11 +11,11 @@ TEST_TEMPLATE = <<~eos
   import static org.junit.Assert.assertEquals;
 
   @Points("01-11")
-  public class DoesThisEvenCompileTest {
+  public class SubmissionTest {
 
   %<mock_stdio_init>s
 
-    public DoesThisEvenCompileTest() {
+    public SubmissionTest() {
 
     }
 
@@ -31,7 +31,7 @@ RSpec.describe TestGenerator do
   describe 'Input to output test generator' do
     exercise = FactoryGirl.create(:exercise)
 
-    test_code = 'assertEquals(output, DoesThisEvenCompile.metodi(input));'
+    test_code = 'assertEquals(output, Submission.metodi(input));'
 
     subject { TestGenerator.new }
 
@@ -62,9 +62,9 @@ RSpec.describe TestGenerator do
             toimii("dsas", "dsasdsasdsas");
           }
 eos
-      expect(subject).to respond_to(:generate).with(2).arguments
-      expect(subject.generate(exercise, 'DoesThisEvenCompile')).to eq(format(TEST_TEMPLATE,
-                                                                             tests: tests, IOtype: 'String', mock_stdio_init: '', test_code: test_code))
+      expect(subject).to respond_to(:generate).with(1).argument
+      expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE,
+                                                      tests: tests, IOtype: 'String', mock_stdio_init: '', test_code: test_code))
     end
 
     it 'generates a proper test template when ExerciseType is "int_int"' do
@@ -91,9 +91,8 @@ eos
             toimii(1337, 1787569);
           }
 eos
-      expect(subject.generate(exercise, 'DoesThisEvenCompile')).to eq(format(TEST_TEMPLATE,
-                                                                             tests: tests, IOtype: 'int',
-                                                                             mock_stdio_init: '', test_code: test_code))
+      expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, IOtype: 'int',
+                                                                     mock_stdio_init: '', test_code: test_code))
     end
   end
 
@@ -105,7 +104,7 @@ eos
     eos
 
     test_code = <<~eos
-      DoesThisEvenCompile.metodi(input);
+      Submission.metodi(input);
 
       String out = io.getSysOut();
       assertEquals(output, out);
@@ -142,10 +141,10 @@ eos
             toimii("dsas", "dsasdsasdsas");
           }
       eos
-      expect(subject).to respond_to(:generate).with(2).arguments
-      expect(subject.generate(exercise, 'DoesThisEvenCompile')).to eq(format(TEST_TEMPLATE,
-                                                                             tests: tests, IOtype: 'String',
-                                                                             mock_stdio_init: mock_stdio_init, test_code: test_code))
+      expect(subject).to respond_to(:generate).with(1).argument
+      expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE,
+                                                      tests: tests, IOtype: 'String',
+                                                      mock_stdio_init: mock_stdio_init, test_code: test_code))
     end
   end
 
@@ -156,9 +155,9 @@ eos
       public MockStdio io = new MockStdio();
     eos
     test_code = <<~eos
-      ReflectionUtils.newInstanceOfClass(DoesThisEvenCompile.class);
+      ReflectionUtils.newInstanceOfClass(Submission.class);
       io.setSysIn(input);
-      DoesThisEvenCompile.main(new String[0]);
+      Submission.main(new String[0]);
 
       String out = io.getSysOut();
 
@@ -196,10 +195,9 @@ eos
             toimii("dsas", "dsasdsasdsas");
           }
       eos
-      expect(subject).to respond_to(:generate).with(2).arguments
-      expect(subject.generate(exercise, 'DoesThisEvenCompile')).to eq(format(TEST_TEMPLATE,
-                                                                             tests: tests, IOtype: 'String',
-                                                                             mock_stdio_init: mock_stdio_init, test_code: test_code))
+      expect(subject).to respond_to(:generate).with(1).argument
+      expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, IOtype: 'String',
+                                                                     mock_stdio_init: mock_stdio_init, test_code: test_code))
     end
   end
 end

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ZipHandler
+  require 'zip'
+
   def initialize(exercise)
     @exercise = exercise
   end
