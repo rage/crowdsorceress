@@ -8,10 +8,11 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-code_template1 = " import java.utils.* // START LOCK \n public class Submission {\n\n    public static void main(String[] args) {\n\n // END LOCK \n//Kirjoita koodia tähän  \n  }
-\n\n        public static String metodi(String input) {\n\n // Hax hax hax \n }\n}"
+code_template1 = " import java.utils.* // START LOCK \n public class Submission {\n\n    public static void main(String[] args)
+{\n\n // END LOCK \n//Kirjoita koodia tähän  \n  }\n\n        public static String metodi(String input) {\n\n // Hax hax hax \n }\n}"
 
-code_template2 = " import java.utils.* \npublic class Submission { \n // START LOCK  \n \n  public static void main(String[] args) { \n // END LOCK \n\n  // Tee jotain fiksua  \n // LOCK TO END \n \n }\n}"
+code_template2 = " import java.utils.* \npublic class Submission { \n // START LOCK  \n \n  public static void main(String[] args) { \n
+// END LOCK \n\n  // Tee jotain fiksua  \n // LOCK TO END \n \n }\n}"
 
 code_template3 = "import java.util.Scanner;\n\npublic class Submission {\n\n    public static void main(String[] args) {\n\n // Hax hax hax \n
 }\n\n   // LOCK TO END \n public static void metodi(String input) {\n\n // Hax hax hax  \n  }\n}"

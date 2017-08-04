@@ -10,6 +10,7 @@ class Exercise < ApplicationRecord
   require 'tmc_langs'
   require 'sandbox_results_handler'
   require 'zip_handler'
+  require 'test_generator'
 
   has_paper_trail ignore: %i[updated_at status error_messages sandbox_results]
 
@@ -31,6 +32,27 @@ class Exercise < ApplicationRecord
     tags.each do |tag|
       self.tags.find_or_initialize_by(name: tag.downcase)
     end
+  end
+
+  def model_solution
+    get_boiler_plate('model')
+  end
+
+  def template
+    get_boiler_plate('stub')
+  end
+
+  def get_code(type)
+    FileUtils.cp_r Rails.root.join('submission_generation', 'SubmissionTemplate').to_s, submission_target_path.to_s
+    write_to_main_file
+    write_to_test_file
+
+    create_model_solution_and_stub
+    file = File.open(submission_target_path.join(type, 'src', 'Submission.java').to_s, 'rb:UTF-8')
+    plate = file.read
+
+    FileUtils.remove_dir(submission_target_path.to_s)
+    plate
   end
 
   def create_submission
