@@ -10,10 +10,7 @@ class ZipHandler
   def clean_up
     create_directories_for_zips
     retire_zips
-
-    create_zip(exercise_target_path.join("Stub_#{@exercise.id}.#{@exercise.versions.last.id}.zip").to_s, 'stub')
-    create_zip(exercise_target_path.join("ModelSolution_#{@exercise.id}.#{@exercise.versions.last.id}.zip").to_s, 'model')
-
+    create_zips
     FileUtils.remove_dir(submission_target_path.to_s)
   end
 
@@ -21,6 +18,11 @@ class ZipHandler
 
   def create_directories_for_zips
     FileUtils.mkdir_p(exercise_target_path.join('oldies').to_s)
+  end
+
+  def create_zips
+    create_zip(exercise_target_path.join("Stub_#{@exercise.id}.#{@exercise.versions.last.id}.zip").to_s, 'stub')
+    create_zip(exercise_target_path.join("ModelSolution_#{@exercise.id}.#{@exercise.versions.last.id}.zip").to_s, 'model')
   end
 
   def retire_zips

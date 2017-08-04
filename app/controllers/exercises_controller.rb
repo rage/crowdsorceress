@@ -23,7 +23,7 @@ class ExercisesController < ApplicationController
     @exercise.attributes = exercise_params
 
     if @exercise.in_progress?
-      render json: { message: 'Exercise is already in progress', status: 400 }
+      render json: { message: 'Exercise is already in progress', exercise: @exercise, status: 400 }
       return
     end
 
