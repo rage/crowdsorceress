@@ -89,13 +89,6 @@ RSpec.describe Exercise, type: :model do
     end
   end
 
-  describe 'when requesting an exercise for peer review' do
-    it 'reads model solution from zip' do
-      pending 'implement tests'
-      puts exercise.template
-      raise
-    end
-  end
 
   private
 

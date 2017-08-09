@@ -35,11 +35,11 @@ class Exercise < ApplicationRecord
   end
 
   def model_solution
-    get_boiler_plate('model')
+    get_code('model')
   end
 
   def template
-    get_boiler_plate('stub')
+    get_code('stub')
   end
 
   def get_code(type)
