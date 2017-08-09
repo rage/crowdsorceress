@@ -67,7 +67,7 @@ RSpec.describe Exercise, type: :model do
       expect(File).to exist(exercise_target_path.join("ModelSolution_#{exercise.id}.#{exercise.versions.last.id}.zip"))
       expect(File).to exist(exercise_target_path.join("Stub_#{exercise.id}.#{exercise.versions.last.id}.zip"))
 
-      FileUtils.remove_dir("submission_generation/packages/assignment_#{exercise.assignment.id}/")
+      FileUtils.remove_dir("submission_generation/packages/assignment_#{exercise.assignment.id}/exercise_#{exercise.id}")
     end
 
     it 'creates a zip with proper contents' do
@@ -88,7 +88,6 @@ RSpec.describe Exercise, type: :model do
       FileUtils.remove_dir("submission_generation/packages/assignment_#{exercise.assignment.id}/")
     end
   end
-
 
   private
 

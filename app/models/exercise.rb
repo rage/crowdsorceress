@@ -34,27 +34,6 @@ class Exercise < ApplicationRecord
     end
   end
 
-  def model_solution
-    get_code('model')
-  end
-
-  def template
-    get_code('stub')
-  end
-
-  def get_code(type)
-    FileUtils.cp_r Rails.root.join('submission_generation', 'SubmissionTemplate').to_s, submission_target_path.to_s
-    write_to_main_file
-    write_to_test_file
-
-    create_model_solution_and_stub
-    file = File.open(submission_target_path.join(type, 'src', 'Submission.java').to_s, 'rb:UTF-8')
-    plate = file.read
-
-    FileUtils.remove_dir(submission_target_path.to_s)
-    plate
-  end
-
   def create_submission
     check_if_already_submitted
 

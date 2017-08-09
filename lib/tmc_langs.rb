@@ -7,15 +7,11 @@ class TMCLangs
   end
 
   def self.prepare_solutions(exercise)
-    FileUtils.mkdir_p(Rails.root.join('submission_generation', 'tmp', "Submission_#{exercise.id}"))
-
     `java -jar #{langs_path.to_s} prepare-solutions --exercisePath #{Rails.root.join('submission_generation', 'tmp', "Submission_#{exercise.id}").to_s} \
 --outputPath #{Rails.root.join('submission_generation', 'tmp', "Submission_#{exercise.id}", 'model')}`
   end
 
   def self.prepare_stubs(exercise)
-    FileUtils.mkdir_p(Rails.root.join('submission_generation', 'tmp', "Submission_#{exercise.id}"))
-
     `java -jar #{langs_path.to_s} prepare-stubs --exercisePath #{Rails.root.join('submission_generation', 'tmp', "Submission_#{exercise.id}").to_s} \
 --outputPath #{Rails.root.join('submission_generation', 'tmp', "Submission_#{exercise.id}", 'stub')}`
   end
