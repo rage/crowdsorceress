@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170726085309) do
+ActiveRecord::Schema.define(version: 20170809084357) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 20170726085309) do
     t.string "test_template"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "code_template"
   end
 
   create_table "exercises", force: :cascade do |t|
@@ -42,6 +43,8 @@ ActiveRecord::Schema.define(version: 20170726085309) do
     t.string "error_messages", default: [], array: true
     t.text "sandbox_results"
     t.integer "peer_reviews_count", default: 0
+    t.string "model_solution"
+    t.string "template"
   end
 
   create_table "exercises_tags", force: :cascade do |t|

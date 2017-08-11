@@ -78,7 +78,8 @@ class PeerReviewsController < ApplicationController
 
     raise NoExerciseError if exercise.nil?
     pr_questions = exercise.assignment.exercise_type.peer_review_questions
-    render json: { exercise: exercise, peer_review_questions: pr_questions, tags: Tag.recommended }
+    render json: { exercise: exercise, peer_review_questions: pr_questions, tags: Tag.recommended,
+                   model_solution: exercise.model_solution, template: exercise.template }
   end
 
   private

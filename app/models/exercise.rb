@@ -7,10 +7,10 @@ class Exercise < ApplicationRecord
   has_many :exercises_tags, dependent: :destroy
   has_many :tags, through: :exercises_tags
 
-  require 'zip'
   require 'tmc_langs'
   require 'sandbox_results_handler'
   require 'zip_handler'
+  require 'test_generator'
 
   has_paper_trail ignore: %i[updated_at status error_messages sandbox_results]
 
@@ -28,11 +28,17 @@ class Exercise < ApplicationRecord
     self.sandbox_results = { status: '', message: '', passed: false, model_results_received: false, stub_results_received: false }
   end
 
+  def add_tags(tags)
+    tags.each do |tag|
+      self.tags.find_or_initialize_by(name: tag.downcase)
+    end
+  end
+
   def create_submission
     check_if_already_submitted
 
-    write_to_file(submission_target_path.join('src', 'Submission.java').to_s, MainClassGenerator.new, 'Submission')
-    write_to_file(submission_target_path.join('test', 'SubmissionTest.java').to_s, TestGenerator.new, 'Submission')
+    write_to_main_file
+    write_to_test_file
 
     create_model_solution_and_stub
   end
@@ -51,12 +57,15 @@ class Exercise < ApplicationRecord
     TMCLangs.prepare_stubs(self)
   end
 
-  def write_to_file(filename, generator, class_name)
-    file = File.new(filename, 'w+')
-    file.close
+  def write_to_main_file
+    File.open(submission_target_path.join('src', 'Submission.java').to_s, 'w') do |f|
+      f.write(code)
+    end
+  end
 
-    File.open(filename, 'w') do |f|
-      f.write(generator.generate(self, class_name))
+  def write_to_test_file
+    File.open(submission_target_path.join('test', 'SubmissionTest.java').to_s, 'w') do |f|
+      f.write(TestGenerator.new.generate(self))
     end
   end
 
