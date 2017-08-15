@@ -1,18 +1,15 @@
 # frozen_string_literal: true
 
-class AssignmentsController < BaseController
+class AssignmentsController < ApplicationController
   before_action :set_assignment, only: %i[show update destroy]
 
   # GET /assignments
   def index
     @assignments = Assignment.all
-
-    render json: @assignments
   end
 
   # GET /assignments/1
   def show
-    render json: { assignment: @assignment, tags: Tag.recommended, template: @assignment.exercise_type.code_template }
   end
 
   # POST /assignments
@@ -20,7 +17,7 @@ class AssignmentsController < BaseController
     @assignment = Assignment.new(assignment_params)
 
     if @assignment.save
-      render json: @assignment, status: :created, location: @assignment
+      redirect_to @assignment, notice: 'Assignment was successfully created.'
     else
       render json: @assignment.errors, status: :unprocessable_entity
     end

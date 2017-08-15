@@ -2,7 +2,7 @@
 
 module Api
   module V0
-    class ExercisesController < ApplicationController
+    class ExercisesController < BaseController
       # POST /exercises
       def create
         @exercise = current_user.exercises.find_or_initialize_by(assignment: @assignment)
@@ -26,6 +26,14 @@ module Api
         else
           render json: @exercise.errors, status: :unprocessable_entity, message: 'Exercise not created. =( :F'
         end
+      end
+
+      private
+
+      def exercise_params
+        # Allow any slate state for now...
+        desc_params = params['exercise']['description'].permit!
+        params.require(:exercise).permit(:code, :assignment_id, :tags, testIO: %i[input output]).merge(description: desc_params)
       end
     end
   end

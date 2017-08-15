@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PeerReviewsController < BaseController
+class PeerReviewsController < ApplicationController
   before_action :set_peer_review, only: %i[show update destroy]
   before_action :ensure_signed_in!, only: %i[create]
   before_action :set_exercise, only: %i[create]
@@ -33,18 +33,6 @@ class PeerReviewsController < BaseController
         render json: @peer_review.errors, status: :unprocessable_entity
       end
     end
-  end
-
-  def send_model_zip
-    exercise = Exercise.find(params[:id])
-    model_filename = Dir.entries(exercise_target_path(exercise)).find { |o| o.start_with?('ModelSolution') && o.end_with?('.zip') }
-    send_file template_zip_path(exercise, model_filename)
-  end
-
-  def send_stub_zip
-    exercise = Exercise.find(params[:id])
-    stub_filename = Dir.entries(exercise_target_path(exercise)).find { |o| o.start_with?('Stub') && o.end_with?('.zip') }
-    send_file template_zip_path(exercise, stub_filename)
   end
 
   def create_question_answers
