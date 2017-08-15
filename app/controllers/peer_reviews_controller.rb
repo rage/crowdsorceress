@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PeerReviewsController < ApplicationController
+class PeerReviewsController < BaseController
   before_action :set_peer_review, only: %i[show update destroy]
   before_action :ensure_signed_in!, only: %i[create]
   before_action :set_exercise, only: %i[create]
