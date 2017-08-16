@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Exercises</h1>
+
+<table class="table table-hover ">
+  <thead class="thead-inverse">
+    <tr>
+      <th>User</th>
+      <th>Assignment</th>
+      <th>Status</th>
+      <th>Peer reviews count</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @exercises.each do |exercise| %>
+      <tr>
+        <td><%= link_to exercise.user.username, exercise.user %></td>
+        <td><%= link_to exercise.assignment_id, exercise.assignment %></td>
+        <td><%= exercise.status %></td>
+        <td><%= exercise.peer_reviews_count %></td>
+        <td><%= link_to 'Show', exercise %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Exercise', new_exercise_path, class: 'btn btn-danger', data: { confirm: "Are you sure you don't want to do this with crowdsorcerer?" } %>

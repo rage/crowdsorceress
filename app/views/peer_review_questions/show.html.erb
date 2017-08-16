@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Question:</strong>
+  <%= @peer_review_question.question %>
+</p>
+
+<p>
+  <strong>Exercise type:</strong>
+  <%= @peer_review_question.exercise_type_id %>
+</p>
+
+<%= link_to 'Edit', edit_peer_review_question_path(@peer_review_question) %> |
+<%= link_to 'Back', peer_review_questions_path %>

@@ -1,0 +1,74 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= link_to @exercise.user.username, @exercise.user %>
+</p>
+
+<p>
+  <strong>Code:</strong>
+  <pre>
+    <code><%= @exercise.code %></code>
+  </pre>
+</p>
+
+<p>
+  <strong>Assignment:</strong>
+  <%= link_to @exercise.assignment_id, @exercise.assignment %>
+</p>
+
+<p>
+  <strong>Testio:</strong>
+  <pre>
+<%= JSON.pretty_generate(@exercise.testIO) %>
+  </pre>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <pre>
+<%= JSON.pretty_generate(@exercise.description) %>
+  </pre>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @exercise.status %>
+</p>
+
+<p>
+  <strong>Error messages:</strong>
+<pre>
+<%= JSON.pretty_generate(@exercise.error_messages) %>
+  </pre>
+</p>
+
+<p>
+  <strong>Sandbox results:</strong>
+<pre>
+<%= JSON.pretty_generate(@exercise.sandbox_results) %>
+  </pre>
+</p>
+
+<p>
+  <strong>Peer reviews count:</strong>
+  <%= @exercise.peer_reviews_count %>
+</p>
+
+<p>
+  <strong>Model solution:</strong>
+  <pre>
+    <code><%= @exercise.model_solution ? @exercise.model_solution : 'No model solution' %></code>
+  </pre>
+</p>
+
+<p>
+  <strong>Template:</strong>
+  <pre>
+    <code><%= @exercise.template ? @exercise.template : 'No template'%></code>
+  </pre>
+</p>
+
+<%= link_to 'Edit', edit_exercise_path(@exercise), class: "btn btn-primary" %>
+<%= link_to 'Back', exercises_path, class: "btn btn-secondary"  %>
+<%= link_to 'Destroy', @exercise, class: "btn btn-danger", method: :delete, data: { confirm: 'Are you sure?' }  %>

@@ -1,43 +1,49 @@
 # frozen_string_literal: true
 
 class TagsController < ApplicationController
-  before_action :set_tag, only: %i[show update destroy]
+  before_action :set_tag, only: %i[show edit update destroy]
 
   # GET /tags
   def index
     @tags = Tag.all
-
-    render json: @tags
   end
 
   # GET /tags/1
   def show
-    render json: @tag
   end
+
+  # GET /tags/new
+  def new
+    @tag = Tag.new
+  end
+
+  # GET /tags/1/edit
+  def edit; end
 
   # POST /tags
   def create
     @tag = Tag.new(tag_params)
 
     if @tag.save
-      render json: @tag, status: :created, location: @tag
+      redirect_to @tag, notice: 'Tag was successfully created.'
     else
-      render json: @tag.errors, status: :unprocessable_entity
+      render :new, notice: 'Tag creation failed.'
     end
   end
 
   # PATCH/PUT /tags/1
   def update
     if @tag.update(tag_params)
-      render json: @tag
+      redirect_to @tag, notice: 'Tag was successfully updated.'
     else
-      render json: @tag.errors, status: :unprocessable_entity
+      render :edit, notice: 'Tag update failed.'
     end
   end
 
   # DELETE /tags/1
   def destroy
     @tag.destroy
+    redirect_to tags_url, notice: 'Tag was successfully destroyed.'
   end
 
   private
@@ -49,6 +55,6 @@ class TagsController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def tag_params
-    params.require(:tag).permit(:name)
+    params.require(:tag).permit(:name, :recommended)
   end
 end

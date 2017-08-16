@@ -1,62 +1,57 @@
 # frozen_string_literal: true
 
 class ExercisesController < ApplicationController
-  before_action :set_exercise, only: %i[show update destroy results]
+  before_action :set_exercise, only: %i[show edit update destroy results]
   before_action :ensure_signed_in!, only: %i[create]
   before_action :set_assignment, only: %i[create]
 
   # GET /exercises
   def index
-    @exercises = Exercise.all
-
-    render json: @exercises
+    @exercises = Exercise.all.includes(:user)
   end
 
   # GET /exercises/1
   def show
-    render json: @exercise
+  end
+
+  # GET /exercises/new
+  def new
+    @exercise = Exercise.new
+  end
+
+  # GET /exercises/1/edit
+  def edit
   end
 
   # POST /exercises
+  # TODO: what do
   def create
-    @exercise = current_user.exercises.find_or_initialize_by(assignment: @assignment)
-    @exercise.attributes = exercise_params
-
-    if @exercise.in_progress?
-      render json: { message: 'Exercise is already in progress', exercise: @exercise, status: 400 }
-      return
-    end
-
-    @exercise.reset!
-
-    @exercise.add_tags(params[:exercise][:tags])
+    @exercise = Exercise.new(exercise_params)
 
     if @exercise.save
-      ExerciseVerifierJob.perform_later @exercise
-      @exercise.saved!
-      MessageBroadcasterJob.perform_now(@exercise)
-
-      render json: { message: 'Exercise successfully created! :) :3', exercise: @exercise }, status: :created
+      redirect_to @exercise, notice: 'Exercise was successfully created.'
     else
-      render json: @exercise.errors, status: :unprocessable_entity, message: 'Exercise not created. =( :F'
+      render :new, notice: 'Exercise creation failed.'
     end
   end
 
   # PATCH/PUT /exercises/1
   def update
     if @exercise.update(exercise_params)
-      render json: @exercise
+      redirect_to @exercise, notice: 'Exercise was successfully updated.'
     else
-      render json: @exercise.errors, status: :unprocessable_entity
+      render :edit, notice: 'Exercise update failed.'
     end
   end
 
   # DELETE /exercises/1
   def destroy
     @exercise.destroy
+    redirect_to exercises_url, notice: 'Exercise was successfully destroyed.'
   end
 
   # POST /exercises/:id/results
+  # TODO: what do
   def sandbox_results
     if params[:token].include? 'MODEL'
       package_type = 'MODEL'
@@ -72,6 +67,7 @@ class ExercisesController < ApplicationController
 
   private
 
+  # TODO: what do
   def verify_secret_token(token, exercise)
     secret_token = if params[:token].include? 'MODEL'
                      token.gsub('MODEL', '')

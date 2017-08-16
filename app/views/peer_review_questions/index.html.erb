@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Peer Review Questions</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Question</th>
+      <th>Exercise type</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @peer_review_questions.each do |peer_review_question| %>
+      <tr>
+        <td><%= peer_review_question.question %></td>
+        <td><%= peer_review_question.exercise_type_id %></td>
+        <td><%= link_to 'Show', peer_review_question %></td>
+        <td><%= link_to 'Edit', edit_peer_review_question_path(peer_review_question) %></td>
+        <td><%= link_to 'Destroy', peer_review_question, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Peer Review Question', new_peer_review_question_path %>

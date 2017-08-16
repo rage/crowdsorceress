@@ -13,15 +13,15 @@
 
   <div class="field">
     <%= form.label :description %>
-    <%= form.text_field :description, id: :assignment_description %>
+    <%= form.text_field :description, id: :assignment_description, class: "form-control" %>
   </div>
 
   <div class="field">
     <%= form.label :exercise_type_id %>
-    <%= form.number_field :exercise_type_id, id: :assignment_exercise_type_id %>
+    <%= form.collection_select :exercise_type_id, ExerciseType.all, :id, :name, { prompt: true }, class: "form-control" %>
   </div>
 
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit nil, class: "btn btn-primary" %>
   </div>
 <% end %>

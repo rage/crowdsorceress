@@ -61,3 +61,9 @@ gem 'netrc', '~> 0.11.0'
 gem 'rest-client', '~> 1.8'
 
 gem 'paper_trail'
+
+gem 'bootstrap', '~> 4.0.0.beta'
+gem 'jquery-rails'
+gem 'turbolinks', '~> 5'
+
+gem 'sass-rails', '~> 5.0'
