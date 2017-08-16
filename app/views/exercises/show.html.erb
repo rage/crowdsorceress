@@ -1,5 +1,7 @@
 <p id="notice"><%= notice %></p>
 
+<h1>Exercise <%= @exercise.id %></h1>
+
 <p>
   <strong>User:</strong>
   <%= link_to @exercise.user.username, @exercise.user %>
@@ -68,6 +70,17 @@
     <code><%= @exercise.template ? @exercise.template : 'No template'%></code>
   </pre>
 </p>
+
+<strong>Tags:</strong>
+<% if @exercise.tags %>
+<ul>
+ <% @exercise.tags.each do |tag| %>
+ <li> <%= link_to tag.name, tag %></li>
+ <% end %>
+ </ul>
+  <% else %>
+  <p> 'No tags' </p>
+<% end %>
 
 <%= link_to 'Edit', edit_exercise_path(@exercise), class: "btn btn-primary" %>
 <%= link_to 'Back', exercises_path, class: "btn btn-secondary"  %>

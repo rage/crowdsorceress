@@ -30,7 +30,7 @@ class Exercise < ApplicationRecord
 
   def add_tags(tags)
     tags.each do |tag|
-      self.tags.find_or_initialize_by(name: tag.downcase)
+      self.tags.find_or_initialize_by(name: tag.strip.delete("\n").gsub(/\s+/, ' ').downcase)
     end
   end
 

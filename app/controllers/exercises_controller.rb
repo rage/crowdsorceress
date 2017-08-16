@@ -11,7 +11,9 @@ class ExercisesController < ApplicationController
   end
 
   # GET /exercises/1
-  def show; end
+  def show
+    @tags = @exercise.tags
+  end
 
   # GET /exercises/new
   def new

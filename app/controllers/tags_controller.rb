@@ -9,7 +9,9 @@ class TagsController < ApplicationController
   end
 
   # GET /tags/1
-  def show; end
+  def show
+    @exercises = @tag.exercises
+  end
 
   # GET /tags/new
   def new

@@ -1,14 +1,23 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Name:</strong>
-  <%= @tag.name %>
-</p>
+<h1><%= @tag.name %></h1>
 
 <p>
   <strong>Recommended:</strong>
   <%= @tag.recommended %>
 </p>
 
-<%= link_to 'Edit', edit_tag_path(@tag) %> |
-<%= link_to 'Back', tags_path %>
+<% if @tag.exercises.empty? %>
+  <strong>No exercises tagged with <%= @tag.name %></strong>
+<% else %>
+  <strong>Exercises tagged with <%= @tag.name %>:</strong>
+  <% @tag.exercises.each do |exercise| %>
+    <p><%= link_to exercise.id, exercise %></p>
+  <% end %>
+<% end %>
+
+<p>
+<%= link_to 'Edit', edit_tag_path(@tag), class: "btn btn-primary" %>
+<%= link_to 'Back', tags_path, class: "btn btn-secondary" %>
+<%= link_to 'Destroy', tag_path, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %>
+</p>
