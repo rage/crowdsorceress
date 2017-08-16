@@ -1,23 +1,25 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe "exercises/show", type: :view do
+RSpec.describe 'exercises/show', type: :view do
   before(:each) do
     @exercise = assign(:exercise, Exercise.create!(
-      :user_id => 2,
-      :code => "MyText",
-      :assignment_id => 3,
-      :testIO => "",
-      :description => "",
-      :status => 4,
-      :error_messages => "Error Messages",
-      :sandbox_results => "MyText",
-      :peer_reviews_count => 5,
-      :model_solution => "MyText",
-      :template => "MyText"
+                                    user_id: 2,
+                                    code: 'MyText',
+                                    assignment_id: 3,
+                                    testIO: '',
+                                    description: '',
+                                    status: 4,
+                                    error_messages: 'Error Messages',
+                                    sandbox_results: 'MyText',
+                                    peer_reviews_count: 5,
+                                    model_solution: 'MyText',
+                                    template: 'MyText'
     ))
   end
 
-  it "renders attributes in <p>" do
+  it 'renders attributes in <p>' do
     render
     expect(rendered).to match(/2/)
     expect(rendered).to match(/MyText/)

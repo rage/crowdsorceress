@@ -11,8 +11,7 @@ class ExercisesController < ApplicationController
   end
 
   # GET /exercises/1
-  def show
-  end
+  def show; end
 
   # GET /exercises/new
   def new
@@ -20,8 +19,7 @@ class ExercisesController < ApplicationController
   end
 
   # GET /exercises/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /exercises
   # TODO: what do

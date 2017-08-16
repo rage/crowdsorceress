@@ -10,8 +10,7 @@ class UsersController < ApplicationController
   end
 
   # GET /users/1
-  def show
-  end
+  def show; end
 
   # TODO: what do from this point
 

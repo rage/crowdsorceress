@@ -9,8 +9,7 @@ class AssignmentsController < ApplicationController
   end
 
   # GET /assignments/1
-  def show
-  end
+  def show; end
 
   # GET /assignments/new
   def new

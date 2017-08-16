@@ -1,5 +1,7 @@
 <p id="notice"><%= notice %></p>
 
+<h1>Peer Review Question <%=@peer_review_question.id%></h1>
+
 <p>
   <strong>Question:</strong>
   <%= @peer_review_question.question %>
@@ -7,8 +9,9 @@
 
 <p>
   <strong>Exercise type:</strong>
-  <%= @peer_review_question.exercise_type_id %>
+  <%= @peer_review_question.exercise_type.name %>
 </p>
 
-<%= link_to 'Edit', edit_peer_review_question_path(@peer_review_question) %> |
-<%= link_to 'Back', peer_review_questions_path %>
+<%= link_to 'Edit', edit_peer_review_question_path(@peer_review_question), class: "btn btn-primary" %>
+<%= link_to 'Back', peer_review_questions_path, class: "btn btn-secondary" %>
+<%= link_to 'Destroy', @peer_review_question, class: "btn btn-danger", method: :delete, data: { confirm: 'Are you sure?' }  %>

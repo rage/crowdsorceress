@@ -8,5 +8,5 @@ class Tag < ApplicationRecord
 
   scope :recommended, -> { where(recommended: true) }
 
-  validates :name, uniqueness:  true
+  validates :name, uniqueness: true
 end

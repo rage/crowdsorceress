@@ -9,8 +9,7 @@ class PeerReviewQuestionsController < ApplicationController
   end
 
   # GET /peer_review_questions/1
-  def show
-  end
+  def show; end
 
   # GET /peer_review_questions/new
   def new
