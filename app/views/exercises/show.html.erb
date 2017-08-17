@@ -3,6 +3,22 @@
 <h1>Exercise <%= @exercise.id %></h1>
 
 <p>
+<strong>Created:</strong>
+  <%= @exercise.created_at %>
+</p>
+
+
+<p>
+<strong>Updated:</strong>
+  <%= @exercise.updated_at %>
+</p>
+
+<p>
+  <strong>Assignment:</strong>
+  <%= link_to @exercise.assignment_id, @exercise.assignment %>
+</p>
+
+<p>
   <strong>User:</strong>
   <%= link_to @exercise.user.username, @exercise.user %>
 </p>
@@ -12,11 +28,6 @@
   <pre>
     <code><%= @exercise.code %></code>
   </pre>
-</p>
-
-<p>
-  <strong>Assignment:</strong>
-  <%= link_to @exercise.assignment_id, @exercise.assignment %>
 </p>
 
 <p>

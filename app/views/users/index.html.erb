@@ -2,36 +2,24 @@
 
 <h1>Users</h1>
 
-<table>
-  <thead>
+<table class="table table-hover">
+  <thead class="thead-inverse">
     <tr>
-      <th>Email</th>
-      <th>First name</th>
-      <th>Last name</th>
-      <th>Administrator</th>
       <th>Username</th>
-      <th>Last logged in</th>
-      <th colspan="3"></th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Administrator</th>
     </tr>
   </thead>
 
   <tbody>
     <% @users.each do |user| %>
       <tr>
-        <td><%= user.email %></td>
-        <td><%= user.first_name %></td>
-        <td><%= user.last_name %></td>
+        <td><%= link_to user.username, user %></td>
+        <td><%= user.first_name ? user.first_name : '-' %> <%= user.last_name%></td>
+        <td><%= user.email%></td>
         <td><%= user.administrator %></td>
-        <td><%= user.username %></td>
-        <td><%= user.last_logged_in %></td>
-        <td><%= link_to 'Show', user %></td>
-        <td><%= link_to 'Edit', edit_user_path(user) %></td>
-        <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
-
-<br>
-
-<%= link_to 'New User', new_user_path %>

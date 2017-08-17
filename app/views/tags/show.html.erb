@@ -11,9 +11,11 @@
   <strong>No exercises tagged with <%= @tag.name %></strong>
 <% else %>
   <strong>Exercises tagged with <%= @tag.name %>:</strong>
-  <% @tag.exercises.each do |exercise| %>
-    <p><%= link_to exercise.id, exercise %></p>
-  <% end %>
+  <p>
+    <% @tag.exercises.each do |exercise| %>
+      <%= link_to exercise.id, exercise %>
+    <% end %>
+  </p>
 <% end %>
 
 <p>

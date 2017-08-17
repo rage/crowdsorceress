@@ -1,5 +1,11 @@
 <p id="notice"><%= notice %></p>
 
+<h1>User <%= @user.username %>
+<% if @user.administrator %>
+  (admin)
+<% end %>
+</h1>
+
 <p>
   <strong>Email:</strong>
   <%= @user.email %>
@@ -7,22 +13,12 @@
 
 <p>
   <strong>First name:</strong>
-  <%= @user.first_name %>
+  <%= @user.first_name ? @user.first_name : '-' %>
 </p>
 
 <p>
   <strong>Last name:</strong>
-  <%= @user.last_name %>
-</p>
-
-<p>
-  <strong>Administrator:</strong>
-  <%= @user.administrator %>
-</p>
-
-<p>
-  <strong>Username:</strong>
-  <%= @user.username %>
+  <%= @user.last_name ? @user.last_name : '-'%>
 </p>
 
 <p>
@@ -30,5 +26,21 @@
   <%= @user.last_logged_in %>
 </p>
 
-<%= link_to 'Edit', edit_user_path(@user) %> |
-<%= link_to 'Back', users_path %>
+<strong>Exercises by this user (link is assignment number):</strong>
+
+<p>
+<% @user.exercises.each do |exercise|%>
+  <%= link_to exercise.assignment_id, exercise%>
+  <% end %>
+</p>
+
+<strong>Peer reviews by this user (link is exercise number):</strong>
+
+<p>
+<% @user.peer_reviews.each do |peer_review|%>
+  <%= link_to peer_review.exercise_id, peer_review%>
+  <% end %>
+</p>
+
+<%= link_to 'Edit', edit_user_path(@user), class: "btn btn-primary" %>
+<%= link_to 'Back', users_path, class: "btn btn-secondary" %>
