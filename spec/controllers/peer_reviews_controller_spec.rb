@@ -14,7 +14,7 @@ RSpec.describe PeerReviewsController, type: :controller do
   let(:another_exercise) { FactoryGirl.create(:exercise, user: user) }
 
   context 'when submitting again for same exercise' do
-    it 'also creates tags in case exercise didnt have it' do
+    it 'also creates tags in case exercise didn\'t have them' do
       expect { post_create(exercise) }.to change { Tag.count }.by(1)
     end
   end
@@ -47,35 +47,6 @@ RSpec.describe PeerReviewsController, type: :controller do
     exercise = FactoryGirl.create(:exercise, user: FactoryGirl.create(:user))
     post :create, params: { peer_review: { asd: 'asd' }, exercise: { exercise_id: exercise.id, tags: ['asd'] } }
     expect(response.status).to eq(422)
-  end
-
-  it 'sends zips' do
-    FileUtils.mkdir_p(Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment_id}", "exercise_#{exercise.id}").to_s)
-    FileUtils.touch(Rails.root.join(
-      'submission_generation', 'packages', "assignment_#{exercise.assignment_id}", "exercise_#{exercise.id}", "ModelSolution_#{exercise.id}.1.zip"
-    ).to_s)
-    FileUtils.touch(Rails.root.join(
-      'submission_generation', 'packages', "assignment_#{exercise.assignment_id}", "exercise_#{exercise.id}", "Stub_#{exercise.id}.1.zip"
-    ).to_s)
-
-    get :send_model_zip, params: { id: exercise.id }
-    expect(response.status).to eq(204)
-    get :send_stub_zip, params: { id: exercise.id }
-    expect(response.status).to eq(204)
-
-    FileUtils.remove_dir(Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment_id}").to_s)
-  end
-
-  it 'assigns an exercise for reviewing' do
-    exercise.update status: 'finished'
-    get :assign_exercise, params: { assignment_id: exercise.assignment_id }
-    expect(response.status).to eq(200)
-  end
-
-  it 'handles error when requesting an exercise for assignment that has no finished exercises' do
-    Assignment.first.exercises = []
-    response = get :assign_exercise, params: { assignment_id: Assignment.first.id }
-    expect(response.status).to eq(400)
   end
 
   private

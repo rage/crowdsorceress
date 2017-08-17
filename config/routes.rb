@@ -1,5 +1,15 @@
 # frozen_string_literal: true
 
+class ActionDispatch::Routing::Mapper
+  def resources3(*args)
+    resources *args do
+      scope module: args[0] do
+        yield
+      end
+    end
+  end
+end
+
 Rails.application.routes.draw do
   root to: 'assignments#index'
   resources :sessions, only: %i[create index]
@@ -16,10 +26,10 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v0, defaults: { format: :json } do
-      resources :assignments, module: :assignments, only: :show do
+      resources3 :assignments, only: :show do
         resources :peer_review_exercise, only: :index
       end
-      resources :exercises, module: :exercises, only: :create do
+      resources3 :exercises, only: :create do
         get 'template.zip', to: 'zips#template'
         get 'model_solution.zip', to: 'zips#model_solution'
         resources :results, only: :create
