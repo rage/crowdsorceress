@@ -13,20 +13,20 @@
 
   <div class="field">
     <%= form.label :user_id %>
-    <%= form.text_field :user_id, id: :peer_review_user_id %>
+    <%= form.text_field :user_id, id: :peer_review_user_id, class: "form-control" %>
   </div>
 
   <div class="field">
     <%= form.label :exercise_id %>
-    <%= form.text_field :exercise_id, id: :peer_review_exercise_id %>
-  </div>
+    <%= form.collection_select :exercise_id, Exercise.all, :id, :id, { prompt: true }, class: "form-control" %>
+    </div>
 
   <div class="field">
     <%= form.label :comment %>
-    <%= form.text_area :comment, id: :peer_review_comment %>
+    <%= form.text_area :comment, id: :peer_review_comment, class: "form-control" %>
   </div>
 
   <div class="actions">
-    <%= form.submit %>
+  <%= form.submit nil, class: "btn btn-primary" %>
   </div>
 <% end %>

@@ -3,7 +3,8 @@
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-    <a class="navbar-brand" href="#">Crowdsorceress</a>
+    <a class="navbar-brand" href="/">Crowdsorceress</a>
+    <% if admin? %>
     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
       <li class="nav-item">
         <%= link_to 'Assignments', assignments_path, class: 'nav-link' %>
@@ -24,5 +25,9 @@
         <%= link_to 'Peer Review Questions', peer_review_questions_path, class: 'nav-link' %>
       </li>
     </ul>
+    <% if current_user %>
+      <%= link_to 'Log out', sessions_path, method: :delete, data: { confirm: 'Do oyu want to log out?' }, class: "float-right btn-primary" %>
+    <% end %>
+  <% end %>
   </div>
 </nav>

@@ -1,0 +1,26 @@
+<br>
+<h1>Please log in with your TestMyCode account</h1>
+<br>
+<% flash.each do |key, value| %>
+  <div class="<%= flash_class(key) %>" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <%= value %>
+  </div>
+<% end %>
+<%= form_tag("/sessions", method: "post") do %>
+  <div class="form-group row">
+    <label for="example-text-input" class="col-2 col-form-label">Username</label>
+    <div class="col-10">
+       <%= text_field_tag :login, nil, class: "form-control" %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="example-password-input" class="col-2 col-form-label">Password</label>
+    <div class="col-10">
+       <%= password_field_tag :password, nil, class: "form-control" %>
+    </div>
+  </div>
+  <%= submit_tag "Log in", class: "btn btn-primary" %>
+<% end %>

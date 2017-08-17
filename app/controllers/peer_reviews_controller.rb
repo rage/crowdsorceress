@@ -2,7 +2,6 @@
 
 class PeerReviewsController < ApplicationController
   before_action :set_peer_review, only: %i[show edit update destroy]
-  before_action :ensure_signed_in!, only: %i[create]
   before_action :set_exercise, only: %i[create]
 
   # GET /peer_reviews

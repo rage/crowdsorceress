@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  root to: 'assignments#index'
+  resources :sessions, only: %i[create index]
+  delete '/sessions', to: 'sessions#destroy'
   resources :tags
   resources :peer_review_question_answers
   resources :peer_review_questions

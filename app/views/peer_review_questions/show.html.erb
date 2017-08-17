@@ -9,7 +9,7 @@
 
 <p>
   <strong>Exercise type:</strong>
-  <%= @peer_review_question.exercise_type.name %>
+  <%= link_to @peer_review_question.exercise_type.name, @peer_review_question.exercise_type %>
 </p>
 
 <%= link_to 'Edit', edit_peer_review_question_path(@peer_review_question), class: "btn btn-primary" %>

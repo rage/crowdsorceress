@@ -30,3 +30,4 @@
 
 <%= link_to 'Edit', edit_assignment_path(@assignment), class: "btn btn-primary"%>
 <%= link_to 'Back', assignments_path, class: "btn btn-secondary" %>
+<%= link_to 'Destroy', @assignment, class: "btn btn-danger", method: :delete, data: { confirm: 'Are you sure?' }  %>
