@@ -4,11 +4,14 @@ module Api
   module V0
     class PeerReviewsController < BaseController
       # POST /peer_reviews
+      before_action :set_exercise, only: %i[create]
+
       def create
         @peer_review = current_user.peer_reviews.find_or_initialize_by(exercise: @exercise, comment: params[:peer_review][:comment])
 
         params[:exercise][:tags].each do |tag|
-          @peer_review.tags.find_or_initialize_by(name: tag.downcase)
+          tag = Tag.find_or_initialize_by(name: tag.strip.delete("\n").gsub(/\s+/, ' ').downcase)
+          @peer_review.tags << tag
         end
 
         PeerReview.transaction do
@@ -18,6 +21,22 @@ module Api
           else
             render json: @peer_review.errors, status: :unprocessable_entity
           end
+        end
+      end
+
+      private
+
+      def set_exercise
+        @exercise = Exercise.find(params[:exercise][:exercise_id])
+      end
+
+      def create_question_answers
+        reviews = params[:peer_review][:answers]
+
+        questions = @exercise.assignment.exercise_type.peer_review_questions
+
+        questions.each do |q|
+          @peer_review.peer_review_question_answers.create!(peer_review_question: q, grade: reviews[q.question])
         end
       end
     end
