@@ -3,6 +3,8 @@
 module Api
   module V0
     class ExercisesController < BaseController
+      before_action :set_assignment, only: %i[create]
+
       # POST /exercises
       def create
         @exercise = current_user.exercises.find_or_initialize_by(assignment: @assignment)
@@ -29,6 +31,15 @@ module Api
       end
 
       private
+
+      # Use callbacks to share common setup or constraints between actions.
+      def set_exercise
+        @exercise = Exercise.find(params[:id])
+      end
+
+      def set_assignment
+        @assignment = Assignment.find(params[:exercise][:assignment_id])
+      end
 
       def exercise_params
         # Allow any slate state for now...
