@@ -56,7 +56,7 @@ gem 'sidekiq', '~> 5.0.4'
 gem 'rubyzip', '~> 1.2', '>= 1.2.1'
 
 gem 'http-cookie', '~> 1.0', '>= 1.0.3'
-gem 'mime-types', '~> 3.1'
+gem 'mime-types', '~> 2.99.3'
 gem 'netrc', '~> 0.11.0'
 gem 'rest-client', '~> 1.8'
 
