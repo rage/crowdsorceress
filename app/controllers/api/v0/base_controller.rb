@@ -13,13 +13,13 @@ module Api
       NotAuthorized = Class.new(StandardError)
 
       rescue_from NotAuthorized do
-        render_error_page(status: 403, text: 'Forbidden')
+        render_error_page(status: 403, text: 'Forbidden.')
       end
 
       NotLoggedIn = Class.new(StandardError)
 
       rescue_from NotLoggedIn do
-        render_error_page(status: 401, text: 'Please log in')
+        render_error_page(status: 401, text: 'Please log in.')
       end
 
       rescue_from ActiveRecord::RecordNotFound do |ex|
@@ -27,13 +27,13 @@ module Api
       end
 
       rescue_from ActiveSupport::MessageVerifier::InvalidSignature do
-        render_error_page(status: 400, text: 'Invalid secret token')
+        render_error_page(status: 400, text: 'Invalid secret token.')
       end
 
       NoExerciseError = Class.new(StandardError)
 
       rescue_from NoExerciseError do
-        render_error_page(status: 400, text: 'No exercises for this assignment')
+        render_error_page(status: 400, text: 'No exercises for this assignment.')
       end
 
       def ensure_signed_in!
