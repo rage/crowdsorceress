@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SessionsController < ApplicationController
-  skip_before_action :only_admins!
+  skip_before_action :ensure_signed_in!, :only_admins!
 
   def index
     redirect_to redirect_target unless current_user.nil?

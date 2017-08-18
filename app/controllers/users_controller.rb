@@ -11,8 +11,6 @@ class UsersController < ApplicationController
   # GET /users/1
   def show; end
 
-  # TODO: what do from this point
-
   # POST /users
   def create
     @user = User.new(user_params)

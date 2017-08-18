@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
-class ActionDispatch::Routing::Mapper
-  def resources3(*args)
-    resources *args do
-      scope module: args[0] do
-        yield
+module ActionDispatch
+  module Routing
+    class Mapper
+      def resources3(*args)
+        resources(*args) do
+          scope module: args[0] do
+            yield
+          end
+        end
       end
     end
   end

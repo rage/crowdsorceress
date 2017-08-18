@@ -9,4 +9,9 @@ module ApplicationHelper
     when 'alert' then 'alert alert-danger'
     end
   end
+
+  def navigation_link(name, path)
+    class_name = request.path.start_with?(path) ? 'nav-link active' : 'nav-link'
+    link_to name, path, class: class_name
+  end
 end

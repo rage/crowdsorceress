@@ -3,20 +3,14 @@
 require 'upstream_user'
 
 class ApplicationController < ActionController::Base
-  # protect_from_forgery with: :exception
-  before_action :only_admins!
+  protect_from_forgery with: :exception
+  before_action :ensure_signed_in!, :only_admins!
   helper_method :current_user, :admin?
 
   NotAuthorized = Class.new(StandardError)
 
   rescue_from NotAuthorized do
-    redirect_to sessions_path, alert: 'Not authorized'
-  end
-
-  NotLoggedIn = Class.new(StandardError)
-
-  rescue_from NotLoggedIn do
-    redirect_to sessions_path, alert: 'Please log in'
+    redirect_to sessions_path, alert: 'Not authorized.'
   end
 
   def current_user
@@ -31,6 +25,12 @@ class ApplicationController < ActionController::Base
 
   def only_admins!
     raise NotAuthorized unless admin?
+  end
+
+  def ensure_signed_in!
+    return if current_user
+    session[:return_to] = request.url
+    redirect_to sessions_path, notice: 'Please log in.'
   end
 
   def oauth_client

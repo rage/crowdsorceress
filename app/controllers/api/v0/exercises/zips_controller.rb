@@ -4,7 +4,6 @@ module Api
   module V0
     module Exercises
       class ZipsController < BaseController
-
         def model_solution
           exercise = Exercise.find(params[:exercise_id])
           model_filename = Dir.entries(exercise_target_path(exercise)).find { |o| o.start_with?('ModelSolution') && o.end_with?('.zip') }

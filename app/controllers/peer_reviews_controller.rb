@@ -21,7 +21,6 @@ class PeerReviewsController < ApplicationController
   def edit; end
 
   # POST /peer_reviews
-  # TODO: what do
   def create
     @peer_review = PeerReview.new(peer_review_params)
 
@@ -62,13 +61,5 @@ class PeerReviewsController < ApplicationController
   def peer_review_params
     params.require(:peer_review).permit(:comment, :answers)
     params.require(:exercise).permit(:exercise_id, :tags)
-  end
-
-  def exercise_target_path(exercise)
-    Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment.id}", "exercise_#{exercise.id}")
-  end
-
-  def template_zip_path(exercise, zip_name)
-    exercise_target_path(exercise).join(zip_name)
   end
 end

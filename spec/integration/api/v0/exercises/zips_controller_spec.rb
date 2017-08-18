@@ -2,10 +2,9 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::V0::Exercises::ZipsController, type: :controller do
+RSpec.describe Api::V0::Exercises::ZipsController, type: :request do
   let(:user) { FactoryGirl.create(:user) }
   let(:exercise) { FactoryGirl.create(:exercise, user: user) }
-  before { allow(controller).to receive(:current_user) { user } }
   before :each do
     allow_any_instance_of(Api::V0::Exercises::ZipsController).to receive(:send_file)
   end
@@ -19,9 +18,9 @@ RSpec.describe Api::V0::Exercises::ZipsController, type: :controller do
       'submission_generation', 'packages', "assignment_#{exercise.assignment_id}", "exercise_#{exercise.id}", "Stub_#{exercise.id}.1.zip"
     ).to_s)
 
-    get :model_solution
+    get "/api/v0/exercises/#{exercise.id}/model_solution.zip"
     expect(response.status).to eq(204)
-    get :template
+    get "/api/v0/exercises/#{exercise.id}/template.zip"
     expect(response.status).to eq(204)
 
     FileUtils.remove_dir(Rails.root.join('submission_generation', 'packages', "assignment_#{exercise.assignment_id}").to_s)
