@@ -1,48 +1,21 @@
 # frozen_string_literal: true
 
-require 'oauth2'
 require 'upstream_user'
 
-class ApplicationController < ActionController::API
-  include ActionController::Helpers
-
+class ApplicationController < ActionController::Base
+  protect_from_forgery with: :exception
+  before_action :ensure_signed_in!, :only_admins!
   helper_method :current_user, :admin?
 
   NotAuthorized = Class.new(StandardError)
 
-  rescue_from ApplicationController::NotAuthorized do
-    render_error_page(status: 403, text: 'Forbidden')
-  end
-
-  NotLoggedIn = Class.new(StandardError)
-
-  rescue_from ApplicationController::NotLoggedIn do
-    render_error_page(status: 401, text: 'Please log in')
-  end
-
-  rescue_from ActiveRecord::RecordNotFound do |ex|
-    render_error_page(status: 400, text: ex.message)
-  end
-
-  rescue_from ActiveSupport::MessageVerifier::InvalidSignature do
-    render_error_page(status: 400, text: 'Invalid secret token')
-  end
-
-  NoExerciseError = Class.new(StandardError)
-
-  rescue_from ApplicationController::NoExerciseError do
-    render_error_page(status: 400, text: 'No exercises for this assignment')
-  end
-
-  def ensure_signed_in!
-    return if current_user
-
-    raise NotLoggedIn
+  rescue_from NotAuthorized do
+    redirect_to sessions_path, alert: 'Not authorized.'
   end
 
   def current_user
     @current_user ||= begin
-      UpstreamUser.new(params[:oauth_token]).get
+      UpstreamUser.new(session[:oauth_token]).get
     end
   end
 
@@ -51,16 +24,16 @@ class ApplicationController < ActionController::API
   end
 
   def only_admins!
-    raise ApplicationController::NotAuthorized unless admin?
+    raise NotAuthorized unless admin?
   end
 
-  def only_user_and_admins!(user)
-    raise ApplicationController::NotAuthorized unless admin? || current_user == user
+  def ensure_signed_in!
+    return if current_user
+    session[:return_to] = request.url
+    redirect_to sessions_path, notice: 'Please log in.'
   end
 
-  private
-
-  def render_error_page(status:, text:)
-    render json: { errors: [message: "#{status} #{text}"] }, status: status
+  def oauth_client
+    @oauth_client ||= OAuth2::Client.new(ENV['OAUTH_APPLICATION_ID'], ENV['OAUTH_SECRET'], site: ENV['OAUTH_SITE'])
   end
 end

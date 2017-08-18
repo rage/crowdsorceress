@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170809084357) do
+ActiveRecord::Schema.define(version: 20170816074818) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "assignments", force: :cascade do |t|
-    t.string "description"
+    t.text "description"
     t.bigint "exercise_type_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -25,16 +25,16 @@ ActiveRecord::Schema.define(version: 20170809084357) do
 
   create_table "exercise_types", force: :cascade do |t|
     t.string "name"
-    t.string "test_template"
+    t.text "test_template"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "code_template"
+    t.text "code_template"
   end
 
   create_table "exercises", force: :cascade do |t|
-    t.integer "user_id"
-    t.string "code"
-    t.integer "assignment_id"
+    t.bigint "user_id"
+    t.text "code"
+    t.bigint "assignment_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.json "testIO"
@@ -43,8 +43,10 @@ ActiveRecord::Schema.define(version: 20170809084357) do
     t.string "error_messages", default: [], array: true
     t.text "sandbox_results"
     t.integer "peer_reviews_count", default: 0
-    t.string "model_solution"
-    t.string "template"
+    t.text "model_solution"
+    t.text "template"
+    t.index ["assignment_id"], name: "index_exercises_on_assignment_id"
+    t.index ["user_id"], name: "index_exercises_on_user_id"
   end
 
   create_table "exercises_tags", force: :cascade do |t|

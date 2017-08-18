@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1><%= @tag.name %></h1>
+
+<p>
+  <strong>Recommended:</strong>
+  <%= @tag.recommended %>
+</p>
+
+<% if @tag.exercises.empty? %>
+  <strong>No exercises tagged with <%= @tag.name %></strong>
+<% else %>
+  <strong>Exercises tagged with <%= @tag.name %>:</strong>
+  <p>
+    <% @tag.exercises.each do |exercise| %>
+      <%= link_to exercise.id, exercise %>
+    <% end %>
+  </p>
+<% end %>
+
+<p>
+<%= link_to 'Edit', edit_tag_path(@tag), class: "btn btn-primary" %>
+<%= link_to 'Back', tags_path, class: "btn btn-secondary" %>
+<%= link_to 'Destroy', tag_path, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %>
+</p>

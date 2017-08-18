@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Peer Reviews</h1>
+
+<table class="table table-hover">
+  <thead class="thead-inverse" >
+    <tr>
+      <th>Reviewer</th>
+      <th>Exercise</th>
+      <th>Assignment</th>
+      <th>Reviewee</th>
+      <th colspan="1"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @peer_reviews.each do |peer_review| %>
+      <tr>
+        <td><%= link_to peer_review.user.username, peer_review.user %></td>
+        <td><%= link_to peer_review.exercise_id, peer_review.exercise %></td>
+        <td><%= link_to peer_review.exercise.assignment.id, peer_review.exercise.assignment %></td>
+        <td><%= link_to peer_review.exercise.user.username, peer_review.exercise.user %></td>
+        <td><%= link_to 'Show', peer_review %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Peer Review', new_peer_review_path, class: "btn btn-primary"%>

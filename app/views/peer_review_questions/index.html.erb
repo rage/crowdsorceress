@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Peer Review Questions</h1>
+
+<table class="table table-hover">
+  <thead class="thead-inverse">
+    <tr>
+      <th>Question</th>
+      <th>Exercise type</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @peer_review_questions.each do |peer_review_question| %>
+      <tr>
+        <td><%= link_to peer_review_question.question, peer_review_question %></td>
+        <td><%= link_to peer_review_question.exercise_type.name, peer_review_question.exercise_type %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Peer Review Question', new_peer_review_question_path, class: "btn btn-primary" %>

@@ -89,7 +89,7 @@ class ExerciseVerifierJob < ApplicationJob
   end
 
   def results_url(exercise)
-    "#{ENV['BASE_URL']}/exercises/#{exercise.id}/results"
+    "#{ENV['BASE_URL']}/api/v0/exercises/#{exercise.id}/results"
   end
 
   def assignment_target_path(exercise)

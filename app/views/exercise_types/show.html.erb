@@ -1,0 +1,26 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Exercise Type <%= @exercise_type.id%></h1>
+
+<p>
+  <strong>Exercise type name:</strong>
+  <%= @exercise_type.name %>
+</p>
+
+<p>
+  <strong>Test template:</strong>
+  <pre>
+    <code><%= @exercise_type.test_template ? @exercise_type.test_template : 'No test template' %></code>
+  </pre>
+</p>
+
+<p>
+  <strong>Code template:</strong>
+  <pre>
+    <code> <%= @exercise_type.code_template %></code>
+  </pre>
+</p>
+
+<%= link_to 'Edit', edit_exercise_type_path(@exercise_type), class: "btn btn-primary" %>
+<%= link_to 'Back', exercise_types_path, class: "btn btn-secondary" %>
+<%= link_to 'Destroy', @exercise_type, class: "btn btn-danger", method: :delete, data: { confirm: 'Are you sure?' }  %>

@@ -1,45 +1,48 @@
 # frozen_string_literal: true
 
 class ExerciseTypesController < ApplicationController
-  before_action :set_exercise_type, only: %i[show update destroy]
+  before_action :set_exercise_type, only: %i[show edit update destroy]
 
   # GET /exercise_types
   def index
     @exercise_types = ExerciseType.all
-
-    render json: @exercise_types
   end
 
   # GET /exercise_types/1
-  def show
-    render json: @exercise_type
+  def show; end
+
+  # GET /exercise_types/new
+  def new
+    @exercise_type = ExerciseType.new
   end
+
+  # GET /exercise_types/1/edit
+  def edit; end
 
   # POST /exercise_types
   def create
     @exercise_type = ExerciseType.new(exercise_type_params)
 
-    # generoidaan test_template
-
     if @exercise_type.save
-      render json: @exercise_type, status: :created, location: @exercise_type
+      redirect_to @exercise_type, notice: 'Exercise type was successfully created.'
     else
-      render json: @exercise_type.errors, status: :unprocessable_entity
+      render :new, notice: 'Exercise type creation failed.'
     end
   end
 
   # PATCH/PUT /exercise_types/1
   def update
     if @exercise_type.update(exercise_type_params)
-      render json: @exercise_type
+      redirect_to @exercise_type, notice: 'Exercise type successfully updated.'
     else
-      render json: @exercise_type.errors, status: :unprocessable_entity
+      render :edit, notice: 'Exercise type update failed.'
     end
   end
 
   # DELETE /exercise_types/1
   def destroy
     @exercise_type.destroy
+    redirect_to exercise_type_url, notice: 'Exercise type was successfully destroyed.'
   end
 
   private

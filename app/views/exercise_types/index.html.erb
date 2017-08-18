@@ -1,0 +1,23 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Exercise Types</h1>
+
+<table class="table table-hover">
+  <thead class="thead-inverse">
+    <tr>
+      <th>Name</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @exercise_types.each do |exercise_type| %>
+      <tr>
+        <td><%= link_to exercise_type.name, exercise_type %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Exercise Type', new_exercise_type_path, class: "btn btn-primary" %>

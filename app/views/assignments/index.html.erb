@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Assignments</h1>
+
+<table class="table table-hover ">
+  <thead class="thead-inverse">
+    <tr>
+      <th>Description</th>
+      <th>Exercise type</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @assignments.each do |assignment| %>
+      <tr>
+        <td><%= link_to assignment.description, assignment %></td>
+        <td><%= link_to assignment.exercise_type.name, assignment.exercise_type %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Assignment', new_assignment_path, class: "btn btn-primary" %>

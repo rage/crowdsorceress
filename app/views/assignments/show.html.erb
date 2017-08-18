@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Assignment <%= @assignment.id %></h1>
+
+<p>
+  <strong>Description:</strong>
+  <%= @assignment.description %>
+</p>
+
+<p>
+  <strong>Exercise type:</strong>
+  <%= link_to @assignment.exercise_type.name, @assignment.exercise_type %>
+</p>
+
+
+
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Embed:</h5>
+    <pre><code><%= "<div class='crowdsorcerer-widget' data-assignment='#{@assignment.id}'></div>" %></code></pre>
+  </div>
+</div>
+<br>
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Embed peer review:</h5>
+    <pre><code><%= "<div class='crowdsorcerer-widget' data-assignment='#{@assignment.id}' peer-review></div>" %></code></pre>
+  </div>
+</div>
+
+<%= link_to 'Edit', edit_assignment_path(@assignment), class: "btn btn-primary"%>
+<%= link_to 'Back', assignments_path, class: "btn btn-secondary" %>
+<%= link_to 'Destroy', @assignment, class: "btn btn-danger", method: :delete, data: { confirm: 'Are you sure?' }  %>

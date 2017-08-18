@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Peer Review <%= @peer_review.id %></h1>
+<p>
+<strong>Created:</strong>
+  <%= @peer_review.created_at %>
+</p>
+
+
+<p>
+<strong>Updated:</strong>
+  <%= @peer_review.updated_at %>
+</p>
+
+<p>
+  <strong>Reviewer:</strong>
+  <%= link_to @peer_review.user.username, @peer_review.user %>
+</p>
+
+<p>
+  <strong>Exercise:</strong>
+  <%= link_to @peer_review.exercise_id, @peer_review.exercise %>
+</p>
+
+<p>
+<strong>Assignment:</strong>
+<%= link_to @peer_review.exercise.assignment.id, @peer_review.exercise.assignment %>
+</p>
+
+<p>
+<strong>Reviewee:</strong>
+<%= link_to @peer_review.exercise.user.username, @peer_review.exercise.user %>
+</p>
+
+<p>
+  <strong>Comment:</strong>
+  <pre>
+  <%= @peer_review.comment %>
+  </pre>
+</p>
+
+<%= link_to 'Edit', edit_peer_review_path(@peer_review), class: "btn btn-primary" %>
+<%= link_to 'Back', peer_reviews_path, class: "btn btn-secondary" %>
+<%= link_to 'Destroy', peer_review_path, class: "btn btn-danger", method: :delete, data: { confirm: 'Are you sure?' }%>
