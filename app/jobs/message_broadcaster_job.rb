@@ -38,6 +38,14 @@ class MessageBroadcasterJob < ApplicationJob
   end
 
   def message_generator(status, message, progress, ok, exercise)
-    { 'status' => status, 'message' => message, 'progress' => progress, 'result' => { 'OK' => ok, 'error' => exercise.error_messages } }
+    {
+      'status' => status,
+      'message' => message,
+      'progress' => progress,
+      'result' => {
+        'OK' => ok,
+        'errors' => exercise.error_messages
+      }
+    }
   end
 end
