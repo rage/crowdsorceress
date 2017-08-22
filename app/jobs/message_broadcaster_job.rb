@@ -23,6 +23,8 @@ class MessageBroadcasterJob < ApplicationJob
       message_generator('finished', 'Valmis, kaikki on ok', 1, true, exercise)
     elsif exercise.error?
       error_message(exercise)
+    elsif exercise.sandbox_timeout?
+      message_generator('error', 'Tehtävän lähetys on aikakatkaistu', 1, false, exercise)
     end
   end
 

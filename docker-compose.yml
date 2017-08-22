@@ -36,6 +36,8 @@ services:
     hostname: redis
     ports:
       - "6379:6379"
+    environment:
+      - RAILS_ENV=development
   sidekiq:
     build: .
     command: bundle exec sidekiq

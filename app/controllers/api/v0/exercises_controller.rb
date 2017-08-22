@@ -23,8 +23,8 @@ module Api
           ExerciseVerifierJob.perform_later @exercise
           @exercise.saved!
           MessageBroadcasterJob.perform_now(@exercise)
-
           render json: { message: 'Exercise successfully created! :) :3', exercise: @exercise }, status: :created
+          TimeoutCheckerJob.set(wait: 1.minute).perform_later(@exercise)
         else
           render json: @exercise.errors, status: :unprocessable_entity, message: 'Exercise not created. =( :F'
         end

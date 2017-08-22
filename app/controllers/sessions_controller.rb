@@ -33,7 +33,7 @@ class SessionsController < ApplicationController
 
   def login_failed!
     msg = 'Wrong username or password'
-    msg += ' Please user your username, not your email address to log in.' if params[:login].include?('@')
+    msg += ' Please use your username, not your email address to log in.' if params[:login].include?('@')
     redirect_to sessions_path, alert: msg
   end
 

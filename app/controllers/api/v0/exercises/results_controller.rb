@@ -6,6 +6,7 @@ module Api
       class ResultsController < BaseController
         # POST /exercises/:id/results
         def create
+          return if Exercise.find(params[:exercise_id]).sandbox_timeout?
           if params[:token].include? 'MODEL'
             package_type = 'MODEL'
           elsif params[:token].include? 'STUB'
