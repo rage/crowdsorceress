@@ -6,11 +6,9 @@ module Api
       class ResultsController < BaseController
         # POST /exercises/:id/results
         def create
-          return if Exercise.find(params[:exercise_id]).sandbox_timeout?
-
-          package_type = find_package_type
-
           exercise = Exercise.find(params[:exercise_id])
+          return if exercise.sandbox_timeout?
+
           verify_secret_token(params[:token], exercise)
           test_output = JSON.parse(params[:test_output])
           exercise.handle_results(params[:status], test_output, package_type)
@@ -18,13 +16,8 @@ module Api
 
         private
 
-        def find_package_type
-          if params[:token].include? 'MODEL'
-            package_type = 'MODEL'
-          elsif params[:token].include? 'STUB'
-            package_type = 'STUB'
-          end
-          package_type
+        def package_type
+          params[:token].include?('MODEL') ? 'MODEL' : 'STUB'
         end
 
         def verify_secret_token(token, exercise)

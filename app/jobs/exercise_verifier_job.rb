@@ -50,8 +50,6 @@ class ExerciseVerifierJob < ApplicationJob
   def send_exercise_to_sandbox(exercise)
     create_tar_files(exercise)
 
-    exercise.sandbox_results = { status: '', message: '', passed: false, model_results_received: false, stub_results_received: false }
-
     # Send stub to sandbox
     send_package_to_sandbox(exercise, 'STUB', "StubPackage_#{exercise.id}.tar")
 
@@ -81,15 +79,6 @@ class ExerciseVerifierJob < ApplicationJob
     response = RestClient.post post_url, file: tar_file, notify: results_url(exercise), token: secret_token(exercise, package_type)
 
     `rm #{tar_file.path}`
-
-    # Crowdsorceress is a teenage emo
-    # She isn't feeling well
-    # Do not push her too hard!
-    # Enough is enough!
-    # No more git force push
-    # Let her sleep
-    puts 'menen nyt nukkumaan'
-    puts 'nyt mun kuuluis kuolla'
 
     return unless response.code != 200
     exercise.error_messages.push 'Ongelmia palvelimessa, yritä jonkin ajan päästä uudelleen'
