@@ -3,8 +3,8 @@
 class TimeoutCheckerJob < ApplicationJob
   queue_as :default
 
-  rescue_from(ActiveRecord::RecordNotFound) do |exception|
-    puts 'NYT SAATANA ANNA TÄN TOIMII' + exception.to_s
+  rescue_from(ActiveRecord::RecordNotFound) do
+    Rails.logger.warn 'Record not found!'
   end
 
   # Checks if sandbox is done
@@ -14,6 +14,5 @@ class TimeoutCheckerJob < ApplicationJob
     exercise.error_messages.push('Timeout')
     exercise.sandbox_timeout!
     MessageBroadcasterJob.perform_now(exercise)
-    puts 'tuli timeoutti'
   end
 end

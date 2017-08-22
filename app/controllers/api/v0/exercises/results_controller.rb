@@ -7,11 +7,8 @@ module Api
         # POST /exercises/:id/results
         def create
           return if Exercise.find(params[:exercise_id]).sandbox_timeout?
-          if params[:token].include? 'MODEL'
-            package_type = 'MODEL'
-          elsif params[:token].include? 'STUB'
-            package_type = 'STUB'
-          end
+
+          package_type = find_package_type
 
           exercise = Exercise.find(params[:exercise_id])
           verify_secret_token(params[:token], exercise)
@@ -20,6 +17,15 @@ module Api
         end
 
         private
+
+        def find_package_type
+          if params[:token].include? 'MODEL'
+            package_type = 'MODEL'
+          elsif params[:token].include? 'STUB'
+            package_type = 'STUB'
+          end
+          package_type
+        end
 
         def verify_secret_token(token, exercise)
           secret_token = if params[:token].include? 'MODEL'
