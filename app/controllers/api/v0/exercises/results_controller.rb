@@ -30,7 +30,7 @@ module Api
           verifier = ActiveSupport::MessageVerifier.new(Rails.application.secrets[:secret_key_base])
           begin verifier.verify(secret_token)
           rescue ActiveSupport::MessageVerifier::InvalidSignature
-            exercise.error_messages.push 'Tehtävän lähetys epäonnistui virheellisen avaimen vuoksi'
+            exercise.error_messages.push(header: 'Tehtävän lähetys epäonnistui virheellisen avaimen vuoksi', 'messages': '')
             exercise.error!
             MessageBroadcasterJob.perform_now(@exercise)
             raise InvalidSignature

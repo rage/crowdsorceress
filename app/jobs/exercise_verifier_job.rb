@@ -19,7 +19,7 @@ class ExerciseVerifierJob < ApplicationJob
     end
 
     if !exercise_modified?(exercise)
-      exercise.error_messages.push('Tapahtui virhe: Muokkaamaton tehtävä lähetettiin uudelleen')
+      exercise.error_messages.push(header: 'Tapahtui virhe: Muokkaamaton tehtävä lähetettiin uudelleen', messages: '')
       exercise.error!
       MessageBroadcasterJob.perform_now(exercise)
     else
@@ -81,7 +81,7 @@ class ExerciseVerifierJob < ApplicationJob
     `rm #{tar_file.path}`
 
     return unless response.code != 200
-    exercise.error_messages.push 'Ongelmia palvelimessa, yritä jonkin ajan päästä uudelleen'
+    exercise.error_messages.push(header: 'Ongelmia palvelimessa, yritä jonkin ajan päästä uudelleen', messages: '')
     MessageBroadcasterJob.perform_now(exercise)
   end
 

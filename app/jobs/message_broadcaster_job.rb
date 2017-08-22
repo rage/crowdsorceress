@@ -30,7 +30,7 @@ class MessageBroadcasterJob < ApplicationJob
 
   def error_message(exercise)
     message = if !exercise.sandbox_results[:message].empty?
-                exercise.sandbox_results[:message]
+                'Korjaa virheet ja lähetä tehtävä uudelleen '
               else
                 'Tehtävän lähetyksessä tapahtui virhe'
               end
@@ -38,6 +38,14 @@ class MessageBroadcasterJob < ApplicationJob
   end
 
   def message_generator(status, message, progress, ok, exercise)
-    { 'status' => status, 'message' => message, 'progress' => progress, 'result' => { 'OK' => ok, 'error' => exercise.error_messages } }
+    {
+      'status' => status,
+      'message' => message,
+      'progress' => progress,
+      'result' => {
+        'OK' => ok,
+        'errors' => exercise.error_messages
+      }
+    }
   end
 end
