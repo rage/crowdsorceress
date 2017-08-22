@@ -34,23 +34,17 @@ class SandboxResultsHandler
   def test_results(test_output)
     # Push test results into exercise's error messages
     return if test_output['testResults'].empty? || test_output['testResults'].first['successful']
-    messages = ''
     header = 'Virheet testeissä: '
-    test_output['testResults'].each do |e|
-      messages += '\n' + e['message']
-    end
-    error = { 'header' => header, 'messages' => messages }
+    messages = test_output['testResults'].map { |o| o['message'] }.join('\n')
+    error = { header: header, messages: messages }
     @exercise.error_messages.push error
   end
 
   def compile_errors(test_output, package_type)
     return unless test_output['status'] == 'COMPILE_FAILED'
     header = package_type == 'STUB' ? 'Tehtäväpohja ei kääntynyt: ' : 'Malliratkaisu ei kääntynyt: '
-    messages = ''
-    error_message_lines(test_output).each do |line|
-      messages += '\n' + line
-    end
-    error = { 'header' => header, 'messages' => messages }
+    messages = error_message_lines(test_output).map { |o| o['message'] }.join('\n')
+    error = { header: header, messages: messages }
     @exercise.error_messages.push error
   end
 

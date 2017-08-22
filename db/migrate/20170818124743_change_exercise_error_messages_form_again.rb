@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeExerciseErrorMessagesFormAgain < ActiveRecord::Migration[5.1]
   def change
     remove_column :exercises, :template_errors, :json

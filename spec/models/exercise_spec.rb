@@ -54,7 +54,7 @@ RSpec.describe Exercise, type: :model do
         expect(exercise.sandbox_results[:status]).not_to be('finished')
         expect(exercise.sandbox_results[:message]).to include('Malliratkaisun tulokset: Testit eivät menneet läpi.',
                                                               'Tehtäväpohjan tulokset: Koodi ei kääntynyt.')
-        expect(exercise.error_messages).to include('ComparisonFailure: expected:<Hello[lolled]> but was: <Hello [lol]>', 'Tehtäväpohja ei kääntynyt: ')
+        expect(exercise.error_messages.first['messages']).to include('ComparisonFailure: expected:<Hello[lolled]> but was: <Hello [lol]>')
       end
     end
   end

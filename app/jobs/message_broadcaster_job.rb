@@ -30,7 +30,7 @@ class MessageBroadcasterJob < ApplicationJob
 
   def error_message(exercise)
     message = if !exercise.sandbox_results[:message].empty?
-                exercise.sandbox_results[:message]
+                'Korjaa virheet ja lähetä tehtävä uudelleen '
               else
                 'Tehtävän lähetyksessä tapahtui virhe'
               end
