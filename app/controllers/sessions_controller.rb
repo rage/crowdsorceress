@@ -13,7 +13,7 @@ class SessionsController < ApplicationController
     if current_user
       unless admin?
         session[:oauth_token] = nil
-        return redirect_to sessions_path, alert: 'Not authorized'
+        return redirect_to sessions_path, alert: 'Not authorized.'
       end
       current_user.update!(last_logged_in: Time.zone.now)
       redirect_to redirect_target
@@ -32,8 +32,8 @@ class SessionsController < ApplicationController
   private
 
   def login_failed!
-    msg = 'Wrong username or password'
-    msg += ' Please user your username, not your email address to log in.' if params[:login].include?('@')
+    msg = 'Wrong username or password.'
+    msg += ' Please use your username, not your email address to log in.' if params[:login].include?('@')
     redirect_to sessions_path, alert: msg
   end
 

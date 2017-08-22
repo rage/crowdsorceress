@@ -6,19 +6,19 @@ module Api
       class ResultsController < BaseController
         # POST /exercises/:id/results
         def create
-          if params[:token].include? 'MODEL'
-            package_type = 'MODEL'
-          elsif params[:token].include? 'STUB'
-            package_type = 'STUB'
-          end
-
           exercise = Exercise.find(params[:exercise_id])
+          return if exercise.sandbox_timeout?
+
           verify_secret_token(params[:token], exercise)
           test_output = JSON.parse(params[:test_output])
           exercise.handle_results(params[:status], test_output, package_type)
         end
 
         private
+
+        def package_type
+          params[:token].include?('MODEL') ? 'MODEL' : 'STUB'
+        end
 
         def verify_secret_token(token, exercise)
           secret_token = if params[:token].include? 'MODEL'

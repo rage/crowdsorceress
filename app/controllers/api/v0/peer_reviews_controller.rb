@@ -9,10 +9,7 @@ module Api
       def create
         @peer_review = current_user.peer_reviews.find_or_initialize_by(exercise: @exercise, comment: params[:peer_review][:comment])
 
-        params[:exercise][:tags].each do |tag|
-          tag = Tag.find_or_initialize_by(name: tag.strip.delete("\n").gsub(/\s+/, ' ').downcase)
-          @peer_review.tags << tag
-        end
+        add_tags
 
         PeerReview.transaction do
           if @peer_review.save
@@ -25,6 +22,13 @@ module Api
       end
 
       private
+
+      def add_tags
+        params[:exercise][:tags].each do |tag|
+          tag = Tag.find_or_initialize_by(name: tag.strip.delete("\n").gsub(/\s+/, ' ').downcase)
+          @peer_review.tags << tag
+        end
+      end
 
       def set_exercise
         @exercise = Exercise.find(params[:exercise][:exercise_id])

@@ -20,7 +20,7 @@ class Exercise < ApplicationRecord
 
   serialize :sandbox_results, Hash
 
-  enum status: %i[status_undefined saved testing_stub testing_model_solution half_done finished error]
+  enum status: %i[status_undefined saved testing_stub testing_model_solution half_done finished error sandbox_timeout]
 
   def reset!
     self.error_messages = []

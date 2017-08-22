@@ -5,9 +5,10 @@ class ExerciseVerifierJob < ApplicationJob
   require 'main_class_generator'
   require 'rest-client'
   require 'submission_status_channel'
+  require 'timeout'
   queue_as :default
 
-  rescue_from(ActiveRecord::RecordNotFound) do |_exception|
+  rescue_from(ActiveRecord::RecordNotFound) do
     Rails.logger.warn 'Record not found!'
   end
 
@@ -50,13 +51,13 @@ class ExerciseVerifierJob < ApplicationJob
     create_tar_files(exercise)
 
     # Send stub to sandbox
-    send_package_to_sandbox('Testataan tehtäväpohjaa', 0.3, exercise, 'STUB', "StubPackage_#{exercise.id}.tar")
+    send_package_to_sandbox(exercise, 'STUB', "StubPackage_#{exercise.id}.tar")
 
     # Send model solution to sandbox
-    send_package_to_sandbox('Testataan malliratkaisua', 0.6, exercise, 'MODEL', "ModelSolutionPackage_#{exercise.id}.tar")
+    send_package_to_sandbox(exercise, 'MODEL', "ModelSolutionPackage_#{exercise.id}.tar")
   end
 
-  def send_package_to_sandbox(_message, _progress, exercise, package_type, package_name)
+  def send_package_to_sandbox(exercise, package_type, package_name)
     package_type == 'STUB' ? exercise.testing_stub! : exercise.testing_model_solution!
 
     MessageBroadcasterJob.perform_now(exercise)

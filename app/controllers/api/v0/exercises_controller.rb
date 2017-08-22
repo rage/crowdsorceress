@@ -20,10 +20,8 @@ module Api
         @exercise.add_tags(params[:exercise][:tags])
 
         if @exercise.save
-          ExerciseVerifierJob.perform_later @exercise
           @exercise.saved!
-          MessageBroadcasterJob.perform_now(@exercise)
-
+          perform_jobs
           render json: { message: 'Exercise successfully created! :) :3', exercise: @exercise }, status: :created
         else
           render json: @exercise.errors, status: :unprocessable_entity, message: 'Exercise not created. =( :F'
@@ -31,6 +29,12 @@ module Api
       end
 
       private
+
+      def perform_jobs
+        ExerciseVerifierJob.perform_later @exercise
+        MessageBroadcasterJob.perform_now(@exercise)
+        TimeoutCheckerJob.set(wait: 1.minute).perform_later(@exercise)
+      end
 
       # Use callbacks to share common setup or constraints between actions.
       def set_exercise

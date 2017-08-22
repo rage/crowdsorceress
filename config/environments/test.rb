@@ -49,4 +49,6 @@ Rails.application.configure do
   Sidekiq.configure_client do |config|
     config.redis = { url: 'redis://redis:6379/12' }
   end
+
+  config.active_job.queue_adapter = :async
 end
