@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'tar_baller'
 
 RSpec.describe ExerciseVerifierJob, type: :job do
   describe '#perform_later' do
@@ -20,6 +21,7 @@ RSpec.describe ExerciseVerifierJob, type: :job do
       exercise.sandbox_results = { status: '', message: '', passed: false,
                                    model_results_received: false, template_results_received: false }
 
+      TarBaller.new.create_tar_files(exercise)
       ExerciseVerifierJob.perform_now(exercise)
       expect(exercise.status).to eq('testing_model_solution')
 
