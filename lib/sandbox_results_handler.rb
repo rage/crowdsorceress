@@ -35,7 +35,7 @@ class SandboxResultsHandler
     # Push test results into exercise's error messages
     return if test_output['testResults'].empty? || test_output['testResults'].first['successful']
     header = 'Virheet testeissä: '
-    messages = test_output['testResults'].join('\n')
+    messages = test_output['testResults'][0]['message']
     error = { header: header, messages: messages }
     @exercise.error_messages.push error
   end
