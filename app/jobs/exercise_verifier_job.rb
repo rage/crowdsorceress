@@ -29,7 +29,7 @@ class ExerciseVerifierJob < ApplicationJob
 
   def exercise_modified?(exercise)
     if Dir.exist?(assignment_target_path(exercise)) && Dir.exist?(assignment_target_path(exercise).join("exercise_#{exercise.id}"))
-      if directory_includes_file(exercise, 'ModelSolution') || directory_includes_file(exercise, 'Stub')
+      if directory_includes_file(exercise, 'ModelSolution') || directory_includes_file(exercise, 'Template')
         return false
       end
     end
@@ -44,21 +44,21 @@ class ExerciseVerifierJob < ApplicationJob
     exercise.create_submission
 
     `cd #{tmp_submission_target_path(exercise).join('model').to_s} && tar -cpf #{packages_target_path.join("ModelSolutionPackage_#{exercise.id}.tar").to_s} *`
-    `cd #{tmp_submission_target_path(exercise).join('stub').to_s} && tar -cpf #{packages_target_path.join("StubPackage_#{exercise.id}.tar").to_s} *`
+    `cd #{tmp_submission_target_path(exercise).join('template').to_s} && tar -cpf #{packages_target_path.join("TemplatePackage_#{exercise.id}.tar").to_s} *`
   end
 
   def send_exercise_to_sandbox(exercise)
     create_tar_files(exercise)
 
-    # Send stub to sandbox
-    send_package_to_sandbox(exercise, 'STUB', "StubPackage_#{exercise.id}.tar")
+    # Send template to sandbox
+    send_package_to_sandbox(exercise, 'TEMPLATE', "TemplatePackage_#{exercise.id}.tar")
 
     # Send model solution to sandbox
     send_package_to_sandbox(exercise, 'MODEL', "ModelSolutionPackage_#{exercise.id}.tar")
   end
 
   def send_package_to_sandbox(exercise, package_type, package_name)
-    package_type == 'STUB' ? exercise.testing_stub! : exercise.testing_model_solution!
+    package_type == 'TEMPLATE' ? exercise.testing_template! : exercise.testing_model_solution!
 
     MessageBroadcasterJob.perform_now(exercise)
 

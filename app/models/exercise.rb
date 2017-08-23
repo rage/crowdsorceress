@@ -20,12 +20,12 @@ class Exercise < ApplicationRecord
 
   serialize :sandbox_results, Hash
 
-  enum status: %i[status_undefined saved testing_stub testing_model_solution half_done finished error sandbox_timeout]
+  enum status: %i[status_undefined saved testing_template testing_model_solution half_done finished error sandbox_timeout]
 
   def reset!
     self.error_messages = []
     status_undefined!
-    self.sandbox_results = { status: '', message: '', passed: false, model_results_received: false, stub_results_received: false }
+    self.sandbox_results = { status: '', message: '', passed: false, model_results_received: false, template_results_received: false }
   end
 
   def add_tags(tags)
@@ -41,7 +41,7 @@ class Exercise < ApplicationRecord
     write_to_main_file
     write_to_test_file
 
-    create_model_solution_and_stub
+    create_model_solution_and_template
   end
 
   def check_if_already_submitted
@@ -49,13 +49,13 @@ class Exercise < ApplicationRecord
     then FileUtils.cp_r Rails.root.join('submission_generation', 'SubmissionTemplate').to_s, submission_target_path.to_s
     else
       FileUtils.remove_dir(submission_target_path.join('model').to_s)
-      FileUtils.remove_dir(submission_target_path.join('stub').to_s)
+      FileUtils.remove_dir(submission_target_path.join('template').to_s)
     end
   end
 
-  def create_model_solution_and_stub
+  def create_model_solution_and_template
     TMCLangs.prepare_solutions(self)
-    TMCLangs.prepare_stubs(self)
+    TMCLangs.prepare_templates(self)
   end
 
   def write_to_main_file
@@ -73,7 +73,7 @@ class Exercise < ApplicationRecord
   def handle_results(sandbox_status, test_output, package_type)
     SandboxResultsHandler.new(self).handle(sandbox_status, test_output, package_type)
 
-    if sandbox_results[:model_results_received] && sandbox_results[:stub_results_received]
+    if sandbox_results[:model_results_received] && sandbox_results[:template_results_received]
       sandbox_status == 'finished' && sandbox_results[:passed] ? finished! : error!
     else
       half_done!
@@ -87,7 +87,7 @@ class Exercise < ApplicationRecord
   end
 
   def in_progress?
-    %w[saved testing_stub testing_model_solution half_done].include?(status)
+    %w[saved testing_template testing_model_solution half_done].include?(status)
   end
 
   def submission_target_path

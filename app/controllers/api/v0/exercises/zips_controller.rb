@@ -12,8 +12,8 @@ module Api
 
         def template
           exercise = Exercise.find(params[:exercise_id])
-          stub_filename = Dir.entries(exercise_target_path(exercise)).find { |o| o.start_with?('Stub') && o.end_with?('.zip') }
-          send_file template_zip_path(exercise, stub_filename)
+          template_filename = Dir.entries(exercise_target_path(exercise)).find { |o| o.start_with?('Template') && o.end_with?('.zip') }
+          send_file template_zip_path(exercise, template_filename)
         end
 
         private

@@ -17,14 +17,14 @@ module Api
         private
 
         def package_type
-          params[:token].include?('MODEL') ? 'MODEL' : 'STUB'
+          params[:token].include?('MODEL') ? 'MODEL' : 'TEMPLATE'
         end
 
         def verify_secret_token(token, exercise)
           secret_token = if params[:token].include? 'MODEL'
                            token.gsub('MODEL', '')
                          else
-                           token.gsub('STUB', '')
+                           token.gsub('TEMPLATE', '')
                          end
 
           verifier = ActiveSupport::MessageVerifier.new(Rails.application.secrets[:secret_key_base])

@@ -15,7 +15,7 @@ RSpec.describe Api::V0::Exercises::ZipsController, type: :request do
       'submission_generation', 'packages', "assignment_#{exercise.assignment_id}", "exercise_#{exercise.id}", "ModelSolution_#{exercise.id}.1.zip"
     ).to_s)
     FileUtils.touch(Rails.root.join(
-      'submission_generation', 'packages', "assignment_#{exercise.assignment_id}", "exercise_#{exercise.id}", "Stub_#{exercise.id}.1.zip"
+      'submission_generation', 'packages', "assignment_#{exercise.assignment_id}", "exercise_#{exercise.id}", "Template_#{exercise.id}.1.zip"
     ).to_s)
 
     get "/api/v0/exercises/#{exercise.id}/model_solution.zip"

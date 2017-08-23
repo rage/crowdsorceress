@@ -20,7 +20,7 @@ class ZipHandler
   def update_model_and_template
     model_file = File.open(submission_target_path.join('model', 'src', 'Submission.java').to_s, 'rb:UTF-8')
     model = model_file.read
-    template_file = File.open(submission_target_path.join('stub', 'src', 'Submission.java').to_s, 'rb:UTF-8')
+    template_file = File.open(submission_target_path.join('template', 'src', 'Submission.java').to_s, 'rb:UTF-8')
     template = template_file.read
     model_file.close
     template_file.close
@@ -33,16 +33,16 @@ class ZipHandler
   end
 
   def create_zips
-    create_zip(exercise_target_path.join("Stub_#{@exercise.id}.#{@exercise.versions.last.id}.zip").to_s, 'stub')
+    create_zip(exercise_target_path.join("Template_#{@exercise.id}.#{@exercise.versions.last.id}.zip").to_s, 'template')
     create_zip(exercise_target_path.join("ModelSolution_#{@exercise.id}.#{@exercise.versions.last.id}.zip").to_s, 'model')
   end
 
   def retire_zips
-    stub_file = search_zip_file('Stub')
+    template_file = search_zip_file('Template')
     model_file = search_zip_file('ModelSolution')
 
-    unless stub_file.nil?
-      FileUtils.mv exercise_target_path.join(stub_file), exercise_target_path.join('oldies')
+    unless template_file.nil?
+      FileUtils.mv exercise_target_path.join(template_file), exercise_target_path.join('oldies')
     end
 
     return if model_file.nil?

@@ -11,9 +11,9 @@ class TMCLangs
 --outputPath #{Rails.root.join('submission_generation', 'tmp', "Submission_#{exercise.id}", 'model')}`
   end
 
-  def self.prepare_stubs(exercise)
+  def self.prepare_templates(exercise)
     `java -jar #{langs_path.to_s} prepare-stubs --exercisePath #{Rails.root.join('submission_generation', 'tmp', "Submission_#{exercise.id}").to_s} \
---outputPath #{Rails.root.join('submission_generation', 'tmp', "Submission_#{exercise.id}", 'stub')}`
+--outputPath #{Rails.root.join('submission_generation', 'tmp', "Submission_#{exercise.id}", 'template')}`
   end
 
   private_class_method
