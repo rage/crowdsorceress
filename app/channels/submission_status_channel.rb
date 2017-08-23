@@ -14,7 +14,6 @@ class SubmissionStatusChannel < ApplicationCable::Channel
   # send current status in case socket opened too late
   def receive(data)
     return unless data['ping']
-
     SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{current_user.id}_exercise:_#{current_exercise.id}", JSON[message(current_exercise)])
   end
 
@@ -33,6 +32,8 @@ class SubmissionStatusChannel < ApplicationCable::Channel
       message_generator('finished', 'Valmis, kaikki on ok', 1, true, exercise)
     elsif exercise.error?
       error_message(exercise)
+    elsif exercise.sandbox_timeout?
+      message_generator('error', 'Tehtävän lähetys on aikakatkaistu', 1, false, exercise)
     end
   end
 

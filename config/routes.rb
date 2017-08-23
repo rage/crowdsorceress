@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'sidekiq/web'
+require 'upstream_user'
+
 module ActionDispatch
   module Routing
     class Mapper
@@ -26,6 +29,10 @@ Rails.application.routes.draw do
   resources :users
   resources :exercise_types
   resources :exercises
+
+  constraints(->(request) { UpstreamUser.new(request.session[:oauth_token]).get.administrator? }) do
+    mount Sidekiq::Web => '/sidekiq'
+  end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   namespace :api do
