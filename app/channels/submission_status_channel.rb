@@ -14,7 +14,6 @@ class SubmissionStatusChannel < ApplicationCable::Channel
   # send current status in case socket opened too late
   def receive(data)
     return unless data['ping']
-
     SubmissionStatusChannel.broadcast_to("SubmissionStatus_user:_#{current_user.id}_exercise:_#{current_exercise.id}", JSON[message(current_exercise)])
   end
 
