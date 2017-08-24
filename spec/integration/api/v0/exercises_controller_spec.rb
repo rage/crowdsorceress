@@ -6,6 +6,10 @@ RSpec.describe Api::V0::ExercisesController, type: :request do
   let(:assignment) { FactoryGirl.create(:assignment) }
   let(:user) { FactoryGirl.create(:user) }
   before { allow_any_instance_of(Api::V0::ExercisesController).to receive(:current_user).and_return(user) }
+  before :each do
+    allow_any_instance_of(Api::V0::ExercisesController).to receive(:send_submission)
+  end
+
   describe 'Exercise' do
     it 'is created correctly' do
       expect do

@@ -7,7 +7,9 @@ module Api
         # POST /exercises/:id/results
         def create
           exercise = Exercise.find(params[:exercise_id])
-          return if exercise.sandbox_timeout?
+          return if exercise.finished? || exercise.error?
+
+          remove_tar_files(package_type, exercise)
 
           verify_secret_token(params[:token], exercise)
           test_output = JSON.parse(params[:test_output])
@@ -15,6 +17,17 @@ module Api
         end
 
         private
+
+        def remove_tar_files(package_type, exercise)
+          if package_type == 'TEMPLATE'
+            package_name = "TemplatePackage_#{exercise.id}.tar"
+          elsif package_type == 'MODEL'
+            package_name = "ModelSolutionPackage_#{exercise.id}.tar"
+          end
+          File.open(packages_target_path.join(package_name).to_s, 'r') do |tar_file|
+            `rm #{tar_file.path}`
+          end
+        end
 
         def package_type
           params[:token].include?('MODEL') ? 'MODEL' : 'TEMPLATE'
@@ -35,6 +48,10 @@ module Api
             MessageBroadcasterJob.perform_now(@exercise)
             raise InvalidSignature
           end
+        end
+
+        def packages_target_path
+          Rails.root.join('submission_generation', 'packages')
         end
       end
     end

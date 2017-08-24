@@ -26,6 +26,7 @@ class Exercise < ApplicationRecord
     self.error_messages = []
     status_undefined!
     self.sandbox_results = { status: '', message: '', passed: false, model_results_received: false, template_results_received: false }
+    self.times_sent_to_sandbox = 0
   end
 
   def add_tags(tags)
@@ -48,8 +49,8 @@ class Exercise < ApplicationRecord
     if !Dir.exist?(submission_target_path.to_s)
     then FileUtils.cp_r Rails.root.join('submission_generation', 'SubmissionTemplate').to_s, submission_target_path.to_s
     else
-      FileUtils.remove_dir(submission_target_path.join('model').to_s)
-      FileUtils.remove_dir(submission_target_path.join('template').to_s)
+      FileUtils.remove_dir(submission_target_path.join('model').to_s, true)
+      FileUtils.remove_dir(submission_target_path.join('template').to_s, true)
     end
   end
 

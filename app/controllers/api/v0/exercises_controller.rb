@@ -36,7 +36,7 @@ module Api
         TarBaller.new.create_tar_files(@exercise)
         ExerciseVerifierJob.perform_later @exercise
         MessageBroadcasterJob.perform_now(@exercise)
-        TimeoutCheckerJob.set(wait: 2.minutes).perform_later(@exercise)
+        TimeoutCheckerJob.set(wait: 1.minute).perform_later(@exercise)
       end
 
       # Use callbacks to share common setup or constraints between actions.

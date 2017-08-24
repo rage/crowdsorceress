@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170818132219) do
+ActiveRecord::Schema.define(version: 20170824083021) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(version: 20170818132219) do
     t.text "model_solution"
     t.text "template"
     t.json "error_messages", default: [], array: true
+    t.integer "times_sent_to_sandbox", default: 0, null: false
     t.index ["assignment_id"], name: "index_exercises_on_assignment_id"
     t.index ["user_id"], name: "index_exercises_on_user_id"
   end

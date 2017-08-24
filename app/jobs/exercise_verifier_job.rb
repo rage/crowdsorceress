@@ -16,14 +16,17 @@ class ExerciseVerifierJob < ApplicationJob
       Rails.logger.warn('ExerciseVerifierJob called with a string! Silently aborting...')
       return
     end
+    exercise.times_sent_to_sandbox += 1
+    exercise.save!
     send_package_to_sandbox(exercise, 'TEMPLATE', "TemplatePackage_#{exercise.id}.tar")
     send_package_to_sandbox(exercise, 'MODEL', "ModelSolutionPackage_#{exercise.id}.tar")
   end
 
   def send_package_to_sandbox(exercise, package_type, package_name)
     package_type == 'TEMPLATE' ? exercise.testing_template! : exercise.testing_model_solution!
-
-    MessageBroadcasterJob.perform_now(exercise)
+    if exercise.times_sent_to_sandbox == 1
+      MessageBroadcasterJob.perform_now(exercise)
+    end
 
     File.open(packages_target_path.join(package_name).to_s, 'r') do |tar_file|
       sandbox_post(tar_file, exercise, package_type)
@@ -41,33 +44,16 @@ class ExerciseVerifierJob < ApplicationJob
   def sandbox_post(tar_file, exercise, package_type)
     response = RestClient.post post_url, file: tar_file, notify: results_url(exercise), token: secret_token(exercise, package_type)
 
-    `rm #{tar_file.path}`
-
     return unless response.code != 200
     exercise.error_messages.push(header: 'Ongelmia palvelimessa, yritä jonkin ajan päästä uudelleen')
     MessageBroadcasterJob.perform_now(exercise)
   end
 
-  def send_submission_to_free_server
-    # TODO: implement
-    # for server in all.shuffle # could be smarter about this
-    #   begin
-    #     server.send_submission(submission, notify_url)
-    #   rescue SandboxUnavailableError=>e
-    #     Rails.logger.warn e
-    #       # ignore
-    #   else
-    #     Rails.logger.info "Submission #{submission.id} sent to remote sandbox at #{server.baseurl}"
-    #     Rails.logger.debug "Notify url: #{notify_url}"
-    #     return true
-    #   end
-    # end
-    # Rails.logger.warn 'No free server to send submission to. Leaving to reprocessor daemon.'
-    # false
-  end
-
   def post_url
-    ENV['SANDBOX_BASE_URL'] + '/tasks.json'
+    sandbox_base = ENV['ALL_SANDBOXES'].split(',').sample
+
+    sandbox_base + '/tasks.json' # could be smarter about this
+    # ENV['SANDBOX_BASE_URL'] + '/tasks.json'
   end
 
   def results_url(exercise)

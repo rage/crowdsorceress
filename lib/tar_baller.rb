@@ -8,7 +8,7 @@ class TarBaller
       exercise.create_submission
 
       `cd #{tmp_submission_target_path(exercise).join('model').to_s} && tar -cpf #{packages_target_path.join("ModelSolutionPackage_#{exercise.id}.tar").to_s} *`
-      `cd #{tmp_submission_target_path(exercise).join('stub').to_s} && tar -cpf #{packages_target_path.join("StubPackage_#{exercise.id}.tar").to_s} *`
+      `cd #{tmp_submission_target_path(exercise).join('template').to_s} && tar -cpf #{packages_target_path.join("TemplatePackage_#{exercise.id}.tar").to_s} *`
     end
   end
 
@@ -16,7 +16,7 @@ class TarBaller
 
   def exercise_modified?(exercise)
     if Dir.exist?(assignment_target_path(exercise)) && Dir.exist?(assignment_target_path(exercise).join("exercise_#{exercise.id}"))
-      if directory_includes_file(exercise, 'ModelSolution') || directory_includes_file(exercise, 'Stub')
+      if directory_includes_file(exercise, 'ModelSolution') || directory_includes_file(exercise, 'Template')
         return false
       end
     end
