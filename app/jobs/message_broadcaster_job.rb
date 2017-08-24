@@ -13,7 +13,7 @@ class MessageBroadcasterJob < ApplicationJob
       message_generator('in progress', 'Yhteys tietokantaan ok, odotetaan', 0, false, exercise)
     elsif exercise.saved?
       message_generator('in progress', 'Tehtävä tallennettu tietokantaan', 0.1, false, exercise)
-    elsif exercise.testing_stub?
+    elsif exercise.testing_template?
       message_generator('in progress', 'Testataan tehtäväpohjaa', 0.3, false, exercise)
     elsif exercise.testing_model_solution?
       message_generator('in progress', 'Testataan malliratkaisua', 0.6, false, exercise)

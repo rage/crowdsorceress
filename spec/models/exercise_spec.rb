@@ -22,14 +22,14 @@ RSpec.describe Exercise, type: :model do
       exercise.create_submission
 
       directory = Dir.new("submission_generation/tmp/Submission_#{exercise.id}")
-      expect(directory.entries).to include('model', 'stub')
+      expect(directory.entries).to include('model', 'template')
 
       FileUtils.remove_dir("submission_generation/tmp/Submission_#{exercise.id}")
     end
   end
 
   describe 'when receiving results from sandbox' do
-    context 'when stub does not compile and tests fail' do
+    context 'when template does not compile and tests fail' do
       it 'handles sandbox results properly' do
         exercise.code =
           'System.out.println("moi");
@@ -37,7 +37,7 @@ RSpec.describe Exercise, type: :model do
            return "Hello " + input;
            // END SOLUTION'
         exercise.sandbox_results = { status: '', message: '', passed: false,
-                                     model_results_received: false, stub_results_received: false }
+                                     model_results_received: false, template_results_received: false }
 
         # Handle model solutions results
         exercise.handle_results('finished', { 'status' => 'TESTS_FAILED',
@@ -46,9 +46,9 @@ RSpec.describe Exercise, type: :model do
                                                                   'valgrindFailed' => false, 'points' => ['01-11'],
                                                                   'exception' => ['expected:<Hello[lolled]> but was: <Hello [lol]>'] }],
                                               'logs' => { 'stdout' => [109, 111, 105, 10], 'stderr' => [] } }, 'MODEL')
-        # Handle stubs results
+        # Handle template's results
         exercise.handle_results('finished', { 'status' => 'COMPILE_FAILED', 'testResults' => [],
-                                              'logs' => { 'stdout' => StdoutExample.new.example, 'stderr' => [] } }, 'STUB')
+                                              'logs' => { 'stdout' => StdoutExample.new.example, 'stderr' => [] } }, 'TEMPLATE')
 
         expect(exercise.sandbox_results[:passed]).to be(false)
         expect(exercise.sandbox_results[:status]).not_to be('finished')
@@ -65,7 +65,7 @@ RSpec.describe Exercise, type: :model do
       ZipHandler.new(exercise).clean_up
 
       expect(File).to exist(exercise_target_path.join("ModelSolution_#{exercise.id}.#{exercise.versions.last.id}.zip"))
-      expect(File).to exist(exercise_target_path.join("Stub_#{exercise.id}.#{exercise.versions.last.id}.zip"))
+      expect(File).to exist(exercise_target_path.join("Template_#{exercise.id}.#{exercise.versions.last.id}.zip"))
 
       FileUtils.remove_dir("submission_generation/packages/assignment_#{exercise.assignment.id}/")
     end

@@ -18,14 +18,14 @@ RSpec.describe ExerciseVerifierJob, type: :job do
 
     it 'sends exercise to backend' do
       exercise.sandbox_results = { status: '', message: '', passed: false,
-                                   model_results_received: false, stub_results_received: false }
+                                   model_results_received: false, template_results_received: false }
 
       ExerciseVerifierJob.perform_now(exercise)
       expect(exercise.status).to eq('testing_model_solution')
 
       FileUtils.remove_dir("submission_generation/tmp/Submission_#{exercise.id}")
       FileUtils.remove_entry("submission_generation/packages/ModelSolutionPackage_#{exercise.id}.tar")
-      FileUtils.remove_entry("submission_generation/packages/StubPackage_#{exercise.id}.tar")
+      FileUtils.remove_entry("submission_generation/packages/TemplatePackage_#{exercise.id}.tar")
     end
   end
 end

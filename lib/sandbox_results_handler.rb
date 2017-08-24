@@ -22,7 +22,7 @@ class SandboxResultsHandler
   end
 
   def set_status_and_passed_state(sandbox_status, test_output)
-    # Status will be 'finished' if both stub results and model solution results are finished in sandbox
+    # Status will be 'finished' if both template results and model solution results are finished in sandbox
     if @exercise.sandbox_results[:status] == '' || @exercise.sandbox_results[:status] == 'finished'
       @exercise.sandbox_results[:status] = sandbox_status
     end
@@ -35,14 +35,14 @@ class SandboxResultsHandler
     # Push test results into exercise's error messages
     return if test_output['testResults'].empty? || test_output['testResults'].first['successful']
     header = 'Virheet testeissä: '
-    messages = test_output['testResults'].join('\n')
+    messages = test_output['testResults'][0]['message']
     error = { header: header, messages: messages }
     @exercise.error_messages.push error
   end
 
   def compile_errors(test_output, package_type)
     return unless test_output['status'] == 'COMPILE_FAILED'
-    header = package_type == 'STUB' ? 'Tehtäväpohja ei kääntynyt: ' : 'Malliratkaisu ei kääntynyt: '
+    header = package_type == 'TEMPLATE' ? 'Tehtäväpohja ei kääntynyt: ' : 'Malliratkaisu ei kääntynyt: '
     messages = error_message_lines(test_output).join('\n')
     error = { header: header, messages: messages }
     @exercise.error_messages.push error
@@ -56,8 +56,8 @@ class SandboxResultsHandler
   def generate_message(sandbox_status, passed, compiled, package_type)
     if package_type == 'MODEL'
       model_message(sandbox_status, passed, compiled)
-    elsif package_type == 'STUB'
-      stub_message(sandbox_status, compiled)
+    elsif package_type == 'TEMPLATE'
+      template_message(sandbox_status, compiled)
     end
   end
 
@@ -70,9 +70,9 @@ class SandboxResultsHandler
                                            end
   end
 
-  def stub_message(sandbox_status, compiled)
+  def template_message(sandbox_status, compiled)
     @exercise.sandbox_results[:message] += ' Tehtäväpohjan tulokset: '
-    @exercise.sandbox_results[:stub_results_received] = true
+    @exercise.sandbox_results[:template_results_received] = true
     @exercise.sandbox_results[:message] += if sandbox_status == 'finished' && compiled then 'Kaikki OK.'
                                            else 'Koodi ei kääntynyt.'
                                            end
