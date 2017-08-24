@@ -15,4 +15,9 @@ class TimeoutCheckerJob < ApplicationJob
     exercise.sandbox_timeout!
     MessageBroadcasterJob.perform_now(exercise)
   end
+
+  def send_again(exercise)
+    # TODO: send exercise to a different sandbox
+    ExerciseVerifierJob.perform_now(exercise)
+  end
 end
