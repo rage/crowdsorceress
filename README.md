@@ -10,6 +10,9 @@
 5. Add the URL from ngrok to env variable BASE_URL
 6. Run `docker-compose up`[*](http://i.imgur.com/9D3Hgti.jpg)
 7. Run tests in another terminal tab with `docker-compose exec web bin/rails spec`
-8. Testing POST is possible with `curl` or through frontend [Crowdsorcerer](https://github.com/rage/crowdsorcerer)
+8. Submit exercises and peer reviews through frontend [Crowdsorcerer](https://github.com/rage/crowdsorcerer)
 
 ![It just works](http://i.imgur.com/mODaElx.jpg)
+
+[Crowdsorceress is now on the Internet!](https://crowdsorcerer.testmycode.io)
+Test your admin privileges today!
