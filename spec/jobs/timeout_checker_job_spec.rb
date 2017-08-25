@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'tar_baller'
+require 'tarballer'
 
 RSpec.describe TimeoutCheckerJob, type: :job do
   describe 'TimeoutChecker' do
@@ -25,7 +25,7 @@ RSpec.describe TimeoutCheckerJob, type: :job do
     context 'when exercise status is anything but finished or error' do
       it 'calls SandboxPosterJob' do
         exercise.half_done!
-        TarBaller.new.create_tar_files(exercise)
+        Tarballer.new.create_tar_files(exercise)
         TimeoutCheckerJob.perform_now(exercise)
 
         expect(exercise.status).to eq('sandbox_timeout')
