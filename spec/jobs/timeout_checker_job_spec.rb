@@ -7,7 +7,7 @@ RSpec.describe TimeoutCheckerJob, type: :job do
   describe 'TimeoutChecker' do
     let(:exercise) { FactoryGirl.create(:exercise) }
     before :each do
-      allow_any_instance_of(ExerciseVerifierJob).to receive(:sandbox_post)
+      allow_any_instance_of(SandboxPosterJob).to receive(:sandbox_post)
     end
 
     context 'when exercise status is finished or error' do
@@ -23,13 +23,12 @@ RSpec.describe TimeoutCheckerJob, type: :job do
     end
 
     context 'when exercise status is anything but finished or error' do
-      it 'calls ExerciseVerifierJob' do
+      it 'calls SandboxPosterJob' do
         exercise.half_done!
         TarBaller.new.create_tar_files(exercise)
+        TimeoutCheckerJob.perform_now(exercise)
 
-        expect do
-          TimeoutCheckerJob.perform_now(exercise)
-        end.to change { exercise.times_sent_to_sandbox }.by(1)
+        expect(exercise.status).to eq('sandbox_timeout')
 
         FileUtils.remove_dir("submission_generation/tmp/Submission_#{exercise.id}")
         FileUtils.remove_entry("submission_generation/packages/ModelSolutionPackage_#{exercise.id}.tar")

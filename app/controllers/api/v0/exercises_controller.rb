@@ -33,10 +33,9 @@ module Api
       private
 
       def send_submission
-        TarBaller.new.create_tar_files(@exercise)
-        ExerciseVerifierJob.perform_later @exercise
         MessageBroadcasterJob.perform_now(@exercise)
-        TimeoutCheckerJob.set(wait: 1.minute).perform_later(@exercise)
+        TarBaller.new.create_tar_files(@exercise)
+        SandboxPosterJob.perform_async(@exercise.id)
       end
 
       # Use callbacks to share common setup or constraints between actions.

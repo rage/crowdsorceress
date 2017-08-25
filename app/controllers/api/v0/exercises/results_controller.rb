@@ -7,13 +7,16 @@ module Api
         # POST /exercises/:id/results
         def create
           exercise = Exercise.find(params[:exercise_id])
-          return if exercise.finished? || exercise.error?
+          token = verify_secret_token(exercise)
 
-          remove_tar_files(package_type, exercise)
+          return if exercise.finished? || exercise.error? || !submit_count_correct(token, exercise)
 
-          verify_secret_token(params[:token], exercise)
+          exercise.error_messages = []
+
+          remove_tar_files(package_type(token), exercise)
+
           test_output = JSON.parse(params[:test_output])
-          exercise.handle_results(params[:status], test_output, package_type)
+          exercise.handle_results(params[:status], test_output, package_type(token))
         end
 
         private
@@ -29,25 +32,27 @@ module Api
           end
         end
 
-        def package_type
-          params[:token].include?('MODEL') ? 'MODEL' : 'TEMPLATE'
+        def package_type(token)
+          token.include?('MODEL') ? 'MODEL' : 'TEMPLATE'
         end
 
-        def verify_secret_token(token, exercise)
-          secret_token = if params[:token].include? 'MODEL'
-                           token.gsub('MODEL', '')
-                         else
-                           token.gsub('TEMPLATE', '')
-                         end
+        def submit_count_correct(token, exercise)
+          count = token.split(',').last
+          count == exercise.submit_count.to_s
+        end
 
+        def verify_secret_token(exercise)
           verifier = ActiveSupport::MessageVerifier.new(Rails.application.secrets[:secret_key_base])
-          begin verifier.verify(secret_token)
+
+          begin token = verifier.verify(params[:token])
           rescue ActiveSupport::MessageVerifier::InvalidSignature
             exercise.error_messages.push(header: 'Tehtävän lähetys epäonnistui virheellisen avaimen vuoksi', 'messages': '')
             exercise.error!
             MessageBroadcasterJob.perform_now(@exercise)
             raise InvalidSignature
           end
+
+          token
         end
 
         def packages_target_path

@@ -27,6 +27,8 @@ class Exercise < ApplicationRecord
     status_undefined!
     self.sandbox_results = { status: '', message: '', passed: false, model_results_received: false, template_results_received: false }
     self.times_sent_to_sandbox = 0
+
+    self.submit_count += 1
   end
 
   def add_tags(tags)
