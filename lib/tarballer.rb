@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TarBaller
+class Tarballer
   def create_tar_files(exercise)
     if !exercise_modified?(exercise)
       unmodified_error(exercise)

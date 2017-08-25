@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'tar_baller'
+require 'tarballer'
 
 module Api
   module V0
@@ -34,7 +34,7 @@ module Api
 
       def send_submission
         MessageBroadcasterJob.perform_now(@exercise)
-        TarBaller.new.create_tar_files(@exercise)
+        Tarballer.new.create_tar_files(@exercise)
         SandboxPosterJob.perform_async(@exercise.id)
       end
 
