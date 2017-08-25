@@ -11,7 +11,11 @@ module Api
 
           return if exercise.finished? || exercise.error? || !submit_count_correct(token, exercise)
 
-          exercise.error_messages = []
+          exercise.error_messages.each do |error|
+            if error['header'].include?('Tehtäväntarkastuspalvelin vastasi liian hitaasti')
+              exercise.error_messages = []
+            end
+          end
 
           TarballRemoverJob.perform_later(package_type(token), exercise)
 
