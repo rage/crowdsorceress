@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'tar_baller'
+
 module Api
   module V0
     class ExercisesController < BaseController
@@ -21,7 +23,7 @@ module Api
 
         if @exercise.save
           @exercise.saved!
-          perform_jobs
+          send_submission
           render json: { message: 'Exercise successfully created! :) :3', exercise: @exercise }, status: :created
         else
           render json: @exercise.errors, status: :unprocessable_entity, message: 'Exercise not created. =( :F'
@@ -30,10 +32,10 @@ module Api
 
       private
 
-      def perform_jobs
-        ExerciseVerifierJob.perform_later @exercise
+      def send_submission
         MessageBroadcasterJob.perform_now(@exercise)
-        TimeoutCheckerJob.set(wait: 2.minutes).perform_later(@exercise)
+        TarBaller.new.create_tar_files(@exercise)
+        SandboxPosterJob.perform_async(@exercise.id)
       end
 
       # Use callbacks to share common setup or constraints between actions.

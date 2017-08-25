@@ -38,7 +38,7 @@ services:
       - "6379:6379"
   sidekiq:
     build: .
-    command: bundle exec sidekiq
+    command: bundle exec sidekiq --verbose
     volumes:
       - type: volume
         source: .
@@ -51,3 +51,5 @@ services:
       - OAUTH_SITE=https://tmc.mooc.fi
       - DB_HOST=db
       - REDIS_PROVIDER=redis
+    stdin_open: true
+    tty: true
