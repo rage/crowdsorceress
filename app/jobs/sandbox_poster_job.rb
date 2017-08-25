@@ -15,7 +15,7 @@ class SandboxPosterJob
 
   sidekiq_retries_exhausted do |msg|
     exercise = Exercise.find msg['args'][0]
-    exercise.error_messages.push(header: 'Sandbox voi pahoin', messages: '')
+    exercise.error_messages.push(header: 'Tehtäväntarkastuspalvelin on ruuhkautunut, yritä tehtävän lähetystä uudelleen', messages: '')
     exercise.error!
     MessageBroadcasterJob.perform_now(exercise)
   end
@@ -40,6 +40,7 @@ class SandboxPosterJob
     @exercise.save!
     send_package_to_sandbox('TEMPLATE', "TemplatePackage_#{@exercise.id}.tar") unless @exercise.testing_model_solution?
     send_package_to_sandbox('MODEL', "ModelSolutionPackage_#{@exercise.id}.tar")
+    TimeoutCheckerJob.set(wait: 1.minute).perform_now(@exercise)
   end
 
   def send_package_to_sandbox(package_type, package_name)
@@ -71,8 +72,6 @@ class SandboxPosterJob
     end
 
     raise PostFailedError if response.nil?
-
-    TimeoutCheckerJob.set(wait: 1.minute).perform_later(@exercise)
   end
 
   def servers

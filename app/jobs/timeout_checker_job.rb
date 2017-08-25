@@ -11,7 +11,7 @@ class TimeoutCheckerJob < ApplicationJob
   # Timeout happens if exercise results are not received fast enough
   def perform(exercise)
     return if exercise.finished? || exercise.error?
-    exercise.error_messages.push(header: 'Emme onnistuneet käsittelemään tehtävääsi, anteeksi', messages: '')
+    exercise.error_messages.push(header: 'Tehtäväntarkastuspalvelin vastasi liian hitaasti, yritä tehtävän lähetystä uudelleen', messages: '')
     exercise.sandbox_timeout!
     MessageBroadcasterJob.perform_now(exercise)
   end
