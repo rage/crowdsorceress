@@ -24,7 +24,7 @@ class MessageBroadcasterJob < ApplicationJob
     elsif exercise.error?
       error_message(exercise)
     elsif exercise.sandbox_timeout?
-      message_generator('error', 'Tehtävän lähetys on aikakatkaistu', 1, false, exercise)
+      message_generator('error', 'Tehtävän lähetyksessä kesti liian kauan', 1, false, exercise)
     end
   end
 
