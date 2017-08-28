@@ -25,7 +25,6 @@ class SandboxPosterJob
   #   Rails.logger.warn 'Record not found!'
   # end
 
-  class SandboxUnavailableError < StandardError; end
   class PostFailedError < StandardError; end
 
   def perform(exercise_id)
@@ -40,7 +39,7 @@ class SandboxPosterJob
     @exercise.save!
     send_package_to_sandbox('TEMPLATE', "TemplatePackage_#{@exercise.id}.tar") unless @exercise.testing_model_solution?
     send_package_to_sandbox('MODEL', "ModelSolutionPackage_#{@exercise.id}.tar")
-    TimeoutCheckerJob.set(wait: 1.minute).perform_now(@exercise)
+    TimeoutCheckerJob.set(wait: 1.minute).perform_later(@exercise)
   end
 
   def send_package_to_sandbox(package_type, package_name)
@@ -65,7 +64,7 @@ class SandboxPosterJob
     response = servers.find do |url| # could be smarter about this # we ARE smarter about this
       begin
         RestClient.post "#{url}/tasks.json", file: tar_file, notify: results_url, token: secret_token(package_type)
-      rescue SandboxUnavailableError => e
+      rescue => e
         Rails.logger.warn e
         false
       end
