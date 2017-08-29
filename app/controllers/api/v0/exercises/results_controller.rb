@@ -16,7 +16,7 @@ module Api
           TarballRemoverJob.perform_later(package_type(token), exercise)
 
           test_output = JSON.parse(params[:test_output])
-          exercise.handle_results(params[:status], test_output, package_type(token))
+          exercise.handle_results(test_output, package_type(token))
         end
 
         private

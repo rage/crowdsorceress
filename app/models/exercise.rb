@@ -26,7 +26,6 @@ class Exercise < ApplicationRecord
     self.error_messages = []
     status_undefined!
     self.sandbox_results = { status: '', message: '', passed: false, model_results_received: false, template_results_received: false }
-    self.times_sent_to_sandbox = 0
 
     self.submit_count += 1
   end
@@ -44,7 +43,7 @@ class Exercise < ApplicationRecord
     write_to_main_file
     write_to_test_file
 
-    create_model_solution_and_template
+    create_model_and_template
   end
 
   def check_if_already_submitted
@@ -56,7 +55,7 @@ class Exercise < ApplicationRecord
     end
   end
 
-  def create_model_solution_and_template
+  def create_model_and_template
     TMCLangs.prepare_solutions(self)
     TMCLangs.prepare_templates(self)
   end
@@ -73,11 +72,11 @@ class Exercise < ApplicationRecord
     end
   end
 
-  def handle_results(sandbox_status, test_output, package_type)
-    SandboxResultsHandler.new(self).handle(sandbox_status, test_output, package_type)
+  def handle_results(test_output, package_type)
+    SandboxResultsHandler.new(self).handle(test_output, package_type)
 
     if sandbox_results[:model_results_received] && sandbox_results[:template_results_received]
-      sandbox_status == 'finished' && sandbox_results[:passed] ? finished! : error!
+      sandbox_results[:passed] ? finished! : error!
     else
       half_done!
     end

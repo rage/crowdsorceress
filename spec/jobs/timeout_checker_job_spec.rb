@@ -13,20 +13,20 @@ RSpec.describe TimeoutCheckerJob, type: :job do
     context 'when exercise status is finished or error' do
       it 'does nothing' do
         exercise.finished!
-        TimeoutCheckerJob.perform_now(exercise)
+        TimeoutCheckerJob.perform_now(exercise, exercise.submit_count)
         expect(exercise.status).to eq('finished')
 
         exercise.error!
-        TimeoutCheckerJob.perform_now(exercise)
+        TimeoutCheckerJob.perform_now(exercise, exercise.submit_count)
         expect(exercise.status).to eq('error')
       end
     end
 
-    context 'when exercise status is anything but finished or error' do
-      it 'calls SandboxPosterJob' do
+    context 'when exercise status is anything but finished or error and submit count is correct' do
+      it 'changes exercise status to sandbox_timeout' do
         exercise.half_done!
         Tarballer.new.create_tar_files(exercise)
-        TimeoutCheckerJob.perform_now(exercise)
+        TimeoutCheckerJob.perform_now(exercise, exercise.submit_count)
 
         expect(exercise.status).to eq('sandbox_timeout')
 
