@@ -35,11 +35,9 @@ class SandboxPosterJob
       return
     end
 
-    @exercise.times_sent_to_sandbox += 1
-    @exercise.save!
     send_package_to_sandbox('TEMPLATE', "TemplatePackage_#{@exercise.id}.tar") unless @exercise.testing_model_solution?
     send_package_to_sandbox('MODEL', "ModelSolutionPackage_#{@exercise.id}.tar")
-    TimeoutCheckerJob.set(wait: 1.minute).perform_later(@exercise)
+    TimeoutCheckerJob.set(wait: 1.minute).perform_later(@exercise, @exercise.submit_count)
   end
 
   def send_package_to_sandbox(package_type, package_name)

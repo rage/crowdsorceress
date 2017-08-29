@@ -40,15 +40,13 @@ RSpec.describe Exercise, type: :model do
                                      model_results_received: false, template_results_received: false }
 
         # Handle model solutions results
-        exercise.handle_results('finished', { 'status' => 'TESTS_FAILED',
-                                              'testResults' => [{ 'name' => 'ModelSolutionTest test1', 'successful' => false,
-                                                                  'message' => 'ComparisonFailure: expected:<Hello[lolled]> but was: <Hello [lol]>',
-                                                                  'valgrindFailed' => false, 'points' => ['01-11'],
-                                                                  'exception' => ['expected:<Hello[lolled]> but was: <Hello [lol]>'] }],
-                                              'logs' => { 'stdout' => [109, 111, 105, 10], 'stderr' => [] } }, 'MODEL')
+        exercise.handle_results({ 'status' => 'TESTS_FAILED', 'testResults' =>
+          [{ 'name' => 'ModelSolutionTest test1', 'successful' => false, 'message' => 'ComparisonFailure: expected:<Hello[lolled]> but was: <Hello [lol]>',
+             'valgrindFailed' => false, 'points' => ['01-11'], 'exception' => ['expected:<Hello[lolled]> but was: <Hello [lol]>'] }],
+                                  'logs' => { 'stdout' => [109, 111, 105, 10], 'stderr' => [] } }, 'MODEL')
         # Handle template's results
-        exercise.handle_results('finished', { 'status' => 'COMPILE_FAILED', 'testResults' => [],
-                                              'logs' => { 'stdout' => StdoutExample.new.example, 'stderr' => [] } }, 'TEMPLATE')
+        exercise.handle_results({ 'status' => 'COMPILE_FAILED', 'testResults' => [], 'logs' =>
+          { 'stdout' => StdoutExample.new.example, 'stderr' => [] } }, 'TEMPLATE')
 
         expect(exercise.sandbox_results[:passed]).to be(false)
         expect(exercise.sandbox_results[:status]).not_to be('finished')

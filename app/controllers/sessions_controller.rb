@@ -8,8 +8,7 @@ class SessionsController < ApplicationController
   end
 
   def create
-    token = oauth_client.password.get_token(params[:login], params[:password])
-    session[:oauth_token] = token.token
+    fetch_token
     if current_user
       unless admin?
         session[:oauth_token] = nil
@@ -30,6 +29,11 @@ class SessionsController < ApplicationController
   end
 
   private
+
+  def fetch_token
+    token = oauth_client.password.get_token(params[:login], params[:password])
+    session[:oauth_token] = token.token
+  end
 
   def login_failed!
     msg = 'Wrong username or password.'
