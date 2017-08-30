@@ -42,9 +42,7 @@ class SandboxPosterJob
 
   def send_package_to_sandbox(package_type, package_name)
     package_type == 'TEMPLATE' ? @exercise.testing_template! : @exercise.testing_model_solution!
-    if @exercise.times_sent_to_sandbox == 1
-      MessageBroadcasterJob.perform_now(@exercise)
-    end
+    MessageBroadcasterJob.perform_now(@exercise)
 
     File.open(packages_target_path.join(package_name).to_s, 'r') do |tar_file|
       sandbox_post(tar_file, package_type)
