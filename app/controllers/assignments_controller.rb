@@ -33,7 +33,7 @@ class AssignmentsController < ApplicationController
   # PATCH/PUT /assignments/1
   def update
     if @assignment.update(assignment_params)
-      redirect_to @essay, notice: 'Assignment was successfully updated.'
+      redirect_to @assignment, notice: 'Assignment was successfully updated.'
     else
       render :edit, notice: 'Assignment update failed.'
     end
