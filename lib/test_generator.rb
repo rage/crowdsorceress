@@ -35,16 +35,18 @@ class TestGenerator
 
   def generate(exercise)
     type = exercise.assignment.exercise_type.name
-    if type == 'stdin_stdout'
-      stdin_to_stdout(exercise)
+    if type == 'string_stdin_string_stdout'
+      string_stdin_string_stdout(exercise)
     elsif %w[string_string int_int].include? type
       input_to_output(exercise, type)
     elsif type == 'string_stdout'
       string_to_stdout(exercise)
+    elsif type == 'int_stdin_int_stdout'
+      int_stdin_to_int_stdout(exercise)
     end
   end
 
-  def stdin_to_stdout(exercise)
+  def string_stdin_string_stdout(exercise)
     input_type = 'String'
     output_type = 'String'
 
@@ -81,6 +83,30 @@ class TestGenerator
       Submission.metodi(input);
 
       String out = io.getSysOut();
+      assertEquals(output, out);
+    eos
+
+    template_params = { input_type: input_type, output_type: output_type, test_code: test_code, mock_stdio_init: mock_stdio_init }
+
+    generate_string(exercise, template_params)
+  end
+
+  def int_stdin_to_int_stdout(exercise)
+    input_type = 'int'
+    output_type = 'int'
+
+    mock_stdio_init = <<~eos
+      @Rule
+      public MockStdio io = new MockStdio();
+    eos
+
+    test_code = <<~eos
+      ReflectionUtils.newInstanceOfClass(Submission.class);
+      io.setSysIn("" + input);
+      Submission.main(new String[0]);
+
+      int out = Integer.parseInt(io.getSysOut());
+
       assertEquals(output, out);
     eos
 

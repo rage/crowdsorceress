@@ -19,11 +19,15 @@ type = ExerciseType.create name: 'string_string', code_template: code_template1
 a1 = Assignment.create description: 'Tehtävän tarkoituksena on luoda metodi, joka saa parametrina string-tyyppisen muuttujan. Palautusarvo on myös string.', exercise_type: type
 
 type2 = ExerciseType.create name: 'stdin_stdout', code_template: code_template2
-Assignment.create description: 'Tee tehtävä, jossa on tarkoitus koodata jonkinlainen ohjelma, jossa käyttäjää pyydetään kirjoittamaan jokin syöte. Syötettä käsitellään haluamallasi tavalla ja lopuksi tulostetaan jotain.
-Anna testisyötteeksi esimerkki käyttäjän syötteestä ja sellainen tulosta, jonka ohjelma tulostaa tuolla syötteellä.', exercise_type: type2
+Assignment.create description: 'Tee tehtävä, jonka tarkoitus on laittaa opiskelija koodaamaan ohjelma, joka lukee käyttäjältä merkkijonosyötteen, tarkastelee sitä ehtolauseen avulla ja tulostaa merkkijonon.
+Anna testisyötteeksi syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type2
 
 type3 = ExerciseType.create name: 'string_stdout', code_template: code_template3
 Assignment.create description: 'Tee tehtävä, jossa pyydetään luomaan metodi, joka saa parametrina stringin. Metodin kuuluu tulostaa jotain.', exercise_type: type3
+
+type4 = ExerciseType.create name: 'int_stdin_int_stdout', code_template: code_template2
+Assignment.create description: 'Tee tehtävä, jonka tarkoitus on laittaa opiskelija koodaamaan ohjelma, joka lukee käyttäjältä kokonaislukusyötteen, tarkastelee sitä ehtolauseen avulla ja tulostaa kokonaisluvun.
+Anna testisyötteeksi syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type4
 
 Exercise.create(
   code: 'int luku = 1; \n String kissa = \"koira \"; \n return \"Palautusarvo \" ',

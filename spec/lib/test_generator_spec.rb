@@ -154,12 +154,23 @@ eos
       @Rule
       public MockStdio io = new MockStdio();
     eos
-    test_code = <<~eos
+
+    string_test_code = <<~eos
       ReflectionUtils.newInstanceOfClass(Submission.class);
       io.setSysIn(input);
       Submission.main(new String[0]);
 
       String out = io.getSysOut();
+
+      assertEquals(output, out);
+    eos
+
+    int_test_code = <<~eos
+      ReflectionUtils.newInstanceOfClass(Submission.class);
+      io.setSysIn("" + input);
+      Submission.main(new String[0]);
+
+      int out = Integer.parseInt(io.getSysOut());
 
       assertEquals(output, out);
     eos
@@ -170,8 +181,8 @@ eos
       expect(subject).not_to be(nil)
     end
 
-    it 'generates a proper test template' do
-      exercise.assignment.exercise_type.name = 'stdin_stdout'
+    it 'generates a proper test template for type String' do
+      exercise.assignment.exercise_type.name = 'string_stdin_string_stdout'
 
       io = [{ input: 'asd', output: 'asdasdasd' },
             { input: 'dsa', output: 'dsadsadsa' },
@@ -197,7 +208,37 @@ eos
       eos
       expect(subject).to respond_to(:generate).with(1).argument
       expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, IOtype: 'String',
-                                                                     mock_stdio_init: mock_stdio_init, test_code: test_code))
+                                                                     mock_stdio_init: mock_stdio_init, test_code: string_test_code))
+    end
+
+    it 'generates a proper test template for type int' do
+      exercise.assignment.exercise_type.name = 'int_stdin_int_stdout'
+
+      io = [{ input: 4, output: 5 },
+            { input: 2, output: 7 },
+            { input: 23_456, output: 23_456 }]
+
+      exercise.testIO = io
+
+      tests = <<~eos
+        @Test
+          public void test1() {
+            toimii(4, 5);
+          }
+
+          @Test
+          public void test2() {
+            toimii(2, 7);
+          }
+
+          @Test
+          public void test3() {
+            toimii(23456, 23456);
+          }
+      eos
+      expect(subject).to respond_to(:generate).with(1).argument
+      expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, IOtype: 'int',
+                                                                     mock_stdio_init: mock_stdio_init, test_code: int_test_code))
     end
   end
 end

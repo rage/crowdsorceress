@@ -1,0 +1,38 @@
+- tehtävänanto ei työelämässä valmiina, jotain ongelmanratkaisusta
+- ammattikoodarit työskentelevät yhdessä/ryhmissä, tämän oppimiseen auttaa parikoodaus ja Crowdsorcerer
+- muiden koodin lukeminen on hyödyllinen taito, ks. edellämainittu
+- mahdollisuus tehdä itseäsi kiinnostavia tehtäviä, esim. lintutietokanta :Dd
+
+
+(Motivation-part:)
+
+Ohjelmoidessa tarkkaa tehtävänantoa ei yleensä ole, vaan pikemminkin jonkinlainen haluttu lopputulos. Seuraavaksi onkin tarkoitus opetella itse kehittämään tehtävänantoja.
+Tehtävien luominen auttaa käsittämään prosessia koodaamisen taustalla: onko olennaista toteuttaa tehtävä vaikkapa for-loopin avulla ja millainen rakenne ohjelmalle olisi hyvä.
+Näiden tehtävänantojen tekeminen auttaa myös kurssin sisältöjen omaksumisessa ja kokonaisuuksien hahmottamisessa (lähde???= Nea :d).
+
+Parikoodauksessa, jota tälläkin kurssilla harjoitellaan, on hyödyllistä osata lukea toisten koodia. Myös omat ohjelmointitaidot paranevat, kun oppii huomaamaan ja välttämään yleisiä ohjelmointivirheitä.
+Ohjelman koodi on myös osa sen dokumentaatiota, eli koodia lukemalla oppii ymmärtämään erilaisten ohjelmien toimintaa.
+
+Nyt sinulla on myös mahdollisuus saada kurssille juuri sinua kiinnostavia tehtäviä! Esimerkiksi lintutietokannan luominen.
+
+(Emme henkilökohtaisesti suosittele koodarin uraa. Jos sitä mietitte.)
+
+Crowdsorcerer-ohjeet: Tee tehtävänanto. Tee sille malliratkaisu. Laita input ja output testejä varten. Anna tagit. Paina Lähetä. Odota. Ohjelma kaatui? Hups.
+
+Ohje Crowsorcererin käyttöön:
+
+Valitse, mitä asiaa tehtävä harjoittaa. Esimerkkejä tällaisista asioista ovat vaikkapa for-loopin tai rajapintojen (vaihda tähän joku tähän mennessä kurssilla käsitelty asia) harjoittelu.
+Keksi seuraavaksi tehtävällesi aihe. (Vinkkejä aiheesta?) Kirjoita selkeä tehtävänanto, jossa kerrot lyhyesti toteutettavan ohjelman perusidean sekä muut speksit. Tarkoituksena on kuvata ongelma tarpeeksi tarkasti, jotta tehtävän tekijä osaa koodata sille ratkaisun.
+Kirjoita seuraavaksi tehtävällesi malliratkaisu. Kentässä on valmiiksi annettuna koodipohja, jossa on harmaalla taustalla merkittynä rivit, joita et voi muuttaa.
+Koodista osa, niin kutsuttu tehtäväpohja, tulee tehtävän tekijälle näkyviin. Painamalla rivinumeroiden vieressä olevia neliöitä voit merkitä osan tehtävästä malliratkaisuksi, jolloin nuo rivit eivät näy tehtävän tekijälle.
+Järjestelmässä on tehtäville automaattisesti generoidut testit. Kirjoita niitä varten ohjelmaan syötettävä syöte ja sen antama tuloste niille varattuihin kenttiin. Syöte-tuloste-pareja voi olla useita, mutta ainakin yksi.
+Anna lopuksi tagit, jotka kuvaavat tehtävää, esim. for-loop.
+
+
+
+Tee tehtävä, jossa on tarkoitus koodata jonkinlainen ohjelma, jossa käyttäjää pyydetään kirjoittamaan jokin syöte. Syötettä käsitellään haluamallasi tavalla ja lopuksi
+tulostetaan jotain. Anna testisyötteeksi esimerkki käyttäjän syötteestä ja sellainen tuloste, jonka ohjelma tulostaa tuolla syötteellä.
+
+Tee tämmöne tehtävä:
+Tee tehtävä, jonka tarkoitus on laittaa opiskelija koodaamaan ohjelma, joka lukee käyttäjältä merkkijonosyötteen, tarkastelee sitä ehtolauseen avulla ja tulostaa merkkijonon.
+Anna testisyötteeksi syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.
