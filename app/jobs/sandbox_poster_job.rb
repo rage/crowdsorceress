@@ -60,8 +60,9 @@ class SandboxPosterJob
     response = servers.find do |url| # could be smarter about this # we ARE smarter about this
       begin
         RestClient.post "#{url}/tasks.json", file: tar_file, notify: results_url, token: secret_token(package_type)
+        logger.info "Sent package #{package_type} to sandbox #{url}"
       rescue => e
-        Rails.logger.warn e
+        logger.info e
         false
       end
     end
