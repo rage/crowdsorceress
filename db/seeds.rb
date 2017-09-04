@@ -8,6 +8,7 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+# CODE TEMPLATES:
 code_template1 = "import java.util.*; \n // START LOCK \npublic class Submission {\n\n    public static void main(String[] args) {\n\n // END LOCK \n        //Kirjoita koodia tähän  \n    }\n\n    public static String metodi(String input) {\n\n        //Kirjoita koodia tähän \n    }\n}"
 
 code_template2 = "import java.util.*; \npublic class Submission { \n // START LOCK  \n \n    public static void main(String[] args) { \n
@@ -15,16 +16,41 @@ code_template2 = "import java.util.*; \npublic class Submission { \n // START LO
 
 code_template3 = "import java.util.Scanner;\n\npublic class Submission {\n\n    public static void main(String[] args) {\n\n        //Kirjoita koodia tähän \n    }\n\n   // LOCK TO END \n    public static void metodi(String input) {\n\n        //Kirjoita koodia tähän  \n    }\n}"
 
+# Exercise type 1
 type = ExerciseType.create name: 'string_string', code_template: code_template1
 a1 = Assignment.create description: 'Tehtävän tarkoituksena on luoda metodi, joka saa parametrina string-tyyppisen muuttujan. Palautusarvo on myös string.', exercise_type: type
 
-type2 = ExerciseType.create name: 'stdin_stdout', code_template: code_template2
-Assignment.create description: 'Tee tehtävä, jossa on tarkoitus koodata jonkinlainen ohjelma, jossa käyttäjää pyydetään kirjoittamaan jokin syöte. Syötettä käsitellään haluamallasi tavalla ja lopuksi tulostetaan jotain.
-Anna testisyötteeksi esimerkki käyttäjän syötteestä ja sellainen tulosta, jonka ohjelma tulostaa tuolla syötteellä.', exercise_type: type2
+# Exercise type 2
+type2 = ExerciseType.create name: 'string_stdin_string_stdout', code_template: code_template2
+Assignment.create description: 'Tee tehtävä, jonka tarkoitus on laittaa opiskelija koodaamaan ohjelma, joka lukee käyttäjältä merkkijonosyötteen, tarkastelee sitä ehtolauseen avulla ja tulostaa merkkijonon.
+Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type2
 
+Assignment.create description: 'Tee tehtävä, jonka tarkoitus on laittaa opiskelija koodaamaan ohjelma, joka lukee käyttäjältä merkkijonosyötteen, tarkastelee sitä toistolauseen avulla ja tulostaa merkkijonon.
+Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type2
+
+# Exercise type 3
 type3 = ExerciseType.create name: 'string_stdout', code_template: code_template3
-Assignment.create description: 'Tee tehtävä, jossa pyydetään luomaan metodi, joka saa parametrina stringin. Metodin kuuluu tulostaa jotain.', exercise_type: type3
+Assignment.create description: 'Tee tehtävä, jossa pyydetään luomaan metodi, joka saa parametrina stringin. Metodin kuuluu tulostaa jokin merkkijono.', exercise_type: type3
 
+# Exercise type 4
+type4 = ExerciseType.create name: 'int_stdin_int_stdout', code_template: code_template2
+Assignment.create description: 'Tee tehtävä, jonka tarkoitus on laittaa opiskelija koodaamaan ohjelma, joka lukee käyttäjältä kokonaislukusyötteen, tarkastelee sitä ehtolauseen avulla ja tulostaa kokonaisluvun.
+Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type4
+
+Assignment.create description: 'Tee tehtävä, jonka tarkoitus on laittaa opiskelija koodaamaan ohjelma, joka lukee käyttäjältä kokonaislukusyötteen, tarkastelee sitä toistolauseen avulla ja tulostaa kokonaisluvun.
+Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type4
+
+# Exercise type 5
+type5 = ExerciseType.create name: 'string_stdin_int_stdout', code_template: code_template2
+Assignment.create description: 'Tee tehtävä, jonka tarkoitus on laittaa opiskelija koodaamaan ohjelma, joka lukee käyttäjältä merkkijonosyötteen, tarkastelee sitä toistolauseen avulla ja tulostaa kokonaisluvun.
+Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type5
+
+# Exercise type 6
+type6 = ExerciseType.create name: 'int_stdin_string_stdout', code_template: code_template2
+Assignment.create description: 'Tee tehtävä, jonka tarkoitus on laittaa opiskelija koodaamaan ohjelma, joka lukee käyttäjältä kokonaislukusyötteen, tarkastelee sitä ehtolauseen avulla ja tulostaa merkkijonon.
+Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type6
+
+# Peer review questions:
 Exercise.create(
   code: 'int luku = 1; \n String kissa = \"koira \"; \n return \"Palautusarvo \" ',
   assignment: a1,
