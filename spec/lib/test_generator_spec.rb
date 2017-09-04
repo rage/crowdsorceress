@@ -9,6 +9,7 @@ TEST_TEMPLATE = <<~eos
   import org.junit.Rule;
   import org.junit.Test;
   import static org.junit.Assert.assertEquals;
+  import static org.junit.Assert.assertTrue;
 
   @Points("01-11")
   public class SubmissionTest {
@@ -162,7 +163,7 @@ eos
 
       String out = io.getSysOut();
 
-      assertEquals(output, out);
+      assertTrue(out.contains(output));
     eos
 
     int_int_test_code = <<~eos

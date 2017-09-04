@@ -19,6 +19,7 @@ class TestTemplates
       import org.junit.Rule;
       import org.junit.Test;
       import static org.junit.Assert.assertEquals;
+      import static org.junit.Assert.assertTrue;
 
       @Points("01-11")
       public class SubmissionTest {
@@ -45,7 +46,7 @@ class TestTemplates
 
       String out = io.getSysOut();
 
-      assertEquals(output, out);
+      assertTrue(out.contains(output));
     eos
   end
 
