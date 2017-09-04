@@ -3,7 +3,6 @@
 class SandboxPosterJob
   include Sidekiq::Worker
 
-  require 'main_class_generator'
   require 'test_generator'
   require 'rest-client'
   require 'timeout'
