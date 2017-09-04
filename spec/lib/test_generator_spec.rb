@@ -163,7 +163,7 @@ eos
 
       String out = io.getSysOut();
 
-      assertTrue(out.contains(output));
+      assertTrue(out.contains(output), "Kun syöte oli '" + input + "' tulostus oli: '" + out + "', mutta se ei sisältänyt: '" + output + "'.");
     eos
 
     int_int_test_code = <<~eos
