@@ -34,7 +34,7 @@ class SandboxPosterJob
       return
     end
 
-    send_package_to_sandbox('TEMPLATE', "TemplatePackage_#{@exercise.id}.tar") unless @exercise.testing_model_solution?
+    send_package_to_sandbox('TEMPLATE', "TemplatePackage_#{@exercise.id}.tar") if @exercise.saved? || @exercise.testing_template?
     send_package_to_sandbox('MODEL', "ModelSolutionPackage_#{@exercise.id}.tar")
     TimeoutCheckerJob.set(wait: 1.minute).perform_later(@exercise, @exercise.submit_count)
   end
@@ -56,17 +56,15 @@ class SandboxPosterJob
   end
 
   def sandbox_post(tar_file, package_type)
-    response = servers.find do |url| # could be smarter about this # we ARE smarter about this
+    servers.find do |url| # could be smarter about this # we ARE smarter about this
       begin
         RestClient.post "#{url}/tasks.json", file: tar_file, notify: results_url, token: secret_token(package_type)
         logger.info "Sent package #{package_type} to sandbox #{url}"
       rescue => e
-        logger.info e
-        false
+        logger.info "Posting to sandbox failed: #{e}"
+        raise PostFailedError
       end
     end
-
-    raise PostFailedError if response.nil?
   end
 
   def servers
