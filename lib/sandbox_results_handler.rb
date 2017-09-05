@@ -27,8 +27,8 @@ class SandboxResultsHandler
     return if test_output['testResults'].empty? || test_output['status'] == 'PASSED'
     header = 'Virheet testeissä: '
     messages = ''
-    test_output['testResults'].each do |test|
-      messages += "#{test['message']}<rivinvaihto>"
+    test_output['testResults'].each_with_object('') do |test|
+      messages += "#{test['message']}<linechange>"
     end
     error = { header: header, messages: messages }
     @exercise.error_messages.push error
@@ -37,7 +37,7 @@ class SandboxResultsHandler
   def compile_errors(test_output, package_type)
     return unless test_output['status'] == 'COMPILE_FAILED'
     header = package_type == 'TEMPLATE' ? 'Tehtäväpohja ei kääntynyt: ' : 'Malliratkaisu ei kääntynyt: '
-    messages = error_message_lines(test_output).join('<rivinvaihto>')
+    messages = error_message_lines(test_output).join('<linechange>')
     error = { header: header, messages: messages }
     @exercise.error_messages.push error
   end
