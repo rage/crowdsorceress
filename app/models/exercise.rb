@@ -26,6 +26,7 @@ class Exercise < ApplicationRecord
     self.error_messages = []
     status_undefined!
     self.sandbox_results = { status: '', message: '', passed: false, model_results_received: false, template_results_received: false }
+    self.tags = []
 
     self.submit_count += 1
   end

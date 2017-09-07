@@ -46,7 +46,7 @@ class TestTemplates
 
       String out = io.getSysOut();
 
-      assertTrue("Kun syöte oli '" + input.replaceAll("\\n", "\\\\n") + "' tulostus oli: '" + out.replaceAll("\\n", "\\\\n") + "', mutta se ei sisältänyt: '" + output.replaceAll("\\n", "\\\\n") + "'.", out.contains(output));
+      assertTrue("Kun syöte oli '" + input.replaceAll("\\n", "\\\\\\n") + "' tulostus oli: '" + out.replaceAll("\\n", "\\\\\\n") + "', mutta se ei sisältänyt: '" + output.replaceAll("\\n", "\\\\\\n") + "'.", out.contains(output));
     eos
   end
 

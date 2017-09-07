@@ -29,6 +29,10 @@ TEST_TEMPLATE = <<~eos
 eos
 
 RSpec.describe TestGenerator do
+  before :each do
+    allow_any_instance_of(MessageBroadcasterJob).to receive(:perform)
+  end
+
   describe 'Input to output test generator' do
     exercise = FactoryGirl.create(:exercise)
 
@@ -163,7 +167,7 @@ eos
 
       String out = io.getSysOut();
 
-      assertTrue(out.contains(output), "Kun syöte oli '" + input + "' tulostus oli: '" + out + "', mutta se ei sisältänyt: '" + output + "'.");
+      assertTrue("Kun syöte oli '" + input.replaceAll("\\n", "\\\\\\n") + "' tulostus oli: '" + out.replaceAll("\\n", "\\\\\\n") + "', mutta se ei sisältänyt: '" + output.replaceAll("\\n", "\\\\\\n") + "'.", out.contains(output));
     eos
 
     int_int_test_code = <<~eos
@@ -320,6 +324,11 @@ eos
       expect(subject).to respond_to(:generate).with(1).argument
       expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, inputType: 'int', outputType: 'String',
                                                                      mock_stdio_init: mock_stdio_init, test_code: int_string_test_code))
+    end
+
+    it 'raises error if exercise type is not supported' do
+      exercise.assignment.exercise_type.name = 'stupid_exercie_type'
+      expect { subject.generate(exercise) }.to raise_error(StandardError)
     end
   end
 end

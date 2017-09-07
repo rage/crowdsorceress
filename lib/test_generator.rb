@@ -3,6 +3,8 @@
 require 'test_templates'
 
 class TestGenerator
+  class ExerciseTypeNotSupportedError < StandardError; end
+
   def initialize
     @test_templates = TestTemplates.new
   end
@@ -21,7 +23,17 @@ class TestGenerator
       string_stdin_to_int_stdout(exercise)
     elsif type == 'int_stdin_string_stdout'
       int_stdin_to_string_stdout(exercise)
+    else
+      exercise_type_not_supported(exercise)
     end
+  end
+
+  def exercise_type_not_supported(exercise)
+    exercise.error_messages.push(header: 'Järjestelmä ei tue tällaista tehtävätyyppiä', messages: '')
+    exercise.error!
+    MessageBroadcasterJob.perform_now(exercise)
+
+    raise ExerciseTypeNotSupportedError
   end
 
   def string_stdin_to_string_stdout(exercise)
