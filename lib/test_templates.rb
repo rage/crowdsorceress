@@ -92,13 +92,15 @@ class TestTemplates
 
   def int_stdin_string_stdout_test_code
     <<~eos
+      String inputAsString = "" + input;
+
       ReflectionUtils.newInstanceOfClass(Submission.class);
-      io.setSysIn("" + input);
+      io.setSysIn(inputAsString);
       Submission.main(new String[0]);
 
-      int out = io.getSysOut();
+      String out = io.getSysOut();
 
-      assertEquals(output, out);
+      assertTrue("Kun syöte oli '" + inputAsString.replaceAll("\\n", "\\\\\\n") + "' tulostus oli: '" + out.replaceAll("\\n", "\\\\\\n") + "', mutta se ei sisältänyt: '" + output.replaceAll("\\n", "\\\\\\n") + "'.", out.contains(output));
     eos
   end
 end
