@@ -26,10 +26,11 @@ class SandboxResultsHandler
     # Push test results into exercise's error messages
     return if test_output['testResults'].empty? || test_output['status'] == 'PASSED'
     header = 'Virheet testeissä: '
-    messages = ''
-    test_output['testResults'].each_with_object('') do |test|
-      messages += "#{test['message']}<linechange>"
+
+    messages = test_output['testResults'].each_with_object(String.new) do |test, string|
+      string << "#{test['message']}<linechange>"
     end
+
     error = { header: header, messages: messages }
     @exercise.error_messages.push error
   end
