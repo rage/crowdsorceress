@@ -34,8 +34,11 @@ class SandboxPosterJob
       return
     end
 
-    send_package_to_sandbox('TEMPLATE', "TemplatePackage_#{@exercise.id}.tar") if @exercise.saved? || @exercise.testing_template?
-    send_package_to_sandbox('MODEL', "ModelSolutionPackage_#{@exercise.id}.tar")
+    unless @exercise.testing_model_solution? || @exercise.sandbox_results[:template_results_received]
+      send_package_to_sandbox('TEMPLATE', "TemplatePackage_#{@exercise.id}.tar")
+    end
+
+    send_package_to_sandbox('MODEL', "ModelSolutionPackage_#{@exercise.id}.tar") unless @exercise.sandbox_results[:model_results_received]
     TimeoutCheckerJob.set(wait: 1.minute).perform_later(@exercise, @exercise.submit_count)
   end
 

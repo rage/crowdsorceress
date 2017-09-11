@@ -44,7 +44,14 @@ class SandboxResultsHandler
   end
 
   def error_message_lines(test_output)
-    test_output['logs']['stdout'].pack('c*').force_encoding('utf-8').slice(/(?<=do-compile:\n)(.*?\n)*(.*$)/).split(/\n/)
+    error_message = test_output['logs']['stdout'].pack('c*').force_encoding('utf-8')
+    error_message = if error_message.include?('do-compile-test')
+                      error_message.slice(/(?<=do-compile-test:\n)(.*?\n)*(.*$)/)
+                    else
+                      error_message.slice(/(?<=do-compile:\n)(.*?\n)*(.*$)/)
+                    end
+
+    error_message.split(/\n/)
   end
 
   # Generate message that will be sent to frontend
