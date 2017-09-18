@@ -7,15 +7,15 @@ RSpec.describe Api::V0::Assignments::PeerReviewExerciseController, type: :reques
   before { allow(controller).to receive(:current_user) { user } }
   let(:exercise) { FactoryGirl.create(:exercise, user: user) }
 
-  it 'assigns an exercise for reviewing' do
+  it 'assigns exercises for reviewing' do
     exercise.update status: 'finished'
-    get "/api/v0/assignments/#{exercise.assignment.id}/peer_review_exercise"
+    get "/api/v0/assignments/#{exercise.assignment.id}/peer_review_exercise?count=3"
     expect(response.status).to eq(200)
   end
 
   it 'handles error when requesting an exercise for assignment that has no finished exercises' do
     Assignment.first.exercises = []
-    get "/api/v0/assignments/#{Assignment.first.id}/peer_review_exercise"
+    get "/api/v0/assignments/#{Assignment.first.id}/peer_review_exercise?count=3"
     expect(response.status).to eq(400)
   end
 end

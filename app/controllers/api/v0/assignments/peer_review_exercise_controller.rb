@@ -6,12 +6,14 @@ module Api
       class PeerReviewExerciseController < BaseController
         def index
           assignment = Assignment.find(params[:assignment_id])
-          exercise = PeerReview.new.draw_exercise(assignment)
+          cnt = params[:count].to_i
 
-          raise NoExerciseError if exercise.nil?
-          pr_questions = exercise.assignment.exercise_type.peer_review_questions
-          render json: { exercise: exercise, peer_review_questions: pr_questions, tags: Tag.recommended,
-                         model_solution: exercise.model_solution, template: exercise.template }
+          exercises = PeerReview.new.draw_exercises(assignment, current_user, cnt)
+
+          raise NoExerciseError if exercises.empty?
+          raise NoExerciseError if exercises.first.nil?
+          pr_questions = exercises.first.assignment.exercise_type.peer_review_questions
+          render json: { exercises: exercises, peer_review_questions: pr_questions, tags: Tag.recommended }
         end
       end
     end
