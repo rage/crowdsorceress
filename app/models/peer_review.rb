@@ -14,7 +14,7 @@ class PeerReview < ApplicationRecord
 
     assignment.exercises
               .where(status: :finished)
-              .where(:user_id.in?(regular_users)) # do not give random test exercises made by creators for students to review
+              .where(user: regular_users) # do not give random test exercises made by creators for students to review
               .order('peer_reviews_count, RANDOM()')
               .first
   end
