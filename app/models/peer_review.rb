@@ -10,8 +10,11 @@ class PeerReview < ApplicationRecord
   validates :comment, presence: true
 
   def draw_exercise(assignment)
+    regular_users = User.where(administrator: false)
+
     assignment.exercises
               .where(status: :finished)
+              .where(user: regular_users) # do not give random test exercises made by creators for students to review
               .order('peer_reviews_count, RANDOM()')
               .first
   end
