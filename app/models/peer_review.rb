@@ -10,6 +10,7 @@ class PeerReview < ApplicationRecord
   validates :comment, presence: true
 
   def draw_exercises(assignment, current_user, cnt)
+    return [] if cnt.zero? || cnt.negative?
     regular_users = User.where(administrator: false)
 
     exercises = assignment.exercises
@@ -17,8 +18,9 @@ class PeerReview < ApplicationRecord
                           .where(user: regular_users) # do not give random test exercises made by creators for students to review
                           .where.not(user: current_user)
                           .order('peer_reviews_count, RANDOM()')
-                          .first(cnt - 1).to_a
-    exercises << own_exercise(assignment, current_user)
+                          .first(cnt).to_a
+    own = own_exercise(assignment, current_user)
+    exercises[exercises.length - 1] = own unless own.nil?
     exercises
   end
 
