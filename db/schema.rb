@@ -29,6 +29,8 @@ ActiveRecord::Schema.define(version: 20170918143432) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "code_template", default: "", null: false
+    t.string "input_type"
+    t.string "output_type"
   end
 
   create_table "exercises", force: :cascade do |t|
