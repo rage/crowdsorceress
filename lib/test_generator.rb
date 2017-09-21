@@ -3,18 +3,18 @@
 require 'test_templates'
 
 TESTS =
-  <<-eos
-@Test
-    public void test%<counter>s() {
-        toimii(%<input>s, %<output>s);
-    }
+  <<~eos
+    @Test
+        public void test%<counter>s() {
+            toimii(%<input>s, %<output>s);
+        }
 
   eos
 
-  MOCK_STDIO_INIT=
-  <<-eos
-@Rule
-    public MockStdio io = new MockStdio();
+MOCK_STDIO_INIT =
+  <<~eos
+    @Rule
+        public MockStdio io = new MockStdio();
 
   eos
 
@@ -39,9 +39,8 @@ class TestGenerator
   def generate_string(exercise, template_params)
     tests = generate_tests(exercise, template_params[:input_type], template_params[:output_type])
 
-
     format(exercise.assignment.exercise_type.test_template, tests: tests, input_type: template_params[:input_type],
-           output_type: template_params[:output_type], mock_stdio_init: MOCK_STDIO_INIT)
+                                                            output_type: template_params[:output_type], mock_stdio_init: MOCK_STDIO_INIT)
   end
 
   def generate_tests(exercise, input_type, output_type)

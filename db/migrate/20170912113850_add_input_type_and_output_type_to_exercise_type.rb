@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddInputTypeAndOutputTypeToExerciseType < ActiveRecord::Migration[5.1]
   def change
     add_column :exercise_types, :input_type, :string

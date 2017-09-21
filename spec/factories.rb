@@ -10,6 +10,44 @@ FactoryGirl.define do
     test_template 'asd'
   end
 
+  factory :int_stdin_string_stdout_et, class: ExerciseType do
+    name 'int_stdin_string_stdout'
+    test_template <<~eos
+      import fi.helsinki.cs.tmc.edutestutils.MockStdio;
+      import fi.helsinki.cs.tmc.edutestutils.Points;
+      import fi.helsinki.cs.tmc.edutestutils.ReflectionUtils;
+      import org.junit.Rule;\nimport org.junit.Test;
+      import static org.junit.Assert.assertEquals;
+      import static org.junit.Assert.assertTrue;
+
+      @Points("01-11")
+      public class SubmissionTest {
+
+          %<mock_stdio_init>s
+
+          public SubmissionTest() {
+
+          }
+
+          %<tests>s
+          private void toimii(int input, String output) {
+              String inputAsString = "" + input;
+
+              ReflectionUtils.newInstanceOfClass(Submission.class);
+              io.setSysIn(inputAsString);
+              Submission.main(new String[0]);
+
+              String out = io.getSysOut();
+
+              assertTrue("Kun syöte oli '" + inputAsString.replaceAll("\\n", "\\\\\\n") + "' tulostus oli: '" + out.replaceAll("\\n", "\\\\\\n") + "', mutta se ei sisältänyt: '" + output.replaceAll("\\n", "\\\\\\n") + "'.", out.contains(output));
+
+          }
+      }
+    eos
+    input_type 'int'
+    output_type 'String'
+  end
+
   factory :assignment do
     description 'AAAAAAAA'
     exercise_type
