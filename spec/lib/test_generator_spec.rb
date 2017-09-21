@@ -157,20 +157,11 @@ RSpec.describe TestGenerator do
   describe 'Stdin to stdout test generator' do
     exercise = FactoryGirl.create(:exercise)
     int_stdin_string_stdout_et = FactoryGirl.create(:int_stdin_string_stdout_et)
+    string_stdin_string_stdout_et = FactoryGirl.create(:string_stdin_string_stdout_et)
 
     mock_stdio_init = <<~eos
       @Rule
           public MockStdio io = new MockStdio();
-    eos
-
-    string_string_test_code = <<~eos
-      ReflectionUtils.newInstanceOfClass(Submission.class);
-      io.setSysIn(input);
-      Submission.main(new String[0]);
-
-      String out = io.getSysOut();
-
-      assertTrue("Kun syöte oli '" + input.replaceAll("\\n", "\\\\\\n") + "' tulostus oli: '" + out.replaceAll("\\n", "\\\\\\n") + "', mutta se ei sisältänyt: '" + output.replaceAll("\\n", "\\\\\\n") + "'.", out.contains(output));
     eos
 
     int_int_test_code = <<~eos
@@ -193,53 +184,52 @@ RSpec.describe TestGenerator do
       assertEquals(output, out);
     eos
 
-    int_string_test_code = <<~eos
-      String inputAsString = "" + input;
-
-              ReflectionUtils.newInstanceOfClass(Submission.class);
-              io.setSysIn(inputAsString);
-              Submission.main(new String[0]);
-
-              String out = io.getSysOut();
-
-              assertTrue("Kun syöte oli '" + inputAsString.replaceAll("\\n", "\\\\\\n") + "' tulostus oli: '" + out.replaceAll("\\n", "\\\\\\n") + "', mutta se ei sisältänyt: '" + output.replaceAll("\\n", "\\\\\\n") + "'.", out.contains(output));
-eos
-
     subject { TestGenerator.new }
 
     it 'is valid' do
       expect(subject).not_to be(nil)
     end
 
-    # it 'generates a proper test template for string input and string output' do
-    #   exercise.assignment.exercise_type.name = 'string_stdin_string_stdout'
-    #
-    #   io = [{ input: 'asd', output: 'asdasdasd' },
-    #         { input: 'dsa', output: 'dsadsadsa' },
-    #         { input: 'dsas', output: 'dsasdsasdsas' }]
-    #
-    #   exercise.testIO = io
-    #
-    #   tests = <<~eos
-    #     @Test
-    #       public void test1() {
-    #         toimii("asd", "asdasdasd");
-    #       }
-    #
-    #       @Test
-    #       public void test2() {
-    #         toimii("dsa", "dsadsadsa");
-    #       }
-    #
-    #       @Test
-    #       public void test3() {
-    #         toimii("dsas", "dsasdsasdsas");
-    #       }
-    #   eos
-    #   expect(subject).to respond_to(:generate).with(1).argument
-    #   expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, inputType: 'String', outputType: 'String',
-    #                                                                  mock_stdio_init: mock_stdio_init, test_code: string_string_test_code))
-    # end
+    it 'generates a proper test template for string input and string output' do
+      exercise.assignment.exercise_type = string_stdin_string_stdout_et
+
+      io = [{ input: 'asd', output: 'asdasdasd' },
+            { input: 'dsa', output: 'dsadsadsa' },
+            { input: 'dsas', output: 'dsasdsasdsas' }]
+
+      exercise.testIO = io
+
+      tests = <<~eos
+        @Test
+            public void test1() {
+                toimii("asd", "asdasdasd");
+            }
+
+        @Test
+            public void test2() {
+                toimii("dsa", "dsadsadsa");
+            }
+
+        @Test
+            public void test3() {
+                toimii("dsas", "dsasdsasdsas");
+            }
+      eos
+
+      string_string_test_code = <<~eos
+        ReflectionUtils.newInstanceOfClass(Submission.class);
+                io.setSysIn(input);
+                Submission.main(new String[0]);
+
+                String out = io.getSysOut();
+
+                assertTrue("Kun syöte oli '" + input.replaceAll("\\n", "\\\\\\n") + "' tulostus oli: '" + out.replaceAll("\\n", "\\\\\\n") + "', mutta se ei sisältänyt: '" + output.replaceAll("\\n", "\\\\\\n") + "'.", out.contains(output));
+      eos
+
+      expect(subject).to respond_to(:generate).with(1).argument
+      expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, inputType: 'String', outputType: 'String',
+                                                                     mock_stdio_init: mock_stdio_init, test_code: string_string_test_code))
+    end
 
     # it 'generates a proper test template for int input and int output' do
     #   exercise.assignment.exercise_type.name = 'int_stdin_int_stdout'
@@ -326,6 +316,19 @@ eos
                 toimii(98, "777");
             }
       eos
+
+      int_string_test_code = <<~eos
+        String inputAsString = "" + input;
+
+                ReflectionUtils.newInstanceOfClass(Submission.class);
+                io.setSysIn(inputAsString);
+                Submission.main(new String[0]);
+
+                String out = io.getSysOut();
+
+                assertTrue("Kun syöte oli '" + inputAsString.replaceAll("\\n", "\\\\\\n") + "' tulostus oli: '" + out.replaceAll("\\n", "\\\\\\n") + "', mutta se ei sisältänyt: '" + output.replaceAll("\\n", "\\\\\\n") + "'.", out.contains(output));
+      eos
+
       expect(subject).to respond_to(:generate).with(1).argument
       expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, inputType: 'int', outputType: 'String',
                                                                      mock_stdio_init: mock_stdio_init, test_code: int_string_test_code))

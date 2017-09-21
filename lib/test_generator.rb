@@ -21,10 +21,6 @@ MOCK_STDIO_INIT =
 class TestGenerator
   class ExerciseTypeNotSupportedError < StandardError; end
 
-  def initialize
-    @test_templates = TestTemplates.new
-  end
-
   def generate(exercise)
     exercise_type = exercise.assignment.exercise_type
 
