@@ -8,6 +8,16 @@
 </p>
 
 <p>
+  <strong>Input type:</strong>
+  <%= @exercise_type.input_type %>
+</p>
+
+<p>
+  <strong>Output type:</strong>
+  <%= @exercise_type.output_type %>
+</p>
+
+<p>
   <strong>Test template:</strong>
   <pre>
     <code><%= @exercise_type.test_template ? @exercise_type.test_template : 'No test template' %></code>

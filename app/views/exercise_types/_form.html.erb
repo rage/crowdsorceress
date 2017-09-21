@@ -17,6 +17,16 @@
   </div>
 
   <div class="field">
+    <%= form.label :input_type %>
+    <%= form.text_field :input_type, id: :exercise_type_input_type, class: "form-control" %>
+  </div>
+
+  <div class="field">
+    <%= form.label :output_type %>
+    <%= form.text_field :output_type, id: :exercise_type_output_type, class: "form-control" %>
+  </div>
+
+  <div class="field">
     <%= form.label :test_template %>
     <%= form.text_area :test_template, id: :exercise_type_test_template, class: "form-control" %>
   </div>
