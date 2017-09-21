@@ -19,10 +19,11 @@ MOCK_STDIO_INIT =
   eos
 
 class TestGenerator
-  class ExerciseTypeNotSupportedError < StandardError; end
+  class TestTemplateDoesNotExistError < StandardError; end
 
   def generate(exercise)
     exercise_type = exercise.assignment.exercise_type
+    raise TestTemplateDoesNotExistError if exercise_type.test_template.blank?
 
     template_params = { input_type: exercise_type.input_type, output_type: exercise_type.output_type,
                         mock_stdio_init: MOCK_STDIO_INIT }

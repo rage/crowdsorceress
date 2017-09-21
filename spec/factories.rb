@@ -10,13 +10,80 @@ FactoryGirl.define do
     test_template 'asd'
   end
 
+  factory :string_string_et, class: ExerciseType do
+    name 'string_string'
+    test_template <<~eos
+      import fi.helsinki.cs.tmc.edutestutils.MockStdio;
+      import fi.helsinki.cs.tmc.edutestutils.Points;
+      import fi.helsinki.cs.tmc.edutestutils.ReflectionUtils;
+      import org.junit.Rule;
+      import org.junit.Test;
+      import static org.junit.Assert.assertEquals;
+      import static org.junit.Assert.assertTrue;
+
+      @Points("01-11")
+      public class SubmissionTest {
+
+          
+
+
+          public SubmissionTest() {
+
+          }
+
+          %<tests>s
+          private void toimii(String input, String output) {
+              assertEquals(output, Submission.metodi(input));
+          }
+      }
+    eos
+    input_type 'String'
+    output_type 'String'
+  end
+
+  factory :string_input_string_stdout_et, class: ExerciseType do
+    name 'string_input_string_stdout'
+    input_type 'String'
+    output_type 'String'
+
+    test_template <<~eos
+      import fi.helsinki.cs.tmc.edutestutils.MockStdio;
+      import fi.helsinki.cs.tmc.edutestutils.Points;
+      import fi.helsinki.cs.tmc.edutestutils.ReflectionUtils;
+      import org.junit.Rule;
+      import org.junit.Test;
+      import static org.junit.Assert.assertEquals;
+      import static org.junit.Assert.assertTrue;
+    
+      @Points("01-11")
+      public class SubmissionTest {
+    
+          %<mock_stdio_init>s
+    
+          public SubmissionTest() {
+    
+          }
+    
+          %<tests>s
+          private void toimii(String input, String output) {
+              Submission.metodi(input);
+
+              String out = io.getSysOut();
+              assertEquals(output, out);
+
+          }
+      }
+    eos
+  end
+
   factory :int_stdin_string_stdout_et, class: ExerciseType do
     name 'int_stdin_string_stdout'
     test_template <<~eos
       import fi.helsinki.cs.tmc.edutestutils.MockStdio;
       import fi.helsinki.cs.tmc.edutestutils.Points;
       import fi.helsinki.cs.tmc.edutestutils.ReflectionUtils;
-      import org.junit.Rule;\nimport org.junit.Test;
+      import org.junit.Rule;
+      import org.junit.Test;
       import static org.junit.Assert.assertEquals;
       import static org.junit.Assert.assertTrue;
 
@@ -56,7 +123,8 @@ FactoryGirl.define do
       import fi.helsinki.cs.tmc.edutestutils.MockStdio;
       import fi.helsinki.cs.tmc.edutestutils.Points;
       import fi.helsinki.cs.tmc.edutestutils.ReflectionUtils;
-      import org.junit.Rule;\nimport org.junit.Test;
+      import org.junit.Rule;
+      import org.junit.Test;
       import static org.junit.Assert.assertEquals;
       import static org.junit.Assert.assertTrue;
 
