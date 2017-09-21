@@ -54,6 +54,6 @@ class ExerciseTypesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def exercise_type_params
-    params.require(:exercise_type).permit(:name, :test_template, :code_template)
+    params.require(:exercise_type).permit(:name, :test_template, :code_template, :input_type, :output_type)
   end
 end
