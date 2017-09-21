@@ -3,6 +3,7 @@ AllCops:
     - './db/schema.rb'
     - './Gemfile'
     - './spec/stdout_example.rb'
+    - './spec/factories.rb'
     - './db/seeds.rb'
 
   TargetRubyVersion: 2.3
