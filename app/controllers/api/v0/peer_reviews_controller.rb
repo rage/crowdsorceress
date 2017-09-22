@@ -26,7 +26,7 @@ module Api
       def add_tags
         params[:exercise][:tags].each do |tag|
           tag = Tag.find_or_initialize_by(name: tag.strip.delete("\n").gsub(/\s+/, ' ').downcase)
-          @peer_review.tags << tag
+          @peer_review.tags << tag unless @peer_review.tags.include?(tag)
         end
       end
 
@@ -36,8 +36,8 @@ module Api
 
       def create_question_answers
         reviews = params[:peer_review][:answers]
-
         questions = @exercise.assignment.exercise_type.peer_review_questions
+        @peer_review.peer_review_question_answers = [] # reset previous answers
 
         questions.each do |q|
           @peer_review.peer_review_question_answers.create!(peer_review_question: q, grade: reviews[q.question])
