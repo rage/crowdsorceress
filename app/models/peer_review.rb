@@ -31,4 +31,8 @@ class PeerReview < ApplicationRecord
               .order('peer_reviews_count, RANDOM()')
               .first
   end
+
+  def average_grade
+    peer_review_question_answers.inject(0.0) { |sum, answer| sum + answer.grade } / peer_review_question_answers.count
+  end
 end
