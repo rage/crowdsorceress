@@ -26,7 +26,7 @@ module Api
       def add_tags
         params[:exercise][:tags].each do |tag|
           tag = Tag.find_or_initialize_by(name: tag.strip.delete("\n").gsub(/\s+/, ' ').downcase)
-          @peer_review.tags << tag
+          @peer_review.tags << tag unless @peer_review.tags.include?(tag)
         end
       end
 

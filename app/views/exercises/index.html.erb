@@ -2,6 +2,10 @@
 
 <h1>Exercises</h1>
 
+<p>
+  <strong>There are <%= @exercises.count %> exercises!</strong>
+</p>
+
 <table class="table table-hover">
   <thead class="thead-inverse">
     <tr>
@@ -9,6 +13,7 @@
       <th>Assignment</th>
       <th>Status</th>
       <th>Peer reviews count</th>
+      <th>Last updated</th>
       <th></th>
     </tr>
   </thead>
@@ -20,6 +25,7 @@
         <td><%= link_to exercise.assignment_id, exercise.assignment %></td>
         <td><%= exercise.status %></td>
         <td><%= exercise.peer_reviews_count %></td>
+        <td><%= Date.parse(exercise.updated_at.to_s) %></td>
         <td><%= link_to 'Show', exercise %></td>
       </tr>
     <% end %>

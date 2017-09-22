@@ -64,11 +64,6 @@
 </p>
 
 <p>
-  <strong>Peer reviews count:</strong>
-  <%= @exercise.peer_reviews_count %>
-</p>
-
-<p>
   <strong>Model solution:</strong>
   <pre>
     <code><%= @exercise.model_solution ? @exercise.model_solution : 'No model solution' %></code>
@@ -82,14 +77,51 @@
   </pre>
 </p>
 
+<p>
+  <strong>Peer reviews count:</strong>
+  <%= @exercise.peer_reviews_count %>
+</p>
+
+<% if @exercise.peer_reviews_count > 0 %>
+    <p>
+      <strong>Peer reviews:</strong>
+    </p>
+    <ul>
+      <% @exercise.peer_reviews.each do |peer_review| %>
+          <li>
+            <p>
+              <strong>Reviewer:</strong>
+              <%= link_to peer_review.user.username, peer_review.user %>
+            </p>
+            <p>
+              <strong>Comment:</strong>
+            </p>
+            <pre>
+              <%= peer_review.comment %>
+            </pre>
+            <strong>Reviewer recommends these tags for the exercise:</strong>
+            <% if peer_review.tags %>
+                <ul>
+                  <% peer_review.tags.each do |tag| %>
+                      <li> <%= link_to tag.name, tag %></li>
+                  <% end %>
+                </ul>
+            <% else %>
+                <p> 'No tags' </p>
+            <% end %>
+          </li>
+      <% end %>
+    </ul>
+<% end %>
+
 <strong>Tags:</strong>
 <% if @exercise.tags %>
 <ul>
  <% @exercise.tags.each do |tag| %>
- <li> <%= link_to tag.name, tag %></li>
+  <li> <%= link_to tag.name, tag %></li>
  <% end %>
  </ul>
-  <% else %>
+<% else %>
   <p> 'No tags' </p>
 <% end %>
 
