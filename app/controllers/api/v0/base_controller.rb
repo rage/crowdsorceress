@@ -19,7 +19,7 @@ module Api
       NotLoggedIn = Class.new(StandardError)
 
       rescue_from NotLoggedIn do
-        render_error_page(status: 401, text: 'Ole nyvä ja kirjaudu sisään.')
+        render_error_page(status: 401, text: 'Ole hyvä ja kirjaudu sisään.')
       end
 
       rescue_from ActiveRecord::RecordNotFound do |ex|

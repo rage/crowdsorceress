@@ -4,6 +4,8 @@ module Api
   module V0
     module Assignments
       class PeerReviewExerciseController < BaseController
+        before_action :ensure_signed_in!, only: :index
+
         def index
           assignment = Assignment.find(params[:assignment_id])
           cnt = params[:count].to_i

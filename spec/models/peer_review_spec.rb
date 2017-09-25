@@ -22,7 +22,15 @@ RSpec.describe PeerReview, type: :model do
       expect(exercises.length).to eq(3)
     end
 
-    it 'returns an empty array when drawing a negatvie number' do
+    it 'gives user\'s own exercise for self-evaluation' do
+      FactoryGirl.create(:exercise, status: 'finished', assignment: assignment, user: user)
+
+      own_exercise = PeerReview.new.own_exercise(assignment, user)
+
+      expect(own_exercise.user_id).to eq(user.id)
+    end
+
+    it 'returns an empty array when drawing a negative number' do
       exercises = PeerReview.new.draw_exercises(assignment, user, -666)
 
       expect(exercises).to eq([])
