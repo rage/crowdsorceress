@@ -9,7 +9,9 @@ class ExerciseTypesController < ApplicationController
   end
 
   # GET /exercise_types/1
-  def show; end
+  def show
+    @assignments = Assignment.where(exercise_type: @exercise_type)
+  end
 
   # GET /exercise_types/new
   def new

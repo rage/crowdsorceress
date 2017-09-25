@@ -5,6 +5,7 @@
 <table class="table table-hover ">
   <thead class="thead-inverse">
     <tr>
+      <th>Id</th>
       <th>Description</th>
       <th>Exercise type</th>
     </tr>
@@ -13,6 +14,7 @@
   <tbody>
     <% @assignments.each do |assignment| %>
       <tr>
+        <td><%= link_to assignment.id, assignment %></td>
         <td><%= link_to assignment.description, assignment %></td>
         <td><%= link_to assignment.exercise_type.name, assignment.exercise_type %></td>
       </tr>

@@ -31,6 +31,13 @@
   </pre>
 </p>
 
+<strong>Assignments that use this exercise type:</strong>
+<p>
+  <% @assignments.each do |assignment| %>
+    <%= link_to assignment.id, assignment %>
+  <% end %>
+</p>
+
 <%= link_to 'Edit', edit_exercise_type_path(@exercise_type), class: "btn btn-primary" %>
 <%= link_to 'Back', exercise_types_path, class: "btn btn-secondary" %>
 <%= link_to 'Destroy', @exercise_type, class: "btn btn-danger", method: :delete, data: { confirm: 'Are you sure?' }  %>
