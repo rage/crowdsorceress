@@ -10,6 +10,7 @@ TEST_TEMPLATE = <<~eos
   import org.junit.Test;
   import static org.junit.Assert.assertEquals;
   import static org.junit.Assert.assertTrue;
+  import static org.junit.Assert.assertFalse;
 
   @Points("01-11")
   public class SubmissionTest {
@@ -23,8 +24,12 @@ TEST_TEMPLATE = <<~eos
 
       %<tests>s
 
-      private void toimii(%<inputType>s input, %<outputType>s output) {
+      private void testPositiveCase(%<inputType>s input, %<outputType>s output) {
           %<test_code>s
+      }
+
+      private void testNegativeCase(%<inputType>s input, %<outputType>s output) {
+          %<neg_test_code>s
       }
   }
 eos
@@ -57,22 +62,22 @@ RSpec.describe TestGenerator do
       tests = <<~eos
         @Test
             public void test1() {
-                toimii("asd", "asdasdasd");
+                testPositiveCase("asd", "asdasdasd");
             }
 
         @Test
             public void test2() {
-                toimii("dsa", "dsadsadsa");
+                testPositiveCase("dsa", "dsadsadsa");
             }
 
         @Test
             public void test3() {
-                toimii("dsas", "dsasdsasdsas");
+                testPositiveCase("dsas", "dsasdsasdsas");
             }
   eos
       expect(subject).to respond_to(:generate).with(1).argument
       expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE,
-                                                      tests: tests, inputType: 'String', outputType: 'String', mock_stdio_init: '', test_code: test_code))
+                                                      tests: tests, inputType: 'String', outputType: 'String', mock_stdio_init: '', test_code: test_code, neg_test_code: ''))
     end
   end
 
@@ -111,23 +116,23 @@ RSpec.describe TestGenerator do
       tests = <<~eos
         @Test
             public void test1() {
-                toimii("asd", "asdasdasd");
+                testPositiveCase("asd", "asdasdasd");
             }
 
         @Test
             public void test2() {
-                toimii("dsa", "dsadsadsa");
+                testPositiveCase("dsa", "dsadsadsa");
             }
 
         @Test
             public void test3() {
-                toimii("dsas", "dsasdsasdsas");
+                testPositiveCase("dsas", "dsasdsasdsas");
             }
         eos
       expect(subject).to respond_to(:generate).with(1).argument
       expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE,
                                                       tests: tests, inputType: 'String', outputType: 'String',
-                                                      mock_stdio_init: mock_stdio_init, test_code: test_code))
+                                                      mock_stdio_init: mock_stdio_init, test_code: test_code, neg_test_code: ''))
     end
   end
 
@@ -139,6 +144,26 @@ RSpec.describe TestGenerator do
     mock_stdio_init = <<~eos
       @Rule
           public MockStdio io = new MockStdio();
+    eos
+
+    string_string_test_code = <<~eos
+      ReflectionUtils.newInstanceOfClass(Submission.class);
+              io.setSysIn(input);
+              Submission.main(new String[0]);
+
+              String out = io.getSysOut();
+
+              assertTrue("Kun syöte oli '" + input.replaceAll("\\n", "\\\\\\n") + "' tulostus oli: '" + out.replaceAll("\\n", "\\\\\\n") + "', mutta se ei sisältänyt: '" + output.replaceAll("\\n", "\\\\\\n") + "'.", out.contains(output));
+    eos
+
+    string_string_neg_test_code = <<~eos
+      ReflectionUtils.newInstanceOfClass(Submission.class);
+              io.setSysIn(input);
+              Submission.main(new String[0]);
+
+              String out = io.getSysOut();
+
+              assertFalse("Kun syöte oli '" + input.replaceAll("\\n", "\\\\\\n") + "' tulostus oli: '" + out.replaceAll("\\n", "\\\\\\n") + "', mutta se sisälsi: '" + output.replaceAll("\\n", "\\\\\\n") + "', vaikkei niin saanut olla.", out.contains(output));
     eos
 
     subject { TestGenerator.new }
@@ -159,33 +184,23 @@ RSpec.describe TestGenerator do
       tests = <<~eos
         @Test
             public void test1() {
-                toimii("asd", "asdasdasd");
+                testPositiveCase("asd", "asdasdasd");
             }
 
         @Test
             public void test2() {
-                toimii("dsa", "dsadsadsa");
+                testPositiveCase("dsa", "dsadsadsa");
             }
 
         @Test
             public void test3() {
-                toimii("dsas", "dsasdsasdsas");
+                testPositiveCase("dsas", "dsasdsasdsas");
             }
-      eos
-
-      string_string_test_code = <<~eos
-        ReflectionUtils.newInstanceOfClass(Submission.class);
-                io.setSysIn(input);
-                Submission.main(new String[0]);
-
-                String out = io.getSysOut();
-
-                assertTrue("Kun syöte oli '" + input.replaceAll("\\n", "\\\\\\n") + "' tulostus oli: '" + out.replaceAll("\\n", "\\\\\\n") + "', mutta se ei sisältänyt: '" + output.replaceAll("\\n", "\\\\\\n") + "'.", out.contains(output));
       eos
 
       expect(subject).to respond_to(:generate).with(1).argument
       expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, inputType: 'String', outputType: 'String',
-                                                                     mock_stdio_init: mock_stdio_init, test_code: string_string_test_code))
+                                                                     mock_stdio_init: mock_stdio_init, test_code: string_string_test_code, neg_test_code: string_string_neg_test_code))
     end
 
     it 'generates a proper test template for int input and string output' do
@@ -200,17 +215,17 @@ RSpec.describe TestGenerator do
       tests = <<~eos
         @Test
             public void test1() {
-                toimii(6, "jea");
+                testPositiveCase(6, "jea");
             }
 
         @Test
             public void test2() {
-                toimii(7, "notjea");
+                testPositiveCase(7, "notjea");
             }
 
         @Test
             public void test3() {
-                toimii(98, "777");
+                testPositiveCase(98, "777");
             }
       eos
 
@@ -228,12 +243,47 @@ RSpec.describe TestGenerator do
 
       expect(subject).to respond_to(:generate).with(1).argument
       expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, inputType: 'int', outputType: 'String',
-                                                                     mock_stdio_init: mock_stdio_init, test_code: int_string_test_code))
+                                                                     mock_stdio_init: mock_stdio_init, test_code: int_string_test_code, neg_test_code: ''))
     end
 
     it 'raises error if test template does not exist' do
       exercise.assignment.exercise_type.test_template = ''
       expect { subject.generate(exercise) }.to raise_error(StandardError)
+    end
+
+    it 'generates negative test cases' do
+      exercise.assignment.exercise_type = string_stdin_string_stdout_et
+      exercise.testIO = [{ input: '123', output: 'ykskakskolme' },
+                         { input: '321', output: 'kolmekaksyks' }]
+
+      exercise.negTestIO = [{ input: '321', output: 'ykskakskolme' },
+                            { input: '123', output: 'jeajeajea' }]
+
+      tests = <<~eos
+        @Test
+            public void test1() {
+                testPositiveCase("123", "ykskakskolme");
+            }
+
+        @Test
+            public void test2() {
+                testPositiveCase("321", "kolmekaksyks");
+            }
+
+        @Test
+            public void test3() {
+                testNegativeCase("321", "ykskakskolme");
+            }
+
+        @Test
+            public void test4() {
+                testNegativeCase("123", "jeajeajea");
+            }
+      eos
+
+      expect(subject).to respond_to(:generate).with(1).argument
+      expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, inputType: 'String', outputType: 'String',
+                                                                     mock_stdio_init: mock_stdio_init, test_code: string_string_test_code, neg_test_code: string_string_neg_test_code))
     end
   end
 end
