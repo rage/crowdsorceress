@@ -34,7 +34,7 @@ TEST_TEMPLATE = <<~eos
   }
 eos
 
-RSpec.describe TestGenerator do
+RSpec.describe TestGenerator do # TODO: change testio type if necessary
   before :each do
     allow_any_instance_of(MessageBroadcasterJob).to receive(:perform)
   end
@@ -52,9 +52,9 @@ RSpec.describe TestGenerator do
     end
 
     it 'generates a proper test template when ExerciseType is "string_string"' do
-      io = [{ input: 'asd', output: 'asdasdasd' },
-            { input: 'dsa', output: 'dsadsadsa' },
-            { input: 'dsas', output: 'dsasdsasdsas' }]
+      io = [{ input: 'asd', output: 'asdasdasd', type: 'positive' },
+            { input: 'dsa', output: 'dsadsadsa', type: 'positive' },
+            { input: 'dsas', output: 'dsasdsasdsas', type: 'positive' }]
 
       exercise.testIO = io
       exercise.assignment.exercise_type = string_string_et
@@ -76,8 +76,8 @@ RSpec.describe TestGenerator do
             }
   eos
       expect(subject).to respond_to(:generate).with(1).argument
-      expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE,
-                                                      tests: tests, inputType: 'String', outputType: 'String', mock_stdio_init: '', test_code: test_code, neg_test_code: ''))
+      expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, inputType: 'String',
+                                                                     outputType: 'String', mock_stdio_init: '', test_code: test_code, neg_test_code: ''))
     end
   end
 
@@ -106,9 +106,9 @@ RSpec.describe TestGenerator do
     it 'generates a proper test template' do
       exercise.assignment.exercise_type.name = 'string_stdout'
 
-      io = [{ input: 'asd', output: 'asdasdasd' },
-            { input: 'dsa', output: 'dsadsadsa' },
-            { input: 'dsas', output: 'dsasdsasdsas' }]
+      io = [{ input: 'asd', output: 'asdasdasd', type: 'positive' },
+            { input: 'dsa', output: 'dsadsadsa', type: 'positive' },
+            { input: 'dsas', output: 'dsasdsasdsas', type: 'positive' }]
 
       exercise.testIO = io
       exercise.assignment.exercise_type = string_input_string_stdout_et
@@ -175,9 +175,9 @@ RSpec.describe TestGenerator do
     it 'generates a proper test template for string input and string output' do
       exercise.assignment.exercise_type = string_stdin_string_stdout_et
 
-      io = [{ input: 'asd', output: 'asdasdasd' },
-            { input: 'dsa', output: 'dsadsadsa' },
-            { input: 'dsas', output: 'dsasdsasdsas' }]
+      io = [{ input: 'asd', output: 'asdasdasd', type: 'positive' },
+            { input: 'dsa', output: 'dsadsadsa', type: 'positive' },
+            { input: 'dsas', output: 'dsasdsasdsas', type: 'positive' }]
 
       exercise.testIO = io
 
@@ -199,16 +199,17 @@ RSpec.describe TestGenerator do
       eos
 
       expect(subject).to respond_to(:generate).with(1).argument
-      expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, inputType: 'String', outputType: 'String',
-                                                                     mock_stdio_init: mock_stdio_init, test_code: string_string_test_code, neg_test_code: string_string_neg_test_code))
+      expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, inputType: 'String',
+                                                                     outputType: 'String', mock_stdio_init: mock_stdio_init,
+                                                                     test_code: string_string_test_code, neg_test_code: string_string_neg_test_code))
     end
 
     it 'generates a proper test template for int input and string output' do
       exercise.assignment.exercise_type = int_stdin_string_stdout_et
 
-      io = [{ input: 6, output: 'jea' },
-            { input: 7, output: 'notjea' },
-            { input: 98, output: '777' }]
+      io = [{ input: 6, output: 'jea', type: 'positive' },
+            { input: 7, output: 'notjea', type: 'positive' },
+            { input: 98, output: '777', type: 'positive' }]
 
       exercise.testIO = io
 
@@ -253,11 +254,10 @@ RSpec.describe TestGenerator do
 
     it 'generates negative test cases' do
       exercise.assignment.exercise_type = string_stdin_string_stdout_et
-      exercise.testIO = [{ input: '123', output: 'ykskakskolme' },
-                         { input: '321', output: 'kolmekaksyks' }]
-
-      exercise.negTestIO = [{ input: '321', output: 'ykskakskolme' },
-                            { input: '123', output: 'jeajeajea' }]
+      exercise.testIO = [{ input: '123', output: 'ykskakskolme', type: 'positive' },
+                         { input: '321', output: 'kolmekaksyks', type: 'positive' },
+                         { input: '321', output: 'ykskakskolme', type: 'negative' },
+                         { input: '123', output: 'jeajeajea', type: 'negative' }]
 
       tests = <<~eos
         @Test
@@ -282,8 +282,9 @@ RSpec.describe TestGenerator do
       eos
 
       expect(subject).to respond_to(:generate).with(1).argument
-      expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, inputType: 'String', outputType: 'String',
-                                                                     mock_stdio_init: mock_stdio_init, test_code: string_string_test_code, neg_test_code: string_string_neg_test_code))
+      expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, inputType: 'String',
+                                                                     outputType: 'String', mock_stdio_init: mock_stdio_init,
+                                                                     test_code: string_string_test_code, neg_test_code: string_string_neg_test_code))
     end
   end
 end

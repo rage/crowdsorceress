@@ -209,7 +209,7 @@ FactoryGirl.define do
     description 'Make good code code please'
     assignment
     user
-    testIO [{ "input": 'lol', "output": 'lolled' }]
+    testIO [{ "input": 'lol', "output": 'lolled', "type": 'positive' }]
   end
 
   factory :peer_review do
