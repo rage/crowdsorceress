@@ -23,13 +23,28 @@
 </p>
 
 <p>
-<strong>Assignment:</strong>
-<%= link_to @peer_review.exercise.assignment.id, @peer_review.exercise.assignment %>
+  <strong>Assignment:</strong>
+  <%= link_to @peer_review.exercise.assignment.id, @peer_review.exercise.assignment %>
 </p>
 
 <p>
-<strong>Reviewee:</strong>
-<%= link_to @peer_review.exercise.user.username, @peer_review.exercise.user %>
+  <strong>Reviewee:</strong>
+  <%= link_to @peer_review.exercise.user.username, @peer_review.exercise.user %>
+</p>
+
+<p>
+  <strong>Grades:</strong>
+  <ul>
+    <% @peer_review.peer_review_question_answers.each do |answer|%>
+        <li>
+          <%= answer.peer_review_question.question %>: <%= answer.grade %>
+        </li>
+    <% end %>
+  </ul>
+  </p>
+<p>
+  <strong>Average grade: </strong>
+  <%= @peer_review.average_grade %>
 </p>
 
 <p>
