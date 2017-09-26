@@ -2,7 +2,7 @@
 
 require 'test_templates'
 
-TESTS =
+POSITIVE_TESTS =
   <<~eos
     @Test
         public void test%<counter>s() {
@@ -43,10 +43,7 @@ class TestGenerator
   private
 
   def generate_string(exercise, template_params)
-    exercise.testIO = prettify_io(exercise.testIO, template_params[:input_type], template_params[:output_type])
-    unless exercise.negTestIO.nil?
-      exercise.negTestIO = prettify_io(exercise.negTestIO, template_params[:input_type], template_params[:output_type])
-    end
+    prettify_io(exercise, template_params[:input_type], template_params[:output_type])
 
     tests = generate_tests(exercise)
 
@@ -58,29 +55,29 @@ class TestGenerator
     tests = ''
     counter = 1
 
-    exercise.testIO.each do |i|
-      tests += format(TESTS, counter: counter, input: i['input'], output: i['output'])
-      counter += 1
-    end
-
-    exercise.negTestIO&.each do |i|
-      tests += format(NEGATIVE_TESTS, counter: counter, input: i['input'], output: i['output'])
-      counter += 1
+    exercise.testIO.each do |io|
+      if io['type'] == 'positive' # TODO: decide how to name testio types
+        tests += format(POSITIVE_TESTS, counter: counter, input: io['input'], output: io['output'])
+        counter += 1
+      elsif io['type'] == 'negative' # TODO: see previous
+        tests += format(NEGATIVE_TESTS, counter: counter, input: io['input'], output: io['output'])
+        counter += 1
+      end
     end
 
     tests
   end
 
-  def prettify_io(test_io, input_type, output_type)
+  def prettify_io(exercise, input_type, output_type)
     new_io = []
 
-    test_io.each do |i|
-      input = input_type == 'String' ? prettify_string(i['input']) : i['input']
-      output = output_type == 'String' ? prettify_string(i['output']) : i['output']
-      new_io.push(input: input, output: output)
+    exercise.testIO.each do |io|
+      input = input_type == 'String' ? prettify_string(io['input']) : io['input']
+      output = output_type == 'String' ? prettify_string(io['output']) : io['output']
+      new_io.push(input: input, output: output, type: io['type'])
     end
-    
-    new_io
+
+    exercise.testIO = new_io
   end
 
   def prettify_string(str)
