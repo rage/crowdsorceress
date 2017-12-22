@@ -3,7 +3,12 @@
 <h1>Exercises</h1>
 
 <p>
-  <strong>There are <%= @exercises.count %> exercises!</strong>
+  <strong><%= @exercises.count %> exercises in total</strong>
+    <ul>
+      <li><%= "finished: #{@finished_count} "%></li>
+      <li><%= "errror: #{@error_count}" %></li>
+      <li><%= "timeout: #{@timeout_count}" %></li>
+    </ul>
 </p>
 
 <table class="table table-hover">

@@ -3,9 +3,11 @@
 class Exercise < ApplicationRecord
   belongs_to :assignment
   belongs_to :user
+  has_one :exercise_type, through: :assignment
   has_many :peer_reviews
   has_many :exercises_tags, dependent: :destroy
   has_many :tags, through: :exercises_tags
+  has_many :peer_review_questions, through: :exercise_type
 
   require 'tmc_langs'
   require 'sandbox_results_handler'
@@ -95,5 +97,20 @@ class Exercise < ApplicationRecord
 
   def submission_target_path
     Rails.root.join('submission_generation', 'tmp', "Submission_#{id}")
+  end
+
+  def peer_review_tags
+    PeerReviewsTag.where(peer_review: peer_reviews).group(:tag).count
+  end
+
+  def average_grade
+    peer_reviews.inject(0.0) { |sum, review| sum + review.average_grade } / peer_reviews.count
+  end
+
+  def peer_review_question_averages
+    peer_review_questions.includes(:peer_review_question_answers).map do |question|
+      grades = question.peer_review_question_answers.pluck(:grade)
+      [question.question, grades.sum.to_f / grades.count]
+    end.to_h
   end
 end

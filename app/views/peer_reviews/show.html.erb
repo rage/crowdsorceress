@@ -39,6 +39,32 @@
   </pre>
 </p>
 
+<p>
+<strong>Grades:</strong>
+  <ul>
+    <% @peer_review.peer_review_question_answers.each do |answer|%>
+      <li>
+        <%= answer.peer_review_question.question %>: <%= answer.grade %>
+      </li>
+    <% end %>
+  </ul>
+  <p>
+    <strong>Average grade: </strong>
+    <%= @peer_review.average_grade %>
+  </p>
+</p>
+
+<p>
+  <strong>Tags:</strong>
+    <ul>
+    <% @peer_review.tags.each do |tag|%>
+      <li>
+        <%= link_to tag.name, tag %>
+      </li>
+    <% end %>
+  </ul>
+</p>
+
 <%= link_to 'Edit', edit_peer_review_path(@peer_review), class: "btn btn-primary" %>
 <%= link_to 'Back', peer_reviews_path, class: "btn btn-secondary" %>
 <%= link_to 'Destroy', peer_review_path, class: "btn btn-danger", method: :delete, data: { confirm: 'Are you sure?' }%>

@@ -9,4 +9,8 @@ class Tag < ApplicationRecord
   scope :recommended, -> { where(recommended: true) }
 
   validates :name, uniqueness: true
+
+  def exercises_via_peer_reviews
+    PeerReviewsTag.where(tag: self).map { |prt| prt.peer_review.exercise }.uniq
+  end
 end
