@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'upstream_user'
+require 'kaminari'
 
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception

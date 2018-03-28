@@ -5,7 +5,8 @@ class TagsController < ApplicationController
 
   # GET /tags
   def index
-    @tags = Tag.all
+    @tags = Tag.page(params[:page])
+    @tags_count = Tag.all.count
   end
 
   # GET /tags/1

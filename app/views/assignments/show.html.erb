@@ -28,6 +28,52 @@
   </div>
 </div>
 
+<br>
+
+<% if @exercises_count > 0 %>
+
+<h2>Exercises for assignment <%= @assignment.id%></h2>
+
+<p>
+  <strong><%= @exercises_count %> exercises in total</strong>
+    <ul>
+        <li><%= "finished: #{@finished_count} (#{@finished_count/@exercises_count.to_f * 100}%)"%></li>
+        <li><%= "errror: #{@error_count} (#{@error_count/@exercises_count.to_f * 100}%)" %></li>
+        <li><%= "timeout: #{@timeout_count} (#{@timeout_count/@exercises_count.to_f * 100}%)" %></li>
+    </ul>
+</p>
+
+  <table class="table table-hover">
+    <thead class="thead-inverse">
+      <tr>
+        <th>User</th>
+        <th>Assignment</th>
+        <th>Status</th>
+        <th>Peer reviews count</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @exercises.each do |exercise| %>
+        <tr>
+          <td><%= link_to exercise.user.username, exercise.user %></td>
+          <td><%= link_to exercise.assignment_id, exercise.assignment %></td>
+          <td><%= exercise.status %></td>
+          <td><%= exercise.peer_reviews_count %></td>
+          <td><%= link_to 'Show', exercise %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+<% end %>
+
+<%= paginate @exercises %>
+<%= page_entries_info @exercises %>
+
+<br>
+
 <%= link_to 'Edit', edit_assignment_path(@assignment), class: "btn btn-primary"%>
 <%= link_to 'Back', assignments_path, class: "btn btn-secondary" %>
 <%= link_to 'Destroy', @assignment, class: "btn btn-danger", method: :delete, data: { confirm: 'Are you sure?' }  %>

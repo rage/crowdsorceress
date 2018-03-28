@@ -2,11 +2,13 @@
 
 <h1>Tags</h1>
 
+<strong>There are <%= @tags_count%> tags</strong>
+
 <table class="table table-hover ">
   <thead class="thead-inverse" >
     <tr>
       <th>Name</th>
-      <th>Recommended</th>
+      <th class="recommended-column">Recommended</th>
     </tr>
   </thead>
 
@@ -14,11 +16,14 @@
     <% @tags.each do |tag| %>
       <tr>
         <td><%= link_to tag.name, tag %></td>
-        <td><%= tag.recommended %></td>
+        <td class="recommended-column"><%= tag.recommended ? "\u2713": "" %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
+
+<%= paginate @tags %>
+<%= page_entries_info @tags %>
 
 <br>
 

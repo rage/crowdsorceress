@@ -6,7 +6,8 @@ class PeerReviewsController < ApplicationController
 
   # GET /peer_reviews
   def index
-    @peer_reviews = PeerReview.all
+    @peer_reviews = PeerReview.page(params[:page])
+    @peer_reviews_count = PeerReview.all.count
   end
 
   # GET /peer_reviews/1
