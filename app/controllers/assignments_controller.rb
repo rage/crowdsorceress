@@ -9,7 +9,7 @@ class AssignmentsController < ApplicationController
   end
 
   # GET /assignments/1
-  def show;
+  def show
     @exercises = Exercise.page(params[:page]).per(25).where(assignment_id: params[:id])
     @exercises_count = Exercise.where(assignment_id: params[:id]).count
     @finished_count = Exercise.where(assignment_id: params[:id], status: 'finished').count
