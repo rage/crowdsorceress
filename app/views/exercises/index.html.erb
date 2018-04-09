@@ -6,9 +6,9 @@
   <strong> There are <%= @exercises_count %> exercises </strong>
     <% if @exercises_count > 0 %>
       <ul>
-        <li><%= "finished: #{@finished_count} (#{@finished_count/@exercises_count.to_f * 100}%)"%></li>
-        <li><%= "errror: #{@error_count} (#{@error_count/@exercises_count.to_f * 100}%)" %></li>
-        <li><%= "timeout: #{@timeout_count} (#{@timeout_count/@exercises_count.to_f * 100}%)" %></li>
+        <li><%= "finished: #{@finished_count} (#{(@finished_count/@exercises_count.to_f * 100).round(2)}%)"%></li>
+        <li><%= "errror: #{@error_count} (#{(@error_count/@exercises_count.to_f * 100).round(2)}%)" %></li>
+        <li><%= "timeout: #{@timeout_count} (#{(@timeout_count/@exercises_count.to_f * 100).round(2)}%)" %></li>
       </ul>
     <% end %>
 </p>
