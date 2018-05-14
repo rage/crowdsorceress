@@ -45,7 +45,7 @@ class ExerciseTypesController < ApplicationController
   # DELETE /exercise_types/1
   def destroy
     @exercise_type.destroy
-    redirect_to exercise_type_url, notice: 'Exercise type was successfully destroyed.'
+    redirect_to exercise_types_url, notice: 'Exercise type was successfully destroyed.'
   end
 
   private
@@ -57,6 +57,6 @@ class ExerciseTypesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def exercise_type_params
-    params.require(:exercise_type).permit(:name, :test_template, :code_template, :input_type, :output_type)
+    params.require(:exercise_type).permit(:name, :test_template, :code_template, :input_type, :output_type, :testing_type)
   end
 end

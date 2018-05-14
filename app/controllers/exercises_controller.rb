@@ -67,7 +67,9 @@ class ExercisesController < ApplicationController
   # Only allow a trusted parameter "white list" through.
   def exercise_params
     # Allow any slate state for now...
+    # params['exercise']['description'] = {"nodes"=>[{"kind"=>"block", "type"=>"paragraph", "nodes"=>[{"kind"=>"text", "text"=>"a faw fasef sef sf sd"}]}]} # FOR TESTING BY SUBMITTING EXERCISES THROUGH ADMIN INTERFACE
+
     desc_params = params['exercise']['description'].permit!
-    params.require(:exercise).permit(:code, :assignment_id, :tags, testIO: %i[input output]).merge(description: desc_params)
+    params.require(:exercise).permit(:user_id, :code, :assignment_id, :tags, :unit_tests, testIO: %i[input output]).merge(description: desc_params)
   end
 end

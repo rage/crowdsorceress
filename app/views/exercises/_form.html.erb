@@ -1,74 +1,79 @@
 <%= form_with(model: exercise, local: true) do |form| %>
-  <% if exercise.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(exercise.errors.count, "error") %> prohibited this exercise from being saved:</h2>
+    <% if exercise.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(exercise.errors.count, "error") %> prohibited this exercise from being saved:</h2>
 
-      <ul>
-      <% exercise.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
+          <ul>
+            <% exercise.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+
+    <div class="field">
+      <%= form.label :user_id %>
+      <%= form.number_field :user_id, id: :exercise_user_id %>
     </div>
-  <% end %>
 
-  <div class="field">
-    <%= form.label :user_id %>
-    <%= form.number_field :user_id, id: :exercise_user_id %>
-  </div>
+    <div class="field">
+      <%= form.label :code %>
+      <%= form.text_area :code, id: :exercise_code %>
+    </div>
 
-  <div class="field">
-    <%= form.label :code %>
-    <%= form.text_area :code, id: :exercise_code %>
-  </div>
+    <div class="field">
+      <%= form.label :assignment_id %>
+      <%= form.number_field :assignment_id, id: :exercise_assignment_id %>
+    </div>
 
-  <div class="field">
-    <%= form.label :assignment_id %>
-    <%= form.number_field :assignment_id, id: :exercise_assignment_id %>
-  </div>
+    <div class="field">
+      <%= form.label :testIO %>
+      <%= form.text_field :testIO, id: :exercise_testIO %>
+    </div>
 
-  <div class="field">
-    <%= form.label :testIO %>
-    <%= form.text_field :testIO, id: :exercise_testIO %>
-  </div>
+    <div class="field">
+      <%= form.label :description %>
+      <%= form.text_field :description, id: :exercise_description %>
+    </div>
 
-  <div class="field">
-    <%= form.label :description %>
-    <%= form.text_field :description, id: :exercise_description %>
-  </div>
+    <div class="field">
+      <%= form.label :status %>
+      <%= form.number_field :status, id: :exercise_status %>
+    </div>
 
-  <div class="field">
-    <%= form.label :status %>
-    <%= form.number_field :status, id: :exercise_status %>
-  </div>
+    <div class="field">
+      <%= form.label :error_messages %>
+      <%= form.text_field :error_messages, id: :exercise_error_messages %>
+    </div>
 
-  <div class="field">
-    <%= form.label :error_messages %>
-    <%= form.text_field :error_messages, id: :exercise_error_messages %>
-  </div>
+    <div class="field">
+      <%= form.label :sandbox_results %>
+      <%= form.text_area :sandbox_results, id: :exercise_sandbox_results %>
+    </div>
 
-  <div class="field">
-    <%= form.label :sandbox_results %>
-    <%= form.text_area :sandbox_results, id: :exercise_sandbox_results %>
-  </div>
+    <div class="field">
+      <%= form.label :peer_reviews_count %>
+      <%= form.number_field :peer_reviews_count, id: :exercise_peer_reviews_count %>
+    </div>
 
-  <div class="field">
-    <%= form.label :peer_reviews_count %>
-    <%= form.number_field :peer_reviews_count, id: :exercise_peer_reviews_count %>
-  </div>
+    <div class="field">
+      <%= form.label :model_solution %>
+      <%= form.text_area :model_solution, id: :exercise_model_solution %>
+    </div>
 
-  <div class="field">
-    <%= form.label :model_solution %>
-    <%= form.text_area :model_solution, id: :exercise_model_solution %>
-  </div>
+    <div class="field">
+      <%= form.label :template %>
+      <%= form.text_area :template, id: :exercise_template %>
+    </div>
 
-  <div class="field">
-    <%= form.label :template %>
-    <%= form.text_area :template, id: :exercise_template %>
-  </div>
+    <div class="field">
+      <%= form.label :unit_tests %>
+      <%= form.text_area :unit_tests, id: :exercise_unit_tests %>
+    </div>
 
     <p>Please, don't do this to me.</p>
 
-  <div class="actions">
-  <%= form.submit nil, class: "btn btn-danger", data: { confirm: 'No, seriously. Are you sure about this?' } %>
-  </div>
+    <div class="actions">
+      <%= form.submit nil, class: "btn btn-danger", data: { confirm: 'No, seriously. Are you sure about this?' } %>
+    </div>
 <% end %>

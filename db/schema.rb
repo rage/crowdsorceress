@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170926090956) do
+ActiveRecord::Schema.define(version: 20180516115144) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 20170926090956) do
     t.text "code_template", default: "", null: false
     t.string "input_type"
     t.string "output_type"
+    t.string "testing_type"
   end
 
   create_table "exercises", force: :cascade do |t|
@@ -48,6 +49,7 @@ ActiveRecord::Schema.define(version: 20170926090956) do
     t.text "template"
     t.json "error_messages", default: [], array: true
     t.integer "submit_count", default: 0, null: false
+    t.text "unit_tests"
     t.index ["assignment_id"], name: "index_exercises_on_assignment_id"
     t.index ["user_id"], name: "index_exercises_on_user_id"
   end

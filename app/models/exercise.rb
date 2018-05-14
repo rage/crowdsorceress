@@ -17,7 +17,7 @@ class Exercise < ApplicationRecord
   has_paper_trail ignore: %i[updated_at status error_messages sandbox_results]
 
   validates :description, presence: true
-  validates :testIO, presence: true
+  # validates :testIO, presence: true # TODO: do we want to validate testIO? what do we want to validate?
   validates :code, presence: true
 
   serialize :sandbox_results, Hash
@@ -70,8 +70,14 @@ class Exercise < ApplicationRecord
   end
 
   def write_to_test_file
-    File.open(submission_target_path.join('test', 'SubmissionTest.java').to_s, 'w') do |f|
-      f.write(TestGenerator.new.generate(self))
+    if assignment.exercise_type.testing_type == 'student_written_tests'
+      File.open(submission_target_path.join('test', 'SubmissionTest.java').to_s, 'w') do |f|
+        f.write(unit_tests)
+      end
+    else
+      File.open(submission_target_path.join('test', 'SubmissionTest.java').to_s, 'w') do |f|
+        f.write(TestGenerator.new.generate(self))
+      end
     end
   end
 

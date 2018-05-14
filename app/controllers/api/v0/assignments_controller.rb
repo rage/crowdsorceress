@@ -6,7 +6,13 @@ module Api
       # GET /assignments/1
       def show
         @assignment = Assignment.find(params[:id])
-        render json: { assignment: @assignment, tags: Tag.recommended, template: @assignment.exercise_type.code_template }
+        @exercise_type = @assignment.exercise_type
+
+        if @exercise_type.testing_type == 'student_written_tests' # TODO: enum
+          render json: { assignment: @assignment, tags: Tag.recommended, template: @exercise_type.code_template, test_template: @exercise_type.test_template }
+        else
+          render json: { assignment: @assignment, tags: Tag.recommended, template: @exercise_type.code_template }
+        end
       end
     end
   end
