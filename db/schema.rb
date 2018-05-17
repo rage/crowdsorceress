@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180516115144) do
+ActiveRecord::Schema.define(version: 20180517095400) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,7 +31,7 @@ ActiveRecord::Schema.define(version: 20180516115144) do
     t.text "code_template", default: "", null: false
     t.string "input_type"
     t.string "output_type"
-    t.string "testing_type"
+    t.integer "testing_type", default: 0
   end
 
   create_table "exercises", force: :cascade do |t|

@@ -8,7 +8,7 @@ module Api
         @assignment = Assignment.find(params[:id])
         @exercise_type = @assignment.exercise_type
 
-        if @exercise_type.testing_type == 'student_written_tests' # TODO: enum
+        if @exercise_type.testing_type == 'student_written_tests'
           render json: { assignment: @assignment, tags: Tag.recommended, template: @exercise_type.code_template, test_template: @exercise_type.test_template }
         else
           render json: { assignment: @assignment, tags: Tag.recommended, template: @exercise_type.code_template }
