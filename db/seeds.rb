@@ -56,6 +56,34 @@ test_template1 =
   }
 eos
 
+test_template2 =
+  <<~eos
+  import org.junit.Test;
+  import static org.junit.Assert.*;
+  import fi.helsinki.cs.tmc.edutestutils.Points;
+  
+  @Points("01-11")
+  public class SubmissionTest {
+  
+      public SubmissionTest() {
+  
+      }
+      // LOCK FROM BEGINNING
+  
+      @Test
+      public void test1() {
+          toimii("syöte1", "odotettuTulos1");
+      }
+      // LOCK TO END
+
+      private void toimii(String syöte, String odotettuTulos) {
+          Submission submission = new Submission();
+          assertTrue("Kun syöte oli '" + syöte + "' tulostus oli: '" + submission.metodi(syöte) + "', mutta se ei ollut: '" + odotettuTulos + "'.", submission.metodi(syöte).equals(odotettuTulos));
+      }
+  }
+
+eos
+
 # Exercise type 1
 type = ExerciseType.create name: 'string_string', code_template: code_template1
 
@@ -92,6 +120,10 @@ Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.',
 type6 = ExerciseType.create name: 'int_stdin_string_stdout', code_template: code_template2
 assignments[6] = Assignment.create description: 'Tee tehtävä, jonka tarkoitus on laittaa opiskelija koodaamaan ohjelma, joka lukee käyttäjältä kokonaislukusyötteen, tarkastelee sitä ehtolauseen avulla ja tulostaa merkkijonon.
 Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type6
+
+# Exercise type 7
+type7 = ExerciseType.create name: 'junit_tests', code_template: code_template1, test_template: test_template2, testing_type: 1
+assignments[7] = Assignment.create description: 'Tee tehtävä ja kirjoita sille yksikkötestit', exercise_type: type7
 
 # Peer review questions:
 
