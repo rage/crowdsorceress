@@ -28,7 +28,10 @@ class SandboxResultsHandler
     header = 'Virheet testeissä: '
 
     messages = test_output['testResults'].each_with_object(String.new) do |test, string|
-      string << "#{test['message']}<linechange>"
+      unless test['successful']
+        test_name = test['name'].split(' ').last
+        string << "Testi: #{test_name}<linechange> - #{test['message']}<linechange>"
+      end
     end
 
     error = { header: header, messages: messages }
