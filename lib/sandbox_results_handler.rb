@@ -41,12 +41,12 @@ class SandboxResultsHandler
   def compile_errors(test_output, package_type)
     return unless test_output['status'] == 'COMPILE_FAILED'
     header = package_type == 'TEMPLATE' ? 'Tehtäväpohja ei kääntynyt: ' : 'Malliratkaisu ei kääntynyt: '
-    messages = error_message_lines(test_output).join('<linechange>')
+    messages = compile_error_message_lines(test_output).join('<linechange>')
     error = { header: header, messages: messages }
     @exercise.error_messages.push error
   end
 
-  def error_message_lines(test_output)
+  def compile_error_message_lines(test_output)
     error_message = test_output['logs']['stdout'].pack('c*').force_encoding('utf-8')
     error_message = if error_message.include?('do-compile-test')
                       error_message.slice(/(?<=do-compile-test:\n)(.*?\n)*(.*$)/)
@@ -54,7 +54,37 @@ class SandboxResultsHandler
                       error_message.slice(/(?<=do-compile:\n)(.*?\n)*(.*$)/)
                     end
 
-    error_message.split(/\n/)
+    modify_compile_error_messages(error_message.split(/\n/))
+  end
+
+  def modify_compile_error_messages(message_lines)
+    modified_message = ''
+    i = 0
+    while i < message_lines.size
+      if message_lines[i].include? 'SubmissionTest'
+        beginning = 'Virhe testikoodissa'
+      elsif message_lines[i].include? 'Submission'
+        beginning = 'Virhe lähdekoodissa'
+      else
+        i += 1
+        next
+      end
+
+      modified_message += modified_message(message_lines, i, beginning)
+
+      i += 3
+    end
+    modified_message.split(/\n/)
+  end
+
+  def modified_message(message_lines, i, beginning)
+    errored_line_number = message_lines[i].slice(/\d+/)
+    error = message_lines[i].slice(/(error:)(.*$)/).chomp
+    errored_line = message_lines[i + 1].sub('[javac]', '').chomp
+    error_mark_line = message_lines[i + 2].sub('[javac]', '').chomp
+    marked_column = error_mark_line.index('^') - 6
+
+    "#{beginning} rivillä #{errored_line_number} merkissä järjestysnumeroltaan #{marked_column}. vasemmalta yksi merkki kerrallaan laskettuna: #{error}\n#{errored_line}\n#{error_mark_line}\n"
   end
 
   # Generate message that will be sent to frontend
