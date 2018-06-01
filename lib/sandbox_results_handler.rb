@@ -34,14 +34,14 @@ class SandboxResultsHandler
       end
     end
 
-    error = { header: header, messages: messages }
+    error = { header: header, messages: [{ message: messages }] }
     @exercise.error_messages.push error
   end
 
   def compile_errors(test_output, package_type)
     return unless test_output['status'] == 'COMPILE_FAILED'
     header = package_type == 'TEMPLATE' ? 'Tehtäväpohja ei kääntynyt: ' : 'Malliratkaisu ei kääntynyt: '
-    messages = compile_error_message_lines(test_output).join('<linechange>')
+    messages = compile_error_message_lines(test_output)
     error = { header: header, messages: messages }
     @exercise.error_messages.push error
   end
@@ -58,7 +58,7 @@ class SandboxResultsHandler
   end
 
   def modify_compile_error_messages(message_lines)
-    modified_message = ''
+    modified_messages = []
     i = 0
     while i < message_lines.size
       if message_lines[i].include? 'SubmissionTest'
@@ -70,21 +70,26 @@ class SandboxResultsHandler
         next
       end
 
-      modified_message += modified_message(message_lines, i, beginning)
+      modified_messages.push modified_message(message_lines, i, beginning)
 
       i += 3
     end
-    modified_message.split(/\n/)
+    modified_messages
   end
 
   def modified_message(message_lines, i, beginning)
-    errored_line_number = message_lines[i].slice(/\d+/)
-    error = message_lines[i].slice(/(error:)(.*$)/).chomp
-    errored_line = message_lines[i + 1].sub('[javac]', '').chomp
-    error_mark_line = message_lines[i + 2].sub('[javac]', '').chomp
-    marked_column = error_mark_line.index('^') - 6
+    if message_lines[i].include? 'location'
+      then {message: ''}
+    else
+      errored_line_number = message_lines[i].slice(/\d+/)
+      error = message_lines[i].slice(/(error:)(.*$)/).chomp
+      errored_line = message_lines[i + 1].sub('[javac]', '').chomp
+      error_mark_line = message_lines[i + 2].sub('[javac]', '').chomp
+      marked_char = error_mark_line.index('^') - 5
 
-    "#{beginning} rivillä #{errored_line_number} merkissä järjestysnumeroltaan #{marked_column}. vasemmalta yksi merkki kerrallaan laskettuna: #{error}\n#{errored_line}\n#{error_mark_line}\n"
+      { message: "#{beginning} rivillä #{errored_line_number} merkissä järjestysnumeroltaan #{marked_char}. vasemmalta yksi merkki kerrallaan laskettuna: #{error}\n#{errored_line}\n#{error_mark_line}\n",
+        line: errored_line_number, char: marked_char }
+    end
   end
 
   # Generate message that will be sent to frontend
