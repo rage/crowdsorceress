@@ -3,7 +3,7 @@
 <h1>Peer Reviews</h1>
 
 <p>
-  <strong>There are <%= @peer_reviews.count %> peer reviews!</strong>
+  <strong>There are <%= @peer_reviews_count %> peer reviews</strong>
 </p>
 
 <table class="table table-hover">
@@ -29,6 +29,10 @@
     <% end %>
   </tbody>
 </table>
+
+<%= paginate @peer_reviews %>
+<%= page_entries_info @peer_reviews %>
+
 
 <br>
 

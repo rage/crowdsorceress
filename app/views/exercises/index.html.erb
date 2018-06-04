@@ -3,7 +3,14 @@
 <h1>Exercises</h1>
 
 <p>
-  <strong>There are <%= @exercises.count %> exercises!</strong>
+  <strong> There are <%= @exercises_count %> exercises </strong>
+    <% if @exercises_count > 0 %>
+      <ul>
+        <li><%= "finished: #{@finished_count} (#{(@finished_count/@exercises_count.to_f * 100).round(2)}%)"%></li>
+        <li><%= "errror: #{@error_count} (#{(@error_count/@exercises_count.to_f * 100).round(2)}%)" %></li>
+        <li><%= "timeout: #{@timeout_count} (#{(@timeout_count/@exercises_count.to_f * 100).round(2)}%)" %></li>
+      </ul>
+    <% end %>
 </p>
 
 <table class="table table-hover">
@@ -29,6 +36,10 @@
     <% end %>
   </tbody>
 </table>
+
+
+<%= paginate @exercises %>
+<%= page_entries_info @exercises %>
 
 <br>
 

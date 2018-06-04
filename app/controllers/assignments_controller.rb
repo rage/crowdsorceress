@@ -9,7 +9,13 @@ class AssignmentsController < ApplicationController
   end
 
   # GET /assignments/1
-  def show; end
+  def show
+    @exercises = Exercise.page(params[:page]).per(25).where(assignment_id: params[:id])
+    @exercises_count = Exercise.where(assignment_id: params[:id]).count
+    @finished_count = Exercise.where(assignment_id: params[:id], status: 'finished').count
+    @error_count = Exercise.where(assignment_id: params[:id], status: 'error').count
+    @timeout_count = Exercise.where(assignment_id: params[:id], status: 'sandbox_timeout').count
+  end
 
   # GET /assignments/new
   def new

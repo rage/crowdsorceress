@@ -6,7 +6,11 @@ class ExercisesController < ApplicationController
 
   # GET /exercises
   def index
-    @exercises = Exercise.all.includes(:user)
+    @exercises = Exercise.page(params[:page]).includes(:user)
+    @exercises_count = Exercise.all.count
+    @finished_count = Exercise.where(status: 'finished').count
+    @error_count = Exercise.where(status: 'error').count
+    @timeout_count = Exercise.where(status: 'sandbox_timeout').count
   end
 
   # GET /exercises/1

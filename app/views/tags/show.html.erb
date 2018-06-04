@@ -7,15 +7,22 @@
   <%= @tag.recommended %>
 </p>
 
-<% if @tag.exercises.empty? %>
-  <strong>No exercises tagged with <%= @tag.name %></strong>
+<% if @tag.exercises.empty? && @tag.exercises_via_peer_reviews.empty? %>
+  <p>No exercises tagged with <%= @tag.name %></p>
 <% else %>
   <strong>Exercises tagged with <%= @tag.name %>:</strong>
-  <p>
+    <ul>
     <% @tag.exercises.each do |exercise| %>
+    <li>
       <%= link_to exercise.id, exercise %>
+    </li>
     <% end %>
-  </p>
+    <% @tag.exercises_via_peer_reviews.each do |exercise|%>
+    <li>
+      <%= link_to exercise.id, exercise %>
+    </li>
+    <% end %>
+  </ul>
 <% end %>
 
 <p>

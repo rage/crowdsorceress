@@ -5,7 +5,8 @@ class UsersController < ApplicationController
 
   # GET /users
   def index
-    @users = User.all
+    @users = User.page(params[:page])
+    @users_count = User.all.count
   end
 
   # GET /users/1

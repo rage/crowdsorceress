@@ -82,57 +82,33 @@
   <%= @exercise.peer_reviews_count %>
 </p>
 
+<p>
+  <strong>Peer review average:</strong>
+  <%= @exercise.average_grade %>
+</p>
+
+<p>
+  <strong>Peer review question averages:</strong>
+  <ul>
+  <% @exercise.peer_review_question_averages.each do |question, average|%>
+    <li>
+      <%= "#{question}: #{average}" %>
+    </li>
+  <% end %>
+  </ul>
+</p>
+
 <% if @exercise.peer_reviews_count > 0 %>
-    <p>
-      <strong>Peer reviews:</strong>
-    </p>
+    <strong>Peer reviews:</strong>
     <ul>
       <% @exercise.peer_reviews.each do |peer_review| %>
-          <li>
-            <strong>
-              <%= link_to "Review #{peer_review.id}", peer_review%>
-            </strong>
-            <br>
-            <strong>Reviewer:</strong>
-            <%= link_to peer_review.user.username, peer_review.user %>
-            <p>
-              <strong>Grades:</strong>
-              <ul>
-                <% peer_review.peer_review_question_answers.each do |answer|%>
-                  <li>
-                    <%= answer.peer_review_question.question %>: <%= answer.grade %>
-                  </li>
-                <% end %>
-              </ul>
-            </p>
-            <p>
-              <strong>Average grade: </strong>
-              <%= peer_review.average_grade %>
-            </p>
-            <p>
-              <strong>Comment:</strong>
-            </p>
-            <pre>
-              <%= peer_review.comment %>
-            </pre>
-            <p>
-              <strong>Reviewer's tags for the exercise:</strong>
-              <% if peer_review.tags %>
-                  <ul>
-                    <% peer_review.tags.each do |tag| %>
-                        <li> <%= link_to tag.name, tag %></li>
-                    <% end %>
-                  </ul>
-              <% else %>
-                  <p> 'No tags' </p>
-            <% end %>
-            </p>
-          </li>
+        <li>
+          <%= link_to "Review #{peer_review.id}", peer_review%> by <%= link_to peer_review.user.username, peer_review.user %>
       <% end %>
     </ul>
 <% end %>
 
-<strong>Tags:</strong>
+<strong>Tags given by <%= @exercise.user.username%> :</strong>
 <% if @exercise.tags %>
 <ul>
  <% @exercise.tags.each do |tag| %>
@@ -142,6 +118,13 @@
 <% else %>
   <p> 'No tags' </p>
 <% end %>
+<strong>Tags given by peer reviewers:</strong>
+<ul>
+<% @exercise.peer_review_tags.each do |tag, count| %>
+  <li> <%= link_to "#{tag.name} #{count > 1 ? " (#{count.to_s})" : ""}", tag %></li>
+<%end%>
+</ul>
+
 
 <%= link_to 'Edit', edit_exercise_path(@exercise), class: "btn btn-primary" %>
 <%= link_to 'Back', exercises_path, class: "btn btn-secondary"  %>

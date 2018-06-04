@@ -1,0 +1,10 @@
+.paginator {
+  padding: 0 0.3rem;
+}
+
+.page {
+  padding: 0 0.2rem;
+  &.current {
+    transform: scale(1.2)
+  }
+}
