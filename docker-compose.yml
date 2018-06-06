@@ -4,9 +4,7 @@ services:
     build: .
     command: rails s --binding 0.0.0.0
     volumes:
-      - type: volume
-        source: .
-        target: /app
+      - .:/app
     ports:
       - "3000:3000"
     links:
@@ -40,9 +38,7 @@ services:
     build: .
     command: bundle exec sidekiq --verbose
     volumes:
-      - type: volume
-        source: .
-        target: /app
+      - .:/app
     links:
       - db
       - redis
