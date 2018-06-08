@@ -79,7 +79,7 @@ class SandboxResultsHandler
 
   def modified_message(message_lines, i, beginning)
     if message_lines[i].include? 'location'
-      then {message: ''}
+      then { message: '' }
     else
       errored_line_number = message_lines[i].slice(/\d+/)
       error = message_lines[i].slice(/(error:)(.*$)/).chomp

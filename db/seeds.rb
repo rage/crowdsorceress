@@ -81,7 +81,45 @@ test_template2 =
           assertTrue("Kun syöte oli '" + syöte + "' tulostus oli: '" + submission.metodi(syöte) + "', mutta se ei ollut: '" + odotettuTulos + "'.", submission.metodi(syöte).equals(odotettuTulos));
       }
   }
+eos
 
+test_template3 =
+  <<~eos
+  // START LOCK
+  import fi.helsinki.cs.tmc.edutestutils.MockStdio;
+  import fi.helsinki.cs.tmc.edutestutils.Points;
+  import fi.helsinki.cs.tmc.edutestutils.ReflectionUtils;
+  import org.junit.Rule;
+  import org.junit.Test;
+  import static org.junit.Assert.assertEquals;
+  import static org.junit.Assert.assertTrue;
+
+  @Points("01-11")
+  public class SubmissionTest {
+
+      @Rule
+      public MockStdio io = new MockStdio();
+
+      public SubmissionTest() {
+
+      }
+
+      @Test
+      public void test1() {
+          toimii("syöte1", "odotettuTulos1");
+      }
+
+      private void toimii(String input, String output) {
+          ReflectionUtils.newInstanceOfClass(Submission.class);
+          io.setSysIn(input);
+          Submission.main(new String[0]);
+
+          String out = io.getSysOut();
+
+          assertTrue("Kun syöte oli '" + input.replaceAll("\\n", "\\\\\\n") + "' tulostus oli: '" + out.replaceAll("\\n", "\\\\\\n") + "', mutta se ei sisältänyt: '" + output.replaceAll("\\n", "\\\\\\n") + "'.", out.contains(output));
+      }
+  }
+// END LOCK
 eos
 
 # Exercise type 1
@@ -124,6 +162,10 @@ Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.',
 # Exercise type 7
 type7 = ExerciseType.create name: 'junit_tests', code_template: code_template1, test_template: test_template2, testing_type: 1
 assignments[7] = Assignment.create description: 'Tee tehtävä ja kirjoita sille yksikkötestit', exercise_type: type7
+
+# Exercise type 8
+type8 = ExerciseType.create name: 'io_and_test_code', code_template: code_template2, test_template: test_template3, testing_type: 2
+assignments[8] = Assignment.create description: 'Tee tehtävä, anna sille testisyötteet ja -tulosteet ja näe kuinka ne näkyvät testikoodissa!', exercise_type: type8
 
 # Peer review questions:
 
