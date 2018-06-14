@@ -23,6 +23,28 @@ code_template2 = "import java.util.*; \npublic class Submission { \n // START LO
 
 code_template3 = "import java.util.Scanner;\n\npublic class Submission {\n\n    public static void main(String[] args) {\n\n        //Kirjoita koodia tähän \n    }\n\n   // LOCK TO END \n    public static void metodi(String input) {\n\n        //Kirjoita koodia tähän  \n    }\n}"
 
+code_template4 =
+<<~eos
+import java.util.*; 
+public class Submission {
+
+    public static void main(String[] args) {
+    // LOCK FROM BEGINNING
+        Scanner lukija = new Scanner(System.in);
+        suorita(lukija);
+    // START LOCK  
+    }
+
+    public static void suorita(Scanner lukija) {
+    // END LOCK
+
+        //Kirjoita koodia tähän 
+    // LOCK TO END
+
+    }
+}
+eos
+
 # TEST TEMPLATES
 test_template1 =
 <<~eos
@@ -31,8 +53,8 @@ test_template1 =
   import fi.helsinki.cs.tmc.edutestutils.ReflectionUtils;
   import org.junit.Rule;
   import org.junit.Test;
-  import static org.junit.Assert.assertEquals;
-  import static org.junit.Assert.assertTrue;
+  import static org.junit.Assert.*;
+  import java.util.Scanner;
 
   @Points("01-11")
   public class SubmissionTest {
@@ -85,41 +107,33 @@ eos
 
 test_template3 =
   <<~eos
-  // START LOCK
-  import fi.helsinki.cs.tmc.edutestutils.MockStdio;
-  import fi.helsinki.cs.tmc.edutestutils.Points;
-  import fi.helsinki.cs.tmc.edutestutils.ReflectionUtils;
-  import org.junit.Rule;
   import org.junit.Test;
-  import static org.junit.Assert.assertEquals;
-  import static org.junit.Assert.assertTrue;
-
+  import static org.junit.Assert.*;
+  import fi.helsinki.cs.tmc.edutestutils.Points;
+  
   @Points("01-11")
   public class SubmissionTest {
-
-      @Rule
-      public MockStdio io = new MockStdio();
-
+  
       public SubmissionTest() {
-
+  
       }
-
-      @Test
-      public void test1() {
-          toimii("syöte1", "odotettuTulos1");
-      }
-
-      private void toimii(String input, String output) {
-          ReflectionUtils.newInstanceOfClass(Submission.class);
-          io.setSysIn(input);
-          Submission.main(new String[0]);
-
-          String out = io.getSysOut();
-
-          assertTrue("Kun syöte oli '" + input.replaceAll("\\n", "\\\\\\n") + "' tulostus oli: '" + out.replaceAll("\\n", "\\\\\\n") + "', mutta se ei sisältänyt: '" + output.replaceAll("\\n", "\\\\\\n") + "'.", out.contains(output));
+  
+      %<tests>s
+      private void toimii(String syöte, String odotettuTulos) {
+          Submission submission = new Submission();
+          assertTrue("Kun syöte oli '" + syöte + "' tulostus oli: '" + submission.metodi(syöte) + "', mutta se ei ollut: '" + odotettuTulos + "'.", submission.metodi(syöte).equals(odotettuTulos));
       }
   }
-// END LOCK
+eos
+
+test_method_template1 =
+  <<~eos
+  @Test
+  public void testi() {
+      Submission.suorita(new Scanner("<input>"));
+      String metodinTulostus = io.getSysOut();
+      <assertion>
+  }
 eos
 
 # Exercise type 1
@@ -164,7 +178,7 @@ type7 = ExerciseType.create name: 'junit_tests', code_template: code_template1, 
 assignments[7] = Assignment.create description: 'Tee tehtävä ja kirjoita sille yksikkötestit', exercise_type: type7
 
 # Exercise type 8
-type8 = ExerciseType.create name: 'io_and_test_code', code_template: code_template2, test_template: test_template3, testing_type: 2
+type8 = ExerciseType.create name: 'io_and_test_code', code_template: code_template4, test_template: test_template1, testing_type: 2, test_method_template: test_method_template1
 assignments[8] = Assignment.create description: 'Tee tehtävä, anna sille testisyötteet ja -tulosteet ja näe kuinka ne näkyvät testikoodissa!', exercise_type: type8
 
 # Peer review questions:

@@ -30,12 +30,20 @@ class SandboxResultsHandler
     messages = test_output['testResults'].each_with_object(String.new) do |test, string|
       unless test['successful']
         test_name = test['name'].split(' ').last
-        string << "Testi: #{test_name}<linechange> - #{test['message']}<linechange>"
+        string << "#{test_name}<linechange>#{parsed_test_error_message(test['message'])}"
       end
     end
 
     error = { header: header, messages: [{ message: messages }] }
     @exercise.error_messages.push error
+  end
+
+  def parsed_test_error_message(message)
+    if message.include? 'expected'
+      message.gsub('expected', '<linechange>- expected').concat('<linechange><linechange>')
+    else
+      message.concat('<linechange><linechange>')
+    end
   end
 
   def compile_errors(test_output, package_type)
