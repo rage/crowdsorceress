@@ -13,13 +13,13 @@ module Api
       NotAuthorized = Class.new(StandardError)
 
       rescue_from NotAuthorized do
-        render_error_page(status: 403, text: 'Ei pääsyä.')
+        render_error_page(status: 403, text: 'Not authorized.')
       end
 
       NotLoggedIn = Class.new(StandardError)
 
       rescue_from NotLoggedIn do
-        render_error_page(status: 401, text: 'Ole hyvä ja kirjaudu sisään.')
+        render_error_page(status: 401, text: 'Please log in.')
       end
 
       rescue_from ActiveRecord::RecordNotFound do |ex|
@@ -33,7 +33,7 @@ module Api
       NoExerciseError = Class.new(StandardError)
 
       rescue_from NoExerciseError do
-        render_error_page(status: 400, text: 'Arvioitavia tehtäviä ei löytynyt.')
+        render_error_page(status: 400, text: 'No exercises found for peer review.')
       end
 
       def ensure_signed_in!

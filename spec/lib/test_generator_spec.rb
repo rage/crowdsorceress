@@ -23,7 +23,7 @@ TEST_TEMPLATE = <<~eos
 
       %<tests>s
 
-      private void toimii(%<inputType>s input, %<outputType>s output) {
+      private void try(%<inputType>s input, %<outputType>s output) {
           %<test_code>s
       }
   }
@@ -57,17 +57,17 @@ RSpec.describe TestGenerator do
       tests = <<~eos
         @Test
             public void test1() {
-                toimii("asd", "asdasdasd");
+                try("asd", "asdasdasd");
             }
 
         @Test
             public void test2() {
-                toimii("dsa", "dsadsadsa");
+                try("dsa", "dsadsadsa");
             }
 
         @Test
             public void test3() {
-                toimii("dsas", "dsasdsasdsas");
+                try("dsas", "dsasdsasdsas");
             }
   eos
       expect(subject).to respond_to(:generate).with(1).argument
@@ -111,17 +111,17 @@ RSpec.describe TestGenerator do
       tests = <<~eos
         @Test
             public void test1() {
-                toimii("asd", "asdasdasd");
+                try("asd", "asdasdasd");
             }
 
         @Test
             public void test2() {
-                toimii("dsa", "dsadsadsa");
+                try("dsa", "dsadsadsa");
             }
 
         @Test
             public void test3() {
-                toimii("dsas", "dsasdsasdsas");
+                try("dsas", "dsasdsasdsas");
             }
         eos
       expect(subject).to respond_to(:generate).with(1).argument
@@ -159,17 +159,17 @@ RSpec.describe TestGenerator do
       tests = <<~eos
         @Test
             public void test1() {
-                toimii("asd", "asdasdasd");
+                try("asd", "asdasdasd");
             }
 
         @Test
             public void test2() {
-                toimii("dsa", "dsadsadsa");
+                try("dsa", "dsadsadsa");
             }
 
         @Test
             public void test3() {
-                toimii("dsas", "dsasdsasdsas");
+                try("dsas", "dsasdsasdsas");
             }
       eos
 
@@ -200,17 +200,17 @@ RSpec.describe TestGenerator do
       tests = <<~eos
         @Test
             public void test1() {
-                toimii(6, "jea");
+                try(6, "jea");
             }
 
         @Test
             public void test2() {
-                toimii(7, "notjea");
+                try(7, "notjea");
             }
 
         @Test
             public void test3() {
-                toimii(98, "777");
+                try(98, "777");
             }
       eos
 

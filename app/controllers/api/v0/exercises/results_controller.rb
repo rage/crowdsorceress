@@ -11,7 +11,8 @@ module Api
 
           return if exercise.finished? || exercise.error? || !submit_count_correct(token, exercise)
 
-          exercise.error_messages = [] if exercise.error_messages.any? { |error| error['header'].include?('Tehtäväntarkastuspalvelin vastasi liian hitaasti') }
+          # TODO: translate 'tehtäväntarkastuspalvelin'
+          exercise.error_messages = [] if exercise.error_messages.any? { |error| error['header'].include?('Sandbox responded too slowly') }
 
           TarballRemoverJob.perform_later(package_type(token), exercise)
 
@@ -35,7 +36,7 @@ module Api
 
           begin token = verifier.verify(params[:token])
           rescue ActiveSupport::MessageVerifier::InvalidSignature
-            exercise.error_messages.push(header: 'Tehtävän lähetys epäonnistui virheellisen avaimen vuoksi', 'messages': '')
+            exercise.error_messages.push(header: 'Submission failed due to invalid secret token', 'messages': '')
             exercise.error!
             MessageBroadcasterJob.perform_now(@exercise)
             raise InvalidSignature

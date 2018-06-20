@@ -1,3 +1,4 @@
+=begin
 # frozen_string_literal: true
 
 class TestTemplates
@@ -104,3 +105,4 @@ class TestTemplates
     eos
   end
 end
+=end

@@ -25,7 +25,7 @@ class SandboxResultsHandler
   def test_results(test_output)
     # Push test results into exercise's error messages
     return if test_output['testResults'].empty? || test_output['status'] == 'PASSED'
-    header = 'Virheet testeissä: '
+    header = 'Errors in tests: '
 
     messages = test_output['testResults'].each_with_object(String.new) do |test, string|
       string << "#{test['message']}<linechange>"
@@ -37,7 +37,7 @@ class SandboxResultsHandler
 
   def compile_errors(test_output, package_type)
     return unless test_output['status'] == 'COMPILE_FAILED'
-    header = package_type == 'TEMPLATE' ? 'Tehtäväpohja ei kääntynyt: ' : 'Malliratkaisu ei kääntynyt: '
+    header = package_type == 'TEMPLATE' ? 'The template did not compile: ' : 'The model solution did not compile: '
     messages = error_message_lines(test_output).join('<linechange>')
     error = { header: header, messages: messages }
     @exercise.error_messages.push error
@@ -64,19 +64,19 @@ class SandboxResultsHandler
   end
 
   def model_message(passed, compiled)
-    @exercise.sandbox_results[:message] += ' Malliratkaisun tulokset: '
+    @exercise.sandbox_results[:message] += ' Results for the model solution: '
     @exercise.sandbox_results[:model_results_received] = true
-    @exercise.sandbox_results[:message] += if passed then 'Kaikki OK.'
-                                           elsif compiled then 'Testit eivät menneet läpi.'
-                                           else 'Koodi ei kääntynyt.'
+    @exercise.sandbox_results[:message] += if passed then 'Everything is OK.'
+                                           elsif compiled then 'Tests did not pass.'
+                                           else 'Code did not compile.'
                                            end
   end
 
   def template_message(compiled)
-    @exercise.sandbox_results[:message] += ' Tehtäväpohjan tulokset: '
+    @exercise.sandbox_results[:message] += ' Results for the template: '
     @exercise.sandbox_results[:template_results_received] = true
-    @exercise.sandbox_results[:message] += if compiled then 'Kaikki OK.'
-                                           else 'Koodi ei kääntynyt.'
+    @exercise.sandbox_results[:message] += if compiled then 'Everything is OK.'
+                                           else 'Code did not compile.'
                                            end
   end
 end
