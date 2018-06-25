@@ -26,7 +26,7 @@ module ApplicationCable
     end
 
     def upstream_user
-      @upstream_user ||= UpstreamUser.new(request.params[:oauth_token]).get
+      User.find_or_create_by(username: request.params[:username])
     end
   end
 end

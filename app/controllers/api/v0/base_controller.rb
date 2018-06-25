@@ -43,9 +43,7 @@ module Api
       end
 
       def current_user
-        @current_user ||= begin
-          UpstreamUser.new(params[:oauth_token]).get
-        end
+          User.find_or_create_by(username: params[:username])
       end
 
       def admin?
