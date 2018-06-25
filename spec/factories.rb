@@ -32,7 +32,7 @@ FactoryGirl.define do
           }
 
           %<tests>s
-          private void try(String input, String output) {
+          private void execute(String input, String output) {
               assertEquals(output, Submission.metodi(input));
           }
       }
@@ -65,7 +65,7 @@ FactoryGirl.define do
           }
     
           %<tests>s
-          private void try(String input, String output) {
+          private void execute(String input, String output) {
               Submission.metodi(input);
 
               String out = io.getSysOut();
@@ -97,7 +97,7 @@ FactoryGirl.define do
           }
 
           %<tests>s
-          private void try(int input, String output) {
+          private void execute(int input, String output) {
               String inputAsString = "" + input;
 
               ReflectionUtils.newInstanceOfClass(Submission.class);
@@ -138,7 +138,7 @@ FactoryGirl.define do
           }
 
           %<tests>s
-          private void try(String input, String output) {
+          private void execute(String input, String output) {
               ReflectionUtils.newInstanceOfClass(Submission.class);
               io.setSysIn(input);
               Submission.main(new String[0]);

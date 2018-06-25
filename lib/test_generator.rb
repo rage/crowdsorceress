@@ -6,7 +6,7 @@ TESTS =
   <<~eos
     @Test
         public void test%<counter>s() {
-            try(%<input>s, %<output>s);
+            execute(%<input>s, %<output>s);
         }
 
   eos
