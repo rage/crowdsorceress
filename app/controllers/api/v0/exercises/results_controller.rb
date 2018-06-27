@@ -11,8 +11,7 @@ module Api
 
           return if exercise.finished? || exercise.error? || !submit_count_correct(token, exercise)
 
-          # TODO: translate 'tehtäväntarkastuspalvelin'
-          exercise.error_messages = [] if exercise.error_messages.any? { |error| error['header'].include?('Sandbox responded too slowly') }
+          exercise.error_messages = [] if exercise.error_messages.any? { |error| error['header'].include?('The test server responded too slowly') }
 
           TarballRemoverJob.perform_later(package_type(token), exercise)
 

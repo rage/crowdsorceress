@@ -14,7 +14,7 @@ class MessageBroadcasterJob < ApplicationJob
     elsif exercise.saved?
       message_generator('in progress', 'Exercise saved to database', 0.1, false, exercise)
     elsif exercise.testing_template?
-      message_generator('in progress', 'Testing template', 0.3, false, exercise)
+      message_generator('in progress', 'Testing code template', 0.3, false, exercise)
     elsif exercise.testing_model_solution?
       message_generator('in progress', 'Testing model solution', 0.6, false, exercise)
     elsif exercise.half_done?
@@ -32,7 +32,7 @@ class MessageBroadcasterJob < ApplicationJob
     message = if !exercise.sandbox_results[:message].empty?
                 'Fix the errors and submit the exercise again'
               else
-                'An error happened during the submission'
+                'An error occurred during the submission'
               end
     message_generator('error', message, 1, false, exercise)
   end

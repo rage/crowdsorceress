@@ -51,7 +51,7 @@ RSpec.describe Exercise, type: :model do
         expect(exercise.sandbox_results[:passed]).to be(false)
         expect(exercise.sandbox_results[:status]).not_to be('finished')
         expect(exercise.sandbox_results[:message]).to include('Results for the model solution: Tests did not pass.',
-                                                              'Results for the template: Code did not compile.')
+                                                              'Results for the code template: Code did not compile.')
         expect(exercise.error_messages.first['messages']).to include('ComparisonFailure: expected:<Hello[lolled]> but was: <Hello [lol]>')
       end
     end

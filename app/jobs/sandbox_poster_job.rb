@@ -14,8 +14,7 @@ class SandboxPosterJob
 
   sidekiq_retries_exhausted do |msg|
     exercise = Exercise.find msg['args'][0]
-    # TODO: translate 'tehtäväntarkastuspalvelin'
-    exercise.error_messages.push(header: 'Sandbox is crowded, try submitting the exercise again', messages: '')
+    exercise.error_messages.push(header: 'The test server is congested, please try submitting the exercise again', messages: '')
     exercise.error!
     MessageBroadcasterJob.perform_now(exercise)
   end

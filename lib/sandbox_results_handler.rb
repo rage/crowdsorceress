@@ -37,7 +37,7 @@ class SandboxResultsHandler
 
   def compile_errors(test_output, package_type)
     return unless test_output['status'] == 'COMPILE_FAILED'
-    header = package_type == 'TEMPLATE' ? 'The template did not compile: ' : 'The model solution did not compile: '
+    header = package_type == 'TEMPLATE' ? 'The code template did not compile: ' : 'The model solution did not compile: '
     messages = error_message_lines(test_output).join('<linechange>')
     error = { header: header, messages: messages }
     @exercise.error_messages.push error
@@ -73,7 +73,7 @@ class SandboxResultsHandler
   end
 
   def template_message(compiled)
-    @exercise.sandbox_results[:message] += ' Results for the template: '
+    @exercise.sandbox_results[:message] += ' Results for the code template: '
     @exercise.sandbox_results[:template_results_received] = true
     @exercise.sandbox_results[:message] += if compiled then 'Everything is OK.'
                                            else 'Code did not compile.'
