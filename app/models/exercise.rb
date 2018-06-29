@@ -3,7 +3,7 @@
 class Exercise < ApplicationRecord
   belongs_to :assignment
   belongs_to :user
-  has_many :peer_reviews
+  has_many :peer_reviews, dependent: :destroy
   has_many :exercises_tags, dependent: :destroy
   has_many :tags, through: :exercises_tags
 
