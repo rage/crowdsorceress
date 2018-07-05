@@ -42,6 +42,12 @@
       <%= form.text_area :test_template, id: :exercise_type_test_template, class: "form-control", rows: 10 %>
     </div>
 
+    <div class="field">
+      <%= form.label :test_method_template %>
+      <p>Remember to add the &lt;assertion&gt; tag to the template.</p>
+      <%= form.text_area :test_method_template, id: :exercise_type_test_method_template, class: "form-control", rows: 10 %>
+    </div>
+
     <div class="actions">
       <%= form.submit nil, class: "btn btn-primary" %>
     </div>

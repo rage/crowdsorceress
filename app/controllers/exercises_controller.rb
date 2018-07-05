@@ -69,6 +69,5 @@ class ExercisesController < ApplicationController
     # Allow any slate state for now...
 
     desc_params = params['exercise']['description'].permit!
-    params.require(:exercise).permit(:user_id, :code, :assignment_id, :tags, :unit_tests, testIO: %i[input output]).merge(description: desc_params)
-  end
+    params.require(:exercise).permit(:user_id, :code, :assignment_id, :tags, :unit_tests, testIO: %i[input output]).merge(description: desc_params)  end
 end
