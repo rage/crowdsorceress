@@ -126,15 +126,7 @@ test_template3 =
   }
 eos
 
-test_method_template1 =
-  <<~eos
-  @Test
-  public void testi() {
-      Submission.suorita(new Scanner("<input>"));
-      String metodinTulostus = io.getSysOut();
-      <assertion>
-  }
-eos
+test_method_template1 = "@Test\npublic void <placeholderTestName> {\n    Submission.suorita(new Scanner(\"<placeholderInput>\"));\n    String metodinTulostus = io.getSysOut();\n    <assertion>\n}"
 
 # Exercise type 1
 type = ExerciseType.create name: 'string_string', code_template: code_template1
