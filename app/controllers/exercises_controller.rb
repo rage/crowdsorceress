@@ -6,11 +6,22 @@ class ExercisesController < ApplicationController
 
   # GET /exercises
   def index
-    @exercises = Exercise.page(params[:page]).includes(:user)
-    @exercises_count = Exercise.all.count
-    @finished_count = Exercise.where(status: 'finished').count
-    @error_count = Exercise.where(status: 'error').count
-    @timeout_count = Exercise.where(status: 'sandbox_timeout').count
+    @exercises = search_exercises
+    @exercises_count = @exercises.count
+    @finished_count = @exercises.where(status: 'finished').count
+    @error_count = @exercises.where(status: 'error').count
+    @timeout_count = @exercises.where(status: 'sandbox_timeout').count
+
+    @exercises = @exercises.page(params[:page])
+
+    @exercise_count_msg = ''
+    if params[:assignment_search_term].present?
+      @exercise_count_msg += " for assignment #{params[:assignment_search_term]}"
+    end
+    if params[:status_search_term].present?
+      @exercise_count_msg += " with status #{params[:status_search_term]}"
+    end
+    @exercise_count_msg = ' in total' if @exercise_count_msg.empty?
   end
 
   # GET /exercises/1
@@ -55,6 +66,17 @@ class ExercisesController < ApplicationController
 
   private
 
+  def search_exercises
+    exercises = Exercise.all
+    if params[:assignment_search_term].present?
+      exercises = exercises.where(assignment_id: params[:assignment_search_term])
+    end
+    if params[:status_search_term].present?
+      exercises = exercises.where(status: params[:status_search_term])
+    end
+    exercises.includes(:user)
+  end
+
   # Use callbacks to share common setup or constraints between actions.
   def set_exercise
     @exercise = Exercise.find(params[:id])
@@ -69,7 +91,9 @@ class ExercisesController < ApplicationController
     # Allow any slate state for now...
 
     desc_params = params['exercise']['description'].permit!
-    params.require(:exercise).permit(:user_id, :code, :assignment_id, :tags, unit_tests: %i[test_name assertion_type test_code], testIO: %i[input output])
-          .merge(description: desc_params)
+    params.require(:exercise).permit(:user_id, :code, :assignment_id, :tags, unit_tests: %i[test_name assertion_type test_code],
+                                     testIO: %i[input output],
+                                     assignment_search_term: :assignment_search_term,
+                                     status_search_term: :status_search_term).merge(description: desc_params)
   end
 end

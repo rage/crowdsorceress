@@ -8,6 +8,7 @@
       <th>Id</th>
       <th>Description</th>
       <th>Exercise type</th>
+      <th>Exercises</th>
     </tr>
   </thead>
 
@@ -17,6 +18,7 @@
         <td><%= link_to assignment.id, assignment %></td>
         <td><%= link_to assignment.description, assignment %></td>
         <td><%= link_to assignment.exercise_type.name, assignment.exercise_type %></td>
+        <td><%= link_to assignment.exercises.count, exercises_path(assignment_search_term: assignment.id) %></td>
       </tr>
     <% end %>
   </tbody>
