@@ -2,6 +2,6 @@
 
 class RemoveUnitTestTemplateFromExerciseTypes < ActiveRecord::Migration[5.1]
   def change
-    remove_column :exercise_types, :unit_test_template
+    remove_column :exercise_types, :unit_test_template, :text
   end
 end

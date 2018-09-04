@@ -12,8 +12,8 @@ module Api
 
           exercises = PeerReview.new.draw_exercises(assignment, current_user, cnt)
 
-          raise NoExerciseError if exercises.empty?
-          raise NoExerciseError if exercises.first.nil?
+          raise NoExerciseError if exercises.empty? || exercises.first.nil?
+
           pr_questions = exercises.first.assignment.exercise_type.peer_review_questions
           render json: { exercises: exercises, peer_review_questions: pr_questions, tags: Tag.recommended }
         end
