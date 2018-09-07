@@ -7,24 +7,52 @@ require 'zip_handler'
 
 RSpec.describe Exercise, type: :model do
   subject(:exercise) { FactoryGirl.create(:exercise) }
+  subject(:exercise2) do
+    FactoryGirl.create(:exercise, assignment: FactoryGirl.create(:assignment, exercise_type: FactoryGirl.create(:exercise_type, testing_type: 1)),
+                                  unit_tests: 'asfsdfsd')
+  end
 
   describe 'when receiving a new submission' do
-    it 'creates a submission' do
-      exercise.create_submission
+    context 'when tests are of type input_output' do
+      it 'creates a submission' do
+        exercise.create_submission
 
-      directory = Dir.new('submission_generation/tmp')
+        directory = Dir.new('submission_generation/tmp')
 
-      expect(directory.entries).to include("Submission_#{exercise.id}")
-      FileUtils.remove_dir("submission_generation/tmp/Submission_#{exercise.id}")
+        expect(directory.entries).to include("Submission_#{exercise.id}")
+        FileUtils.remove_dir("submission_generation/tmp/Submission_#{exercise.id}")
+      end
+
+      it 'creates a submission with proper contents' do
+        exercise.create_submission
+
+        directory = Dir.new("submission_generation/tmp/Submission_#{exercise.id}")
+        expect(directory.entries).to include('model', 'template')
+
+        FileUtils.remove_dir("submission_generation/tmp/Submission_#{exercise.id}")
+      end
     end
 
-    it 'creates a submission with proper contents' do
-      exercise.create_submission
+    context 'when tests are student written' do
+      it 'creates a submission with proper contents' do
+        exercise2.create_submission
 
-      directory = Dir.new("submission_generation/tmp/Submission_#{exercise.id}")
-      expect(directory.entries).to include('model', 'template')
+        directory = Dir.new("submission_generation/tmp/Submission_#{exercise2.id}")
+        expect(directory.entries).to include('model', 'template', 'test')
 
-      FileUtils.remove_dir("submission_generation/tmp/Submission_#{exercise.id}")
+        test_file = File.new("submission_generation/tmp/Submission_#{exercise2.id}/test/SubmissionTest.java", 'r')
+        expect(File.exist?(test_file)).to be(true)
+
+        contents = ''
+        File.open(test_file, 'r') do |f|
+          f.each_line do |line|
+            contents += line
+          end
+        end
+        expect(contents).to eq('asfsdfsd')
+
+        FileUtils.remove_dir("submission_generation/tmp/Submission_#{exercise2.id}")
+      end
     end
   end
 
@@ -52,7 +80,7 @@ RSpec.describe Exercise, type: :model do
         expect(exercise.sandbox_results[:status]).not_to be('finished')
         expect(exercise.sandbox_results[:message]).to include('Malliratkaisun tulokset: Testit eivät menneet läpi.',
                                                               'Tehtäväpohjan tulokset: Koodi ei kääntynyt.')
-        expect(exercise.error_messages.first['messages']).to include('ComparisonFailure: expected:<Hello[lolled]> but was: <Hello [lol]>')
+        expect(exercise.error_messages.first['messages'].first['message']).to include('expected:<Hello[lolled]> but was: <Hello [lol]>')
       end
     end
   end

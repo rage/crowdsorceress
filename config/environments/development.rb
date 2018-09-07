@@ -15,6 +15,7 @@ Rails.application.configure do
   config.consider_all_requests_local = true
 
   config.web_console.whitelisted_ips << '172.19.0.1/16'
+  config.web_console.whitelisted_ips << '172.17.0.1'
 
   # Enable/disable caching. By default caching is disabled.
   if Rails.root.join('tmp', 'caching-dev.txt').exist?

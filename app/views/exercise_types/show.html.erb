@@ -8,6 +8,18 @@
 </p>
 
 <p>
+  <strong>Code template:</strong>
+  <pre>
+    <code> <%= @exercise_type.code_template %></code>
+  </pre>
+</p>
+
+<p>
+  <strong>Testing type:</strong>
+  <%= @exercise_type.testing_type %>
+</p>
+
+<p>
   <strong>Input type:</strong>
   <%= @exercise_type.input_type %>
 </p>
@@ -25,16 +37,16 @@
 </p>
 
 <p>
-  <strong>Code template:</strong>
-  <pre>
-    <code> <%= @exercise_type.code_template %></code>
+  <strong>Test method template:</strong>
+<pre>
+    <code><%= @exercise_type.test_method_template ? @exercise_type.test_method_template : 'No test method template' %></code>
   </pre>
 </p>
 
 <strong>Assignments that use this exercise type:</strong>
 <p>
   <% @assignments.each do |assignment| %>
-    <%= link_to assignment.id, assignment %>
+      <%= link_to assignment.id, assignment %>
   <% end %>
 </p>
 

@@ -28,22 +28,33 @@ class SandboxResultsHandler
     header = 'Virheet testeissä: '
 
     messages = test_output['testResults'].each_with_object(String.new) do |test, string|
-      string << "#{test['message']}<linechange>"
+      unless test['successful']
+        test_name = test['name'].split(' ').last
+        string << "#{test_name}<linechange>#{parsed_test_error_message(test['message'])}"
+      end
     end
 
-    error = { header: header, messages: messages }
+    error = { header: header, messages: [{ message: messages }] }
     @exercise.error_messages.push error
+  end
+
+  def parsed_test_error_message(message)
+    if message.include? 'expected'
+      message.gsub('expected', '<linechange>- expected').concat('<linechange><linechange>')
+    else
+      message.concat('<linechange><linechange>')
+    end
   end
 
   def compile_errors(test_output, package_type)
     return unless test_output['status'] == 'COMPILE_FAILED'
     header = package_type == 'TEMPLATE' ? 'Tehtäväpohja ei kääntynyt: ' : 'Malliratkaisu ei kääntynyt: '
-    messages = error_message_lines(test_output).join('<linechange>')
+    messages = compile_error_message_lines(test_output)
     error = { header: header, messages: messages }
     @exercise.error_messages.push error
   end
 
-  def error_message_lines(test_output)
+  def compile_error_message_lines(test_output)
     error_message = test_output['logs']['stdout'].pack('c*').force_encoding('utf-8')
     error_message = if error_message.include?('do-compile-test')
                       error_message.slice(/(?<=do-compile-test:\n)(.*?\n)*(.*$)/)
@@ -51,7 +62,42 @@ class SandboxResultsHandler
                       error_message.slice(/(?<=do-compile:\n)(.*?\n)*(.*$)/)
                     end
 
-    error_message.split(/\n/)
+    modify_compile_error_messages(error_message.split(/\n/))
+  end
+
+  def modify_compile_error_messages(message_lines)
+    modified_messages = []
+    i = 0
+    while i < message_lines.size
+      if message_lines[i].include? 'SubmissionTest'
+        beginning = 'Virhe testikoodissa'
+      elsif message_lines[i].include? 'Submission'
+        beginning = 'Virhe lähdekoodissa'
+      else
+        i += 1
+        next
+      end
+
+      modified_messages.push modified_message(message_lines, i, beginning)
+
+      i += 3
+    end
+    modified_messages
+  end
+
+  def modified_message(message_lines, index, beginning)
+    if message_lines[index].include? 'location'
+      then { message: '' }
+    else
+      errored_line_number = message_lines[index].slice(/\d+/)
+      error = message_lines[index].slice(/(error:)(.*$)/).chomp
+      errored_line = message_lines[index + 1].sub('[javac]', '').chomp
+      error_mark_line = message_lines[index + 2].sub('[javac]', '').chomp
+      marked_char = error_mark_line.index('^') - 5
+
+      { message: "#{beginning} rivillä #{errored_line_number} merkissä järjestysnumeroltaan #{marked_char}.: #{error}\n#{errored_line}\n#{error_mark_line}\n",
+        line: errored_line_number, char: marked_char }
+    end
   end
 
   # Generate message that will be sent to frontend
