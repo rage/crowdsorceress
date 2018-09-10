@@ -115,7 +115,14 @@ class Exercise < ApplicationRecord
 
   def peer_review_question_averages
     peer_review_questions.includes(:peer_review_question_answers).map do |question|
-      grades = question.peer_review_question_answers.pluck(:grade)
+      grades = []
+
+      question.peer_review_question_answers.each do |answer|
+        review = PeerReview.find answer.peer_review_id
+        grades.push answer.grade if review.exercise_id == id
+      end
+
+      # grades = question.peer_review_question_answers.pluck(:grade)
       [question.question, grades.sum.to_f / grades.count]
     end.to_h
   end
