@@ -8,8 +8,10 @@ require 'zip_handler'
 RSpec.describe Exercise, type: :model do
   subject(:exercise) { FactoryGirl.create(:exercise) }
   subject(:exercise2) do
-    FactoryGirl.create(:exercise, assignment: FactoryGirl.create(:assignment, exercise_type: FactoryGirl.create(:exercise_type, testing_type: 1)),
-                                  unit_tests: 'asfsdfsd')
+    FactoryGirl.create(:exercise,
+                       assignment: FactoryGirl.create(:assignment,
+                                                      exercise_type: FactoryGirl.create(:exercise_type, testing_type: 2, test_template: '%<tests>s')),
+                       unit_tests: [{ test_name: 'test', assertion_type: 'contains', test_code: 'asfsdfsd' }])
   end
 
   describe 'when receiving a new submission' do
