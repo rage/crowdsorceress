@@ -72,7 +72,7 @@ class Exercise < ApplicationRecord
   def write_to_test_file
     if assignment.exercise_type.testing_type == 'student_written_tests'
       File.open(submission_target_path.join('test', 'SubmissionTest.java').to_s, 'w') do |f|
-        f.write(unit_tests)
+        f.write(unit_tests.first['test_code'])
       end
     else
       File.open(submission_target_path.join('test', 'SubmissionTest.java').to_s, 'w') do |f|
