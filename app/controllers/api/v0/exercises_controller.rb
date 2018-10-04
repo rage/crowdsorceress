@@ -50,7 +50,8 @@ module Api
       def exercise_params
         # Allow any slate state for now...
         desc_params = params['exercise']['description'].permit!
-        params.require(:exercise).permit(:code, :assignment_id, :tags, :unit_tests, testIO: %i[input output]).merge(description: desc_params)
+        params.require(:exercise).permit(:code, :assignment_id, :tags, unit_tests: %i[test_name assertion_type test_code], testIO: %i[input output])
+              .merge(description: desc_params)
       end
     end
   end

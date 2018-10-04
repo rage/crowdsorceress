@@ -46,7 +46,7 @@ class TestGenerator
     prettify_io(exercise, template_params[:input_type], template_params[:output_type])
 
     tests = if exercise.assignment.exercise_type.testing_type == 'io_and_code'
-              exercise.unit_tests
+              exercise.unit_tests.map { |test| test['test_code'] }.join("\n\n")
             else
               generate_tests(exercise)
             end
@@ -63,6 +63,7 @@ class TestGenerator
 
     exercise.testIO.each do |io|
       if io['type'] == 'positive' # TODO: decide how to name testio types
+        # TODO: destroy the idea of positive tests
         tests += format(POSITIVE_TESTS, counter: counter, input: io['input'], output: io['output'])
         counter += 1
       elsif io['type'] == 'negative' # TODO: see previous
