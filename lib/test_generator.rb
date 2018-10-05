@@ -2,23 +2,14 @@
 
 require 'test_templates'
 
-POSITIVE_TESTS =
+TESTS =
   <<~eos
     @Test
         public void test%<counter>s() {
-            testPositiveCase(%<input>s, %<output>s);
+            toimii(%<input>s, %<output>s);
         }
 
   eos
-
-NEGATIVE_TESTS =
-  <<~eos
-    @Test
-        public void test%<counter>s() {
-            testNegativeCase(%<input>s, %<output>s);
-        }
-
-eos
 
 MOCK_STDIO_INIT =
   <<~eos
@@ -62,14 +53,8 @@ class TestGenerator
     counter = 1
 
     exercise.testIO.each do |io|
-      if io['type'] == 'positive' # TODO: decide how to name testio types
-        # TODO: destroy the idea of positive tests
-        tests += format(POSITIVE_TESTS, counter: counter, input: io['input'], output: io['output'])
-        counter += 1
-      elsif io['type'] == 'negative' # TODO: see previous
-        tests += format(NEGATIVE_TESTS, counter: counter, input: io['input'], output: io['output'])
-        counter += 1
-      end
+      tests += format(TESTS, counter: counter, input: io['input'], output: io['output'])
+      counter += 1
     end
 
     tests
@@ -81,7 +66,7 @@ class TestGenerator
     exercise.testIO.each do |io|
       input = input_type == 'String' ? prettify_string(io['input']) : io['input']
       output = output_type == 'String' ? prettify_string(io['output']) : io['output']
-      new_io.push(input: input, output: output, type: io['type'])
+      new_io.push(input: input, output: output)
     end
 
     exercise.testIO = new_io

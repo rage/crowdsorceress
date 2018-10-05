@@ -33,12 +33,8 @@ FactoryGirl.define do
           }
 
           %<tests>s
-          private void testPositiveCase(String input, String output) {
+          private void toimii(String input, String output) {
               assertEquals(output, Submission.metodi(input));
-          }
-
-          private void testNegativeCase(String input, String output) {
-              
           }
       }
     eos
@@ -71,16 +67,12 @@ FactoryGirl.define do
           }
     
           %<tests>s
-          private void testPositiveCase(String input, String output) {
+          private void toimii(String input, String output) {
               Submission.metodi(input);
 
               String out = io.getSysOut();
               assertEquals(output, out);
 
-          }
-
-          private void testNegativeCase(String input, String output) {
-              
           }
       }
     eos
@@ -108,7 +100,7 @@ FactoryGirl.define do
           }
 
           %<tests>s
-          private void testPositiveCase(int input, String output) {
+          private void toimii(int input, String output) {
               String inputAsString = "" + input;
 
               ReflectionUtils.newInstanceOfClass(Submission.class);
@@ -119,10 +111,6 @@ FactoryGirl.define do
 
               assertTrue("Kun syöte oli '" + inputAsString.replaceAll("\\n", "\\\\\\n") + "' tulostus oli: '" + out.replaceAll("\\n", "\\\\\\n") + "', mutta se ei sisältänyt: '" + output.replaceAll("\\n", "\\\\\\n") + "'.", out.contains(output));
 
-          }
-
-          private void testNegativeCase(int input, String output) {
-              
           }
       }
     eos
@@ -154,7 +142,7 @@ FactoryGirl.define do
           }
 
           %<tests>s
-          private void testPositiveCase(String input, String output) {
+          private void toimii(String input, String output) {
               ReflectionUtils.newInstanceOfClass(Submission.class);
               io.setSysIn(input);
               Submission.main(new String[0]);
@@ -162,17 +150,6 @@ FactoryGirl.define do
               String out = io.getSysOut();
 
               assertTrue("Kun syöte oli '" + input.replaceAll("\\n", "\\\\\\n") + "' tulostus oli: '" + out.replaceAll("\\n", "\\\\\\n") + "', mutta se ei sisältänyt: '" + output.replaceAll("\\n", "\\\\\\n") + "'.", out.contains(output));
-
-          }
-
-          private void testNegativeCase(String input, String output) {
-              ReflectionUtils.newInstanceOfClass(Submission.class);
-              io.setSysIn(input);
-              Submission.main(new String[0]);
-
-              String out = io.getSysOut();
-
-              assertFalse("Kun syöte oli '" + input.replaceAll("\\n", "\\\\\\n") + "' tulostus oli: '" + out.replaceAll("\\n", "\\\\\\n") + "', mutta se sisälsi: '" + output.replaceAll("\\n", "\\\\\\n") + "', vaikkei niin saanut olla.", out.contains(output));
 
           }
       }

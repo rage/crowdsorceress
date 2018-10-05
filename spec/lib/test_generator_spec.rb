@@ -24,17 +24,13 @@ TEST_TEMPLATE = <<~eos
 
       %<tests>s
 
-      private void testPositiveCase(%<inputType>s input, %<outputType>s output) {
+      private void toimii(%<inputType>s input, %<outputType>s output) {
           %<test_code>s
-      }
-
-      private void testNegativeCase(%<inputType>s input, %<outputType>s output) {
-          %<neg_test_code>s
       }
   }
 eos
 
-RSpec.describe TestGenerator do # TODO: change testio type if necessary
+RSpec.describe TestGenerator do
   before :each do
     allow_any_instance_of(MessageBroadcasterJob).to receive(:perform)
   end
@@ -52,9 +48,9 @@ RSpec.describe TestGenerator do # TODO: change testio type if necessary
     end
 
     it 'generates a proper test template when ExerciseType is "string_string"' do
-      io = [{ input: 'asd', output: 'asdasdasd', type: 'positive' },
-            { input: 'dsa', output: 'dsadsadsa', type: 'positive' },
-            { input: 'dsas', output: 'dsasdsasdsas', type: 'positive' }]
+      io = [{ input: 'asd', output: 'asdasdasd' },
+            { input: 'dsa', output: 'dsadsadsa' },
+            { input: 'dsas', output: 'dsasdsasdsas' }]
 
       exercise.testIO = io
       exercise.assignment.exercise_type = string_string_et
@@ -62,17 +58,17 @@ RSpec.describe TestGenerator do # TODO: change testio type if necessary
       tests = <<~eos
         @Test
             public void test1() {
-                testPositiveCase("asd", "asdasdasd");
+                toimii("asd", "asdasdasd");
             }
 
         @Test
             public void test2() {
-                testPositiveCase("dsa", "dsadsadsa");
+                toimii("dsa", "dsadsadsa");
             }
 
         @Test
             public void test3() {
-                testPositiveCase("dsas", "dsasdsasdsas");
+                toimii("dsas", "dsasdsasdsas");
             }
   eos
       expect(subject).to respond_to(:generate).with(1).argument
@@ -106,9 +102,9 @@ RSpec.describe TestGenerator do # TODO: change testio type if necessary
     it 'generates a proper test template' do
       exercise.assignment.exercise_type.name = 'string_stdout'
 
-      io = [{ input: 'asd', output: 'asdasdasd', type: 'positive' },
-            { input: 'dsa', output: 'dsadsadsa', type: 'positive' },
-            { input: 'dsas', output: 'dsasdsasdsas', type: 'positive' }]
+      io = [{ input: 'asd', output: 'asdasdasd' },
+            { input: 'dsa', output: 'dsadsadsa' },
+            { input: 'dsas', output: 'dsasdsasdsas' }]
 
       exercise.testIO = io
       exercise.assignment.exercise_type = string_input_string_stdout_et
@@ -116,17 +112,17 @@ RSpec.describe TestGenerator do # TODO: change testio type if necessary
       tests = <<~eos
         @Test
             public void test1() {
-                testPositiveCase("asd", "asdasdasd");
+                toimii("asd", "asdasdasd");
             }
 
         @Test
             public void test2() {
-                testPositiveCase("dsa", "dsadsadsa");
+                toimii("dsa", "dsadsadsa");
             }
 
         @Test
             public void test3() {
-                testPositiveCase("dsas", "dsasdsasdsas");
+                toimii("dsas", "dsasdsasdsas");
             }
         eos
       expect(subject).to respond_to(:generate).with(1).argument
@@ -175,26 +171,26 @@ RSpec.describe TestGenerator do # TODO: change testio type if necessary
     it 'generates a proper test template for string input and string output' do
       exercise.assignment.exercise_type = string_stdin_string_stdout_et
 
-      io = [{ input: 'asd', output: 'asdasdasd', type: 'positive' },
-            { input: 'dsa', output: 'dsadsadsa', type: 'positive' },
-            { input: 'dsas', output: 'dsasdsasdsas', type: 'positive' }]
+      io = [{ input: 'asd', output: 'asdasdasd' },
+            { input: 'dsa', output: 'dsadsadsa' },
+            { input: 'dsas', output: 'dsasdsasdsas' }]
 
       exercise.testIO = io
 
       tests = <<~eos
         @Test
             public void test1() {
-                testPositiveCase("asd", "asdasdasd");
+                toimii("asd", "asdasdasd");
             }
 
         @Test
             public void test2() {
-                testPositiveCase("dsa", "dsadsadsa");
+                toimii("dsa", "dsadsadsa");
             }
 
         @Test
             public void test3() {
-                testPositiveCase("dsas", "dsasdsasdsas");
+                toimii("dsas", "dsasdsasdsas");
             }
       eos
 
@@ -207,26 +203,26 @@ RSpec.describe TestGenerator do # TODO: change testio type if necessary
     it 'generates a proper test template for int input and string output' do
       exercise.assignment.exercise_type = int_stdin_string_stdout_et
 
-      io = [{ input: 6, output: 'jea', type: 'positive' },
-            { input: 7, output: 'notjea', type: 'positive' },
-            { input: 98, output: '777', type: 'positive' }]
+      io = [{ input: 6, output: 'jea' },
+            { input: 7, output: 'notjea' },
+            { input: 98, output: '777' }]
 
       exercise.testIO = io
 
       tests = <<~eos
         @Test
             public void test1() {
-                testPositiveCase(6, "jea");
+                toimii(6, "jea");
             }
 
         @Test
             public void test2() {
-                testPositiveCase(7, "notjea");
+                toimii(7, "notjea");
             }
 
         @Test
             public void test3() {
-                testPositiveCase(98, "777");
+                toimii(98, "777");
             }
       eos
 
@@ -250,41 +246,6 @@ RSpec.describe TestGenerator do # TODO: change testio type if necessary
     it 'raises error if test template does not exist' do
       exercise.assignment.exercise_type.test_template = ''
       expect { subject.generate(exercise) }.to raise_error(StandardError)
-    end
-
-    it 'generates negative test cases' do
-      exercise.assignment.exercise_type = string_stdin_string_stdout_et
-      exercise.testIO = [{ input: '123', output: 'ykskakskolme', type: 'positive' },
-                         { input: '321', output: 'kolmekaksyks', type: 'positive' },
-                         { input: '321', output: 'ykskakskolme', type: 'negative' },
-                         { input: '123', output: 'jeajeajea', type: 'negative' }]
-
-      tests = <<~eos
-        @Test
-            public void test1() {
-                testPositiveCase("123", "ykskakskolme");
-            }
-
-        @Test
-            public void test2() {
-                testPositiveCase("321", "kolmekaksyks");
-            }
-
-        @Test
-            public void test3() {
-                testNegativeCase("321", "ykskakskolme");
-            }
-
-        @Test
-            public void test4() {
-                testNegativeCase("123", "jeajeajea");
-            }
-      eos
-
-      expect(subject).to respond_to(:generate).with(1).argument
-      expect(subject.generate(exercise)).to eq(format(TEST_TEMPLATE, tests: tests, inputType: 'String',
-                                                                     outputType: 'String', mock_stdio_init: mock_stdio_init,
-                                                                     test_code: string_string_test_code, neg_test_code: string_string_neg_test_code))
     end
   end
 end
