@@ -36,7 +36,7 @@ class TestGenerator
   def generate_string(exercise, template_params)
     prettify_io(exercise, template_params[:input_type], template_params[:output_type])
 
-    tests = if exercise.assignment.exercise_type.testing_type == 'io_and_code'
+    tests = if exercise.assignment.exercise_type.testing_type == 'io_and_code' || exercise.assignment.exercise_type.testing_type == 'tests_for_set_up_code'
               exercise.unit_tests.map { |test| test['test_code'] }.join("\n\n")
             else
               generate_tests(exercise)
