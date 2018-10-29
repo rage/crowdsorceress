@@ -49,12 +49,12 @@ class SandboxResultsHandler
   def compile_errors(test_output, package_type)
     return unless test_output['status'] == 'COMPILE_FAILED'
     header = package_type == 'TEMPLATE' ? 'Tehtäväpohja ei kääntynyt: ' : 'Malliratkaisu ei kääntynyt: '
-    messages = compile_error_message_lines(test_output)
+    messages = compile_error_message_lines(test_output, header)
     error = { header: header, messages: messages }
     @exercise.error_messages.push error
   end
 
-  def compile_error_message_lines(test_output)
+  def compile_error_message_lines(test_output, header)
     error_message = test_output['logs']['stdout'].pack('c*').force_encoding('utf-8')
     error_message = if error_message.include?('do-compile-test')
                       error_message.slice(/(?<=do-compile-test:\n)(.*?\n)*(.*$)/)
@@ -62,10 +62,10 @@ class SandboxResultsHandler
                       error_message.slice(/(?<=do-compile:\n)(.*?\n)*(.*$)/)
                     end
 
-    modify_compile_error_messages(error_message.split(/\n/))
+    modify_compile_error_messages(error_message.split(/\n/), header)
   end
 
-  def modify_compile_error_messages(message_lines)
+  def modify_compile_error_messages(message_lines, header)
     modified_messages = []
     i = 0
     while i < message_lines.size
@@ -78,18 +78,18 @@ class SandboxResultsHandler
         next
       end
 
-      modified_messages.push modified_message(message_lines, i, beginning)
+      modified_messages.push modified_message(message_lines, i, beginning, header)
 
       i += 3
     end
     modified_messages
   end
 
-  def modified_message(message_lines, index, beginning)
+  def modified_message(message_lines, index, beginning, header)
     if message_lines[index].include? 'location'
       then { message: '' }
     else
-      errored_line_number = message_lines[index].slice(/\d+/)
+      errored_line_number = get_actual_errored_line(message_lines[index].slice(/\d+/), header)
       error = message_lines[index].slice(/(error:)(.*$)/).chomp
       errored_line = message_lines[index + 1].sub('[javac]', '').chomp
       error_mark_line = message_lines[index + 2].sub('[javac]', '').chomp
@@ -124,5 +124,36 @@ class SandboxResultsHandler
     @exercise.sandbox_results[:message] += if compiled then 'Kaikki OK.'
                                            else 'Koodi ei kääntynyt.'
                                            end
+  end
+
+  def solution_lines
+    lines = []
+    counter = 1
+    solution = false
+
+    @exercise.code.split("\n").each do |line|
+      if line.include?('// END SOLUTION')
+        solution = false
+        next
+      end
+      lines.push counter if solution
+      if line.include?('// BEGIN SOLUTION')
+        solution = true
+        next
+      end
+      counter += 1
+    end
+
+    lines
+  end
+
+  def get_actual_errored_line(errored_line, header)
+    errored_line_number = errored_line.to_i
+    if header.include? 'Tehtäväpohja'
+      solution_lines.each do |line_number|
+        errored_line_number += 1 if line_number < errored_line_number
+      end
+    end
+    errored_line_number.to_s
   end
 end

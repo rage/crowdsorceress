@@ -16,8 +16,8 @@ module Api
           { exercise_type: 'input_output' }
         elsif exercise_type.testing_type == 'student_written_tests'
           { test_template: @exercise_type.test_template, exercise_type: 'unit_tests' }
-        elsif exercise_type.testing_type == 'io_and_code'
-          { test_template: @exercise_type.test_method_template, exercise_type: 'io_and_code' }
+        elsif exercise_type.testing_type == 'io_and_code' || exercise_type.testing_type == 'tests_for_set_up_code'
+          { test_template: @exercise_type.test_method_template, exercise_type: exercise_type.testing_type }
         end
       end
     end
