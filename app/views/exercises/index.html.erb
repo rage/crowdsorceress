@@ -3,7 +3,7 @@
 <h1>Exercises</h1>
 
 <p>
-  <strong> There are <%= @exercises_count %> exercises </strong>
+  <strong> There are <%= @exercises_count %> exercises<%= @exercise_count_msg %></strong>
     <% if @exercises_count > 0 %>
       <ul>
         <li><%= "finished: #{@finished_count} (#{(@finished_count/@exercises_count.to_f * 100).round(2)}%)"%></li>
@@ -13,13 +13,21 @@
     <% end %>
 </p>
 
+<p>
+  <%= form_tag exercises_path, method: :get do %>
+      Search by assignment id: <%= text_field_tag :assignment_search_term, params[:assignment_search_term] %>
+      Search by status: <%= text_field_tag :status_search_term, params[:status_search_term] %>
+      <%= submit_tag "Search", name: nil %>
+  <% end %>
+</p>
+
 <table class="table table-hover">
   <thead class="thead-inverse">
     <tr>
       <th>User</th>
       <th>Assignment</th>
       <th>Status</th>
-      <th>Peer reviews count</th>
+      <th>Peer review count</th>
       <th></th>
     </tr>
   </thead>

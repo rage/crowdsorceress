@@ -70,7 +70,7 @@ class Exercise < ApplicationRecord
   end
 
   def write_to_test_file
-    if assignment.exercise_type.testing_type == 'student_written_tests'
+    if assignment.exercise_type.testing_type == 'student_written_tests' || assignment.exercise_type.testing_type == 'whole_test_code_for_set_up_code'
       File.open(submission_target_path.join('test', 'SubmissionTest.java').to_s, 'w') do |f|
         f.write(unit_tests.first['test_code'])
       end
@@ -115,7 +115,14 @@ class Exercise < ApplicationRecord
 
   def peer_review_question_averages
     peer_review_questions.includes(:peer_review_question_answers).map do |question|
-      grades = question.peer_review_question_answers.pluck(:grade)
+      grades = []
+
+      question.peer_review_question_answers.each do |answer|
+        review = PeerReview.find answer.peer_review_id
+        grades.push answer.grade if review.exercise_id == id
+      end
+
+      # grades = question.peer_review_question_answers.pluck(:grade)
       [question.question, grades.sum.to_f / grades.count]
     end.to_h
   end
