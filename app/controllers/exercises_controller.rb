@@ -92,8 +92,8 @@ class ExercisesController < ApplicationController
 
     desc_params = params['exercise']['description'].permit!
     params.require(:exercise).permit(:user_id, :code, :assignment_id, :tags, unit_tests: %i[test_name assertion_type test_code],
-                                     testIO: %i[input output],
-                                     assignment_search_term: :assignment_search_term,
-                                     status_search_term: :status_search_term).merge(description: desc_params)
+                                                                             testIO: %i[input output],
+                                                                             assignment_search_term: :assignment_search_term,
+                                                                             status_search_term: :status_search_term).merge(description: desc_params)
   end
 end
