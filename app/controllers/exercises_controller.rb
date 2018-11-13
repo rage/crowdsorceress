@@ -15,12 +15,8 @@ class ExercisesController < ApplicationController
     @exercises = @exercises.page(params[:page])
 
     @exercise_count_msg = ''
-    if params[:assignment_search_term].present?
-      @exercise_count_msg += " for assignment #{params[:assignment_search_term]}"
-    end
-    if params[:status_search_term].present?
-      @exercise_count_msg += " with status #{params[:status_search_term]}"
-    end
+    @exercise_count_msg += " for assignment #{params[:assignment_search_term]}" if params[:assignment_search_term].present?
+    @exercise_count_msg += " with status #{params[:status_search_term]}" if params[:status_search_term].present?
     @exercise_count_msg = ' in total' if @exercise_count_msg.empty?
   end
 
@@ -68,12 +64,8 @@ class ExercisesController < ApplicationController
 
   def search_exercises
     exercises = Exercise.all
-    if params[:assignment_search_term].present?
-      exercises = exercises.where(assignment_id: params[:assignment_search_term])
-    end
-    if params[:status_search_term].present?
-      exercises = exercises.where(status: params[:status_search_term])
-    end
+    exercises = exercises.where(assignment_id: params[:assignment_search_term]) if params[:assignment_search_term].present?
+    exercises = exercises.where(status: params[:status_search_term]) if params[:status_search_term].present?
     exercises.includes(:user)
   end
 
