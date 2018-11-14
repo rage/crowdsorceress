@@ -38,11 +38,22 @@
 </p>
 
 <p>
-  <strong>Unit tests:</strong>
+  <strong>Unit tests as array:</strong>
   <pre>
     <code><%= @exercise.unit_tests %></code>
   </pre>
 </p>
+
+<% unless @exercise.assignment.exercise_type.testing_type == 'input_output' %>
+  <p>
+    <strong>Unit test code:</strong>
+    <pre>
+      <code>
+        <%= @exercise.unit_tests.map { |test| test['test_code'] }.join("\n\n") %>
+      </code>
+    </pre>
+  </p>
+<% end %>
 
 <p>
   <strong>Description:</strong>
