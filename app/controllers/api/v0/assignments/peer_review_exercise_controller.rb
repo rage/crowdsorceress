@@ -22,9 +22,9 @@ module Api
         def testing_type(exercise_type)
           if exercise_type.testing_type == 'input_output'
             'input_output'
-          elsif exercise_type.testing_type == 'student_written_tests'
+          elsif exercise_type.testing_type == 'student_written_tests' || exercise_type.testing_type == 'whole_test_code_for_set_up_code'
             'unit_tests'
-          elsif exercise_type.testing_type == 'io_and_code'
+          elsif exercise_type.testing_type == 'io_and_code' || exercise_type.testing_type == 'tests_for_set_up_code'
             'io_and_code'
           end
         end
