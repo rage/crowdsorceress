@@ -7,12 +7,20 @@ class User < ApplicationRecord
   def get_points(course)
     assignments_on_course = Assignment.where(course_id: course.id)
     users_exercises = Exercise.where(user_id: id)
+    parts = parts(assignments_on_course)
 
+    points_by_part(parts, assignments_on_course, users_exercises)
+  end
+
+  def parts(assignments_on_course)
     parts = []
     assignments_on_course.each do |assignment|
       parts.push assignment.part unless parts.include? assignment.part
     end
+    parts
+  end
 
+  def points_by_part(parts, assignments_on_course, users_exercises)
     points_by_part = []
 
     parts.each do |part|
