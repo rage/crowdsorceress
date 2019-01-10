@@ -18,6 +18,7 @@ module ActionDispatch
 end
 
 Rails.application.routes.draw do
+  resources :courses
   root to: 'assignments#index'
   resources :sessions, only: %i[create index]
   delete '/sessions', to: 'sessions#destroy'
@@ -46,6 +47,7 @@ Rails.application.routes.draw do
         resources :results, only: :create
       end
       resources :peer_reviews, only: :create
+      get 'users/current/progress', to: 'users#progress' # TODO: better route?
     end
   end
 end

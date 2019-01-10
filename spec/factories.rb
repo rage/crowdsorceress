@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 FactoryGirl.define do
+  factory :course do
+    name "MyString"
+  end
   factory :tag do
     name 'tag'
   end
@@ -159,6 +162,7 @@ FactoryGirl.define do
   factory :assignment do
     description 'AAAAAAAA'
     exercise_type
+    course
   end
 
   factory :peer_review_question do
