@@ -9,7 +9,10 @@ class CoursesController < ApplicationController
   end
 
   # GET /courses/1
-  def show; end
+  def show
+    @assignments = Assignment.page(params[:page]).per(25).where(course_id: params[:id])
+    @assignments_count = Assignment.where(course_id: params[:id]).count
+  end
 
   # GET /courses/new
   def new
