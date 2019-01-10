@@ -21,6 +21,16 @@
     <%= form.collection_select :exercise_type_id, ExerciseType.all, :id, :name, { prompt: true }, class: "form-control" %>
   </div>
 
+    <div class="field">
+      <%= form.label :course_id %>
+      <%= form.collection_select :course_id, Course.all, :id, :name, { prompt: true }, class: "form-control" %>
+    </div>
+
+    <div class="field">
+      <%= form.label :part %>
+      <%= form.text_field :part, id: :assignment_part, class: "form-control" %>
+    </div>
+
   <div class="actions">
     <%= form.submit nil, class: "btn btn-primary" %>
   </div>
