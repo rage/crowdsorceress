@@ -33,7 +33,7 @@ class User < ApplicationRecord
         max_points += 1
       end
 
-      progress = points.to_f / max_points.to_f
+      progress = (points.to_f / max_points.to_f).round_down(2)
 
       points_by_part.push(part: part, progress: progress, n_points: points, max_points: max_points)
     end
