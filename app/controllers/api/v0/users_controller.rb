@@ -7,7 +7,7 @@ module Api
         course = Course.find_by(name: params['course'])
         points = current_user.get_points(course)
 
-        render json: { points_by_part: points }
+        render json: { points_by_group: points }
       end
     end
   end
