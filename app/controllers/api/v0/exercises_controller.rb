@@ -12,7 +12,7 @@ module Api
         @exercise = current_user.exercises.find_or_initialize_by(assignment: @assignment)
         @exercise.attributes = exercise_params
 
-        if @exercise.in_progress?
+        if @exercise.in_progress? && (Time.zone.now - 10.minutes) < @exercise.updated_at
           render json: { message: 'Exercise is already in progress.', exercise: @exercise, status: 400 }
           return
         end
