@@ -9,14 +9,14 @@ class SandboxPosterJob
 
   sidekiq_options retry: 7
   sidekiq_retry_in do
-    10
+    11
   end
 
   sidekiq_retries_exhausted do |msg|
     exercise = Exercise.find msg['args'][0]
     exercise.error_messages.push(header: 'Tehtäväntarkastuspalvelin on ruuhkautunut, yritä tehtävän lähetystä uudelleen', messages: [{ message: '' }])
     exercise.error!
-    MessageBroadcasterJob.perform_now(exercise)
+    MessageBroadcasterJob.perform_now(exercise) if exercise.assignment.show_results_to_user
   end
 
   # maybe handle this some day
@@ -44,7 +44,7 @@ class SandboxPosterJob
 
   def send_package_to_sandbox(package_type, package_name)
     package_type == 'TEMPLATE' ? @exercise.testing_template! : @exercise.testing_model_solution!
-    MessageBroadcasterJob.perform_now(@exercise)
+    MessageBroadcasterJob.perform_now(@exercise) if @exercise.assignment.show_results_to_user
 
     File.open(packages_target_path.join(package_name).to_s, 'r') do |tar_file|
       sandbox_post(tar_file, package_type)

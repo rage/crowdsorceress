@@ -12,7 +12,6 @@ class ZipHandler
     create_directories_for_zips
     retire_zips
     create_zips
-    FileUtils.remove_dir(submission_target_path.to_s)
   end
 
   private

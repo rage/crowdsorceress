@@ -93,8 +93,9 @@ class Exercise < ApplicationRecord
   end
 
   def send_results_to_frontend
-    MessageBroadcasterJob.perform_now(self)
+    MessageBroadcasterJob.perform_now(self) if assignment.show_results_to_user
     ZipHandler.new(self).clean_up if finished?
+    FileUtils.remove_dir(submission_target_path.to_s) unless in_progress?
   end
 
   def in_progress?

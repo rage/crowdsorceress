@@ -13,6 +13,6 @@ class TimeoutCheckerJob < ApplicationJob
     return if exercise.finished? || exercise.error? || exercise.submit_count != submit_count
     exercise.error_messages.push(header: 'Tehtäväntarkastuspalvelin vastasi liian hitaasti, yritä tehtävän lähetystä uudelleen', messages: [{ message: '' }])
     exercise.sandbox_timeout!
-    MessageBroadcasterJob.perform_now(exercise)
+    MessageBroadcasterJob.perform_now(exercise) if exercise.assignment.show_results_to_user
   end
 end

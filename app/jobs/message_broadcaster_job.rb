@@ -11,6 +11,8 @@ class MessageBroadcasterJob < ApplicationJob
   def message(exercise)
     if exercise.nil? || exercise.status_undefined?
       message_generator('in progress', 'Yhteys tietokantaan ok, odotetaan', 0, false, exercise)
+    elsif !exercise.assignment.show_results_to_user
+      message_generator('finished', 'Tehtävän lähetys onnistui!', 1, true, exercise)
     elsif exercise.saved?
       message_generator('in progress', 'Tehtävä tallennettu tietokantaan', 0.1, false, exercise)
     elsif exercise.testing_template?
@@ -44,7 +46,7 @@ class MessageBroadcasterJob < ApplicationJob
       'progress' => progress,
       'result' => {
         'OK' => ok,
-        'errors' => exercise.error_messages
+        'errors' => exercise.assignment.show_results_to_user ? exercise.error_messages : []
       }
     }
   end
