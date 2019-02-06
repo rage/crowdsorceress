@@ -21,6 +21,8 @@ class SubmissionStatusChannel < ApplicationCable::Channel
   def message(exercise)
     if exercise.nil? || exercise.status_undefined?
       message_generator('in progress', 'Yhteys tietokantaan ok, odotetaan', 0, false, exercise)
+    elsif !exercise.assignment.show_results_to_user
+      message_generator('finished', 'Tehtävän lähetys onnistui!', 1, true, exercise)
     elsif exercise.saved?
       message_generator('in progress', 'Tehtävä tallennettu tietokantaan', 0.1, false, exercise)
     elsif exercise.testing_template?
@@ -48,6 +50,11 @@ class SubmissionStatusChannel < ApplicationCable::Channel
   end
 
   def message_generator(status, message, progress, ok, exercise)
-    { 'status' => status, 'message' => message, 'progress' => progress, 'result' => { 'OK' => ok, 'errors' => exercise.error_messages } }
+    {
+      'status' => status,
+      'message' => message,
+      'progress' => progress,
+      'result' => { 'OK' => ok, 'errors' => exercise.assignment.show_results_to_user ? exercise.error_messages : [] }
+    }
   end
 end

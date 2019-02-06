@@ -75,6 +75,7 @@ RSpec.describe Exercise, type: :model do
              'valgrindFailed' => false, 'points' => ['01-11'], 'exception' => ['expected:<Hello[lolled]> but was: <Hello [lol]>'] }],
                                   'logs' => { 'stdout' => [109, 111, 105, 10], 'stderr' => [] } }, 'MODEL')
         # Handle template's results
+        FileUtils.mkdir_p "submission_generation/tmp/Submission_#{exercise.id}"
         exercise.handle_results({ 'status' => 'COMPILE_FAILED', 'testResults' => [], 'logs' =>
           { 'stdout' => StdoutExample.new.example, 'stderr' => [] } }, 'TEMPLATE')
 

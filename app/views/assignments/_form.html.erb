@@ -31,6 +31,16 @@
       <%= form.text_field :part, id: :assignment_part, class: "form-control" %>
     </div>
 
+    <div class="field">
+      <%= form.label :show_results_to_user %>
+      <%= form.check_box :show_results_to_user, id: :assignment_show_results_to_user, class: "form-control"  %>
+    </div>
+
+    <div class="field">
+      <%= form.label :mandatory_tags %>
+      <%= form.check_box :mandatory_tags, id: :assignment_mandatory_tags, class: "form-control"  %>
+    </div>
+
   <div class="actions">
     <%= form.submit nil, class: "btn btn-primary" %>
   </div>

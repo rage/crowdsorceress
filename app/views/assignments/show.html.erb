@@ -12,19 +12,43 @@
   <%= link_to @assignment.exercise_type.name, @assignment.exercise_type %>
 </p>
 
+<p>
+  <strong>Course:</strong>
+  <%= link_to @assignment.course.name, @assignment.course %>
+</p>
 
+<p>
+  <strong>Part:</strong>
+  <%= @assignment.part %>
+</p>
+
+<p>
+  <strong>Sandbox results are shown to user:</strong>
+  <%= @assignment.show_results_to_user %>
+</p>
+
+<p>
+  <strong>Tags are required:</strong>
+  <%= @assignment.mandatory_tags %>
+</p>
 
 <div class="card">
   <div class="card-body">
     <h5 class="card-title">Embed:</h5>
+    <strong>for course materials in 2018 or earlier:</strong>
     <pre><code><%= "<div class='crowdsorcerer-widget' data-assignment='#{@assignment.id}'></div>" %></code></pre>
+    <strong>for course materials in 2019:</strong>
+    <pre><code><%= "<crowdsorcerer id='#{@assignment.id}'></crowdsorcerer>" %></code></pre>
   </div>
 </div>
 <br>
 <div class="card">
   <div class="card-body">
     <h5 class="card-title">Embed peer review:</h5>
+    <strong>for course materials in 2018 or earlier:</strong>
     <pre><code><%= "<div class='crowdsorcerer-widget' data-assignment='#{@assignment.id}' peer-review data-exercises='3'></div>" %></code></pre>
+<!--    <strong>for course materials in 2019 (check that it works):</strong>
+    <pre><code><%= "<crowdsorcerer id='#{@assignment.id}' peerreview='peerreview' exercisecount='3'></crowdsorcerer>" %></code></pre>  &lt;!&ndash; TODO: check that this works &ndash;&gt;-->
   </div>
 </div>
 
