@@ -29,7 +29,7 @@ class User < ApplicationRecord
 
       assignments_on_course.where(part: part).find_each do |assignment|
         exercise = users_exercises.find_by(assignment_id: assignment.id)
-        points += 1 if !exercise.nil? && exercise.finished?
+        points += 1 if !exercise.nil? && (exercise.finished? || !assignment.show_results_to_user)
         max_points += 1
       end
 
