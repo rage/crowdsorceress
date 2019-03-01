@@ -41,6 +41,12 @@
       <%= form.check_box :mandatory_tags, id: :assignment_mandatory_tags, class: "form-control"  %>
     </div>
 
+    <div class="field">
+      <%= form.label :peer_review_count %>
+      <p>HOX! Add this only after peer reviews have been embedded to material! This is for counting max points for an assignment.</p>
+      <%= form.text_field :peer_review_count, id: :assignment_peer_review_count, class: "form-control" %>
+    </div>
+
   <div class="actions">
     <%= form.submit nil, class: "btn btn-primary" %>
   </div>
