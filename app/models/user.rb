@@ -17,6 +17,7 @@ class User < ApplicationRecord
     parts = []
     assignments_on_course.each do |assignment|
       parts.push assignment.part unless parts.include? assignment.part
+      parts.push assignment.pr_part unless parts.include? assignment.pr_part
     end
     parts
   end
@@ -43,10 +44,14 @@ class User < ApplicationRecord
 
     assignments_on_course.where(part: part).find_each do |assignment|
       exercise = users_exercises.find_by(assignment_id: assignment.id)
-      review = users_peer_reviews.select { |p| p.exercise.assignment_id == assignment.id }
       points += 1 if !exercise.nil? && (exercise.finished? || !assignment.show_results_to_user)
+      max_points += 1
+    end
+
+    assignments_on_course.where(pr_part: part).find_each do |assignment|
+      review = users_peer_reviews.select { |p| p.exercise.assignment_id == assignment.id }
       points += review.count > assignment.peer_review_count ? assignment.peer_review_count : review.count
-      max_points += 1 + assignment.peer_review_count
+      max_points += assignment.peer_review_count
     end
 
     { points: points, max_points: max_points }
