@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190205123110) do
+ActiveRecord::Schema.define(version: 20190228093413) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20190205123110) do
     t.integer "course_id"
     t.boolean "show_results_to_user", default: true
     t.boolean "mandatory_tags", default: true
+    t.integer "peer_review_count", default: 0
     t.index ["exercise_type_id"], name: "index_assignments_on_exercise_type_id"
   end
 
