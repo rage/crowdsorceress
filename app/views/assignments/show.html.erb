@@ -24,6 +24,13 @@
   </p>
 <% end %>
 
+<% if @assignment.pr_part %>
+ <p>
+    <strong>Peer review part:</strong>
+    <%= @assignment.pr_part %>
+  </p>
+<% end %>
+
 <p>
   <strong>Sandbox results are shown to user:</strong>
   <%= @assignment.show_results_to_user %>

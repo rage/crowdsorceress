@@ -58,7 +58,7 @@ class User < ApplicationRecord
   end
 
   def progress(points, max_points)
-    return 0.0 if max_points == 0
+    return 0.0 if max_points.zero?
     (points.to_f / max_points.to_f * 100).floor.to_f / 100
   end
 end

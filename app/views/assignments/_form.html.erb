@@ -32,6 +32,11 @@
     </div>
 
     <div class="field">
+      <%= form.label :pr_part %>
+      <%= form.text_field :pr_part, id: :assignment_pr_part, class: "form-control" %>
+    </div>
+
+    <div class="field">
       <%= form.label :show_results_to_user %>
       <%= form.check_box :show_results_to_user, id: :assignment_show_results_to_user, class: "form-control"  %>
     </div>
