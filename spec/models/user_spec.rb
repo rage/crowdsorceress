@@ -10,6 +10,7 @@ RSpec.describe User, type: :model do
                        course: course,
                        exercise_type: FactoryGirl.create(:exercise_type, testing_type: 2, test_template: '%<tests>s'),
                        part: 'osa1',
+                       pr_part: 'osa2',
                        peer_review_count: 3)
   end
 
@@ -17,7 +18,10 @@ RSpec.describe User, type: :model do
     context 'for user with no points' do
       it 'gives correct points' do
         points = user.get_points(course)
-        expect(points).to eq([{ group: 'osa1', progress: 0.0, n_points: 0, max_points: 4 }])
+        expect(points).to eq([
+                               { group: 'osa1', progress: 0.0, n_points: 0, max_points: 1 },
+                               { group: 'osa2', progress: 0.0, n_points: 0, max_points: 3 }
+                             ])
       end
     end
 
@@ -31,7 +35,10 @@ RSpec.describe User, type: :model do
 
       it 'gives correct points' do
         points = user.get_points(course)
-        expect(points).to eq([{ group: 'osa1', progress: 0.25, n_points: 1, max_points: 4 }])
+        expect(points).to eq([
+                               { group: 'osa1', progress: 1.0, n_points: 1, max_points: 1 },
+                               { group: 'osa2', progress: 0.0, n_points: 0, max_points: 3 }
+                             ])
       end
     end
 
@@ -60,7 +67,10 @@ RSpec.describe User, type: :model do
 
       it 'gives correct points' do
         points = user.get_points(course)
-        expect(points).to eq([{ group: 'osa1', progress: 0.75, n_points: 3, max_points: 4 }])
+        expect(points).to eq([
+                               { group: 'osa1', progress: 1.0, n_points: 1, max_points: 1 },
+                               { group: 'osa2', progress: 0.66, n_points: 2, max_points: 3 }
+                             ])
       end
     end
   end
