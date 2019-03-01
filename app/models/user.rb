@@ -45,7 +45,7 @@ class User < ApplicationRecord
       exercise = users_exercises.find_by(assignment_id: assignment.id)
       review = users_peer_reviews.select { |p| p.exercise.assignment_id == assignment.id }
       points += 1 if !exercise.nil? && (exercise.finished? || !assignment.show_results_to_user)
-      points += review.count
+      points += review.count > assignment.peer_review_count ? assignment.peer_review_count : review.count
       max_points += 1 + assignment.peer_review_count
     end
 
