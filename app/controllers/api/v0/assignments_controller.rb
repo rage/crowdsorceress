@@ -13,8 +13,8 @@ module Api
       end
 
       def testing_type(exercise_type)
-        if exercise_type.testing_type == 'input_output'
-          { exercise_type: 'input_output' }
+        if exercise_type.testing_type == 'input_output' || exercise_type.testing_type == 'input_output_tests_for_set_up_code'
+          { exercise_type: exercise_type.testing_type }
         elsif exercise_type.testing_type == 'student_written_tests' || exercise_type.testing_type == 'whole_test_code_for_set_up_code'
           { test_template: @exercise_type.test_template, exercise_type: if exercise_type.testing_type == 'student_written_tests'
                                                                           then 'unit_tests'

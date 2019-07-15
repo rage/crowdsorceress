@@ -45,6 +45,29 @@ public class Submission {
 }
 eos
 
+code_template5 = 
+<<~eos
+import java.util.*; 
+public class Submission {
+
+    public static void main(String[] args) {
+        Scanner lukija = new Scanner(System.in);
+        suorita(lukija); 
+    }
+
+    public static void suorita(Scanner lukija) {
+        int luku = Integer.parseInt(lukija.nextLine());
+        if (luku > 0) {
+            System.out.println("positiivinen");
+        } else if (luku == 0) {
+            System.out.println("nolla");
+        } else {
+            System.out.println("negatiivinen");
+        }
+    }
+}
+eos
+
 # TEST TEMPLATES
 test_template1 =
 <<~eos
@@ -128,50 +151,56 @@ eos
 
 test_method_template1 = "@Test\npublic void <placeholderTestName> {\n    Submission.suorita(new Scanner(\"<placeholderInput>\"));\n    String metodinTulostus = io.getSysOut();\n    <assertion>\n}"
 
+course = Course.create name: "test course"
+
 # Exercise type 1
 type = ExerciseType.create name: 'string_string', code_template: code_template1
 
 assignments = []
-assignments[0] = Assignment.create description: 'Tehtävän tarkoituksena on luoda metodi, joka saa parametrina string-tyyppisen muuttujan. Palautusarvo on myös string.', exercise_type: type
+assignments[0] = Assignment.create description: 'Tehtävän tarkoituksena on luoda metodi, joka saa parametrina string-tyyppisen muuttujan. Palautusarvo on myös string.', exercise_type: type, course: course, part: '1', show_results_to_user: true, mandatory_tags: true, peer_review_count: 3, pr_part: '2'
 
 # Exercise type 2
 type2 = ExerciseType.create name: 'string_stdin_string_stdout', code_template: code_template2, test_template: test_template1, input_type: 'String', output_type: 'String'
 
 assignments[1] = Assignment.create description: 'Tee tehtävä, jonka tarkoitus on laittaa opiskelija koodaamaan ohjelma, joka lukee käyttäjältä merkkijonosyötteen, tarkastelee sitä ehtolauseen avulla ja tulostaa merkkijonon.
-Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type2
+Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type2, course: course, part: '1', show_results_to_user: true, mandatory_tags: true, peer_review_count: 3, pr_part: '2'
 
 assignments[2] = Assignment.create description: 'Tee tehtävä, jonka tarkoitus on laittaa opiskelija koodaamaan ohjelma, joka lukee käyttäjältä merkkijonosyötteen, tarkastelee sitä toistolauseen avulla ja tulostaa merkkijonon.
-Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type2
+Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type2, course: course, part: '1', show_results_to_user: true, mandatory_tags: true, peer_review_count: 3, pr_part: '2'
 
 # Exercise type 3
 type3 = ExerciseType.create name: 'string_stdout', code_template: code_template3
-Assignment.create description: 'Tee tehtävä, jossa pyydetään luomaan metodi, joka saa parametrina stringin. Metodin kuuluu tulostaa jokin merkkijono.', exercise_type: type3
+Assignment.create description: 'Tee tehtävä, jossa pyydetään luomaan metodi, joka saa parametrina stringin. Metodin kuuluu tulostaa jokin merkkijono.', exercise_type: type3, course: course, part: '1', show_results_to_user: true, mandatory_tags: true, peer_review_count: 3, pr_part: '2'
 
 # Exercise type 4
 type4 = ExerciseType.create name: 'int_stdin_int_stdout', code_template: code_template2
 assignments[3] = Assignment.create description: 'Tee tehtävä, jonka tarkoitus on laittaa opiskelija koodaamaan ohjelma, joka lukee käyttäjältä kokonaislukusyötteen, tarkastelee sitä ehtolauseen avulla ja tulostaa kokonaisluvun.
-Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type4
+Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type4, course: course, part: '1', show_results_to_user: true, mandatory_tags: true, peer_review_count: 3, pr_part: '2'
 
 assignments[4] = Assignment.create description: 'Tee tehtävä, jonka tarkoitus on laittaa opiskelija koodaamaan ohjelma, joka lukee käyttäjältä kokonaislukusyötteen, tarkastelee sitä toistolauseen avulla ja tulostaa kokonaisluvun.
-Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type4
+Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type4, course: course, part: '1', show_results_to_user: true, mandatory_tags: true, peer_review_count: 3, pr_part: '2'
 
 # Exercise type 5
 type5 = ExerciseType.create name: 'string_stdin_int_stdout', code_template: code_template2
 assignments[5] = Assignment.create description: 'Tee tehtävä, jonka tarkoitus on laittaa opiskelija koodaamaan ohjelma, joka lukee käyttäjältä merkkijonosyötteen, tarkastelee sitä toistolauseen avulla ja tulostaa kokonaisluvun.
-Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type5
+Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type5, course: course, part: '1', show_results_to_user: true, mandatory_tags: true, peer_review_count: 3, pr_part: '2'
 
 # Exercise type 6
 type6 = ExerciseType.create name: 'int_stdin_string_stdout', code_template: code_template2
 assignments[6] = Assignment.create description: 'Tee tehtävä, jonka tarkoitus on laittaa opiskelija koodaamaan ohjelma, joka lukee käyttäjältä kokonaislukusyötteen, tarkastelee sitä ehtolauseen avulla ja tulostaa merkkijonon.
-Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type6
+Anna testejä varten syöte-esimerkki ja ohjelman tuloste tuolla syötteellä.', exercise_type: type6, course: course, part: '1', show_results_to_user: true, mandatory_tags: true, peer_review_count: 3, pr_part: '2'
 
 # Exercise type 7
 type7 = ExerciseType.create name: 'junit_tests', code_template: code_template1, test_template: test_template2, testing_type: 1
-assignments[7] = Assignment.create description: 'Tee tehtävä ja kirjoita sille yksikkötestit', exercise_type: type7
+assignments[7] = Assignment.create description: 'Tee tehtävä ja kirjoita sille yksikkötestit', exercise_type: type7, course: course, part: '1', show_results_to_user: true, mandatory_tags: true, peer_review_count: 3, pr_part: '2'
 
 # Exercise type 8
 type8 = ExerciseType.create name: 'io_and_test_code', code_template: code_template4, test_template: test_template1, testing_type: 2, test_method_template: test_method_template1
-assignments[8] = Assignment.create description: 'Tee tehtävä, anna sille testisyötteet ja -tulosteet ja näe kuinka ne näkyvät testikoodissa!', exercise_type: type8
+assignments[8] = Assignment.create description: 'Tee tehtävä, anna sille testisyötteet ja -tulosteet ja näe kuinka ne näkyvät testikoodissa!', exercise_type: type8, course: course, part: '1', show_results_to_user: true, mandatory_tags: true, peer_review_count: 3, pr_part: '2'
+
+# Exercise type 9
+type9 = ExerciseType.create name: 'input_output_tests_for_set_up_code', code_template: code_template5, test_template: test_template1, testing_type: 5
+assignments[9] = Assignment.create description: 'Tee ttestit valmiille tehtävälle', exercise_type: type9, course: course, part: '1', show_results_to_user: true, mandatory_tags: true, peer_review_count: 3, pr_part: '2'
 
 # Peer review questions:
 

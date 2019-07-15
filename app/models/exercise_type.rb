@@ -5,7 +5,7 @@ class ExerciseType < ApplicationRecord
   has_many :peer_review_questions
 
   enum testing_type: %i[input_output student_written_tests io_and_code tests_for_set_up_code
-                        whole_test_code_for_set_up_code] # tests in tests_for_set_up_code are io_and_code tests
+                        whole_test_code_for_set_up_code input_output_tests_for_set_up_code] # tests in tests_for_set_up_code are io_and_code tests
 
   def trim_input_and_output_types
     input_type.strip!
