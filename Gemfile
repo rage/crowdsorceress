@@ -36,11 +36,13 @@ group :development, :test do
 end
 
 group :development do
-  gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'listen', '~> 3.1', '>= 3.1.5'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring', '~> 2.0.2'
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'spring', '~> 2.1'
+  gem 'spring-watcher-listen', '~> 2.0', '>= 2.0.1'
   gem 'web-console'
+  gem 'rb-fsevent', '~> 0.9', '>= 0.9.4'
+  gem 'ruby_dep', '~> 1.2'
 end
 
 group :test do
@@ -59,7 +61,7 @@ gem 'rubyzip', '~> 1.2', '>= 1.2.1'
 gem 'http-cookie', '~> 1.0', '>= 1.0.3'
 gem 'mime-types', '~> 2.99.3'
 gem 'netrc', '~> 0.11.0'
-gem 'rest-client', '~> 1.8'
+gem 'rest-client', '~> 2.0.2'
 
 gem 'paper_trail', '~> 7.1.0'
 
@@ -70,3 +72,5 @@ gem 'turbolinks', '~> 5'
 gem 'sass-rails', '~> 5.0'
 
 gem 'kaminari', '~> 1.1', '>= 1.1.1'
+
+gem 'thread_safe', '~> 0.3.6'
