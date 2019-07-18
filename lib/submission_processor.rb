@@ -16,7 +16,7 @@ class SubmissionProcessor
   end
 
   def process_some_submissions
-    submissions = Exercise.where(status: %w[saved testing_template testing_model_solution half_done sandbox_timeout])
+    submissions = Exercise.where(status: %w[saved testing_model_solution half_done sandbox_timeout]) # testing_template
 
     submissions.limit(2).each do |submission|
       Rails.logger.info "Attempting to process submission #{submission.id}"
@@ -32,14 +32,16 @@ class SubmissionProcessor
   end
 
   def try_to_send_submission_to_free_server
+=begin
     unless @exercise.testing_model_solution? || @exercise.sandbox_results[:template_results_received]
       send_package_to_sandbox('TEMPLATE', "TemplatePackage_#{@exercise.id}.tar")
     end
+=end
     send_package_to_sandbox('MODEL', "ModelSolutionPackage_#{@exercise.id}.tar") unless @exercise.sandbox_results[:model_results_received]
   end
 
   def send_package_to_sandbox(package_type, package_name)
-    package_type == 'TEMPLATE' ? @exercise.testing_template! : @exercise.testing_model_solution!
+    @exercise.testing_model_solution! # package_type == 'TEMPLATE' ? @exercise.testing_template! :
     MessageBroadcasterJob.perform_now(@exercise) if @exercise.assignment.show_results_to_user
 
     File.open(packages_target_path.join(package_name).to_s, 'r') do |tar_file|

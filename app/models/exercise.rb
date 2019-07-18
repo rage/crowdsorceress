@@ -54,13 +54,13 @@ class Exercise < ApplicationRecord
     then FileUtils.cp_r Rails.root.join('submission_generation', 'SubmissionTemplate').to_s, submission_target_path.to_s
     else
       FileUtils.remove_dir(submission_target_path.join('model').to_s, true)
-      FileUtils.remove_dir(submission_target_path.join('template').to_s, true)
+      # FileUtils.remove_dir(submission_target_path.join('template').to_s, true)
     end
   end
 
   def create_model_and_template
     TMCLangs.prepare_solutions(self)
-    TMCLangs.prepare_templates(self)
+    # TMCLangs.prepare_templates(self)
   end
 
   def write_to_main_file
@@ -84,7 +84,7 @@ class Exercise < ApplicationRecord
   def handle_results(test_output, package_type)
     SandboxResultsHandler.new(self).handle(test_output, package_type)
 
-    if sandbox_results[:model_results_received] && sandbox_results[:template_results_received]
+    if sandbox_results[:model_results_received] # && sandbox_results[:template_results_received]
       sandbox_results[:passed] ? finished! : error!
     else
       half_done!

@@ -40,7 +40,7 @@ module Api
       def send_submission
         MessageBroadcasterJob.perform_now(@exercise)
         Tarballer.new.create_tar_files(@exercise)
-        SandboxPosterJob.perform_async(@exercise.id)
+        # SandboxPosterJob.perform_async(@exercise.id)
       end
 
       # Use callbacks to share common setup or constraints between actions.
