@@ -71,7 +71,7 @@ class SandboxPosterJob
   end
 
   def servers
-    ENV['ALL_SANDBOXES'].split(',').shuffle
+    ENV['SANDBOX_URL'].split(',').shuffle
   end
 
   def results_url

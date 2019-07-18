@@ -19,6 +19,8 @@ vendor/bundle
 
 .env
 
+.rakeTasks
+
 coverage/
 .idea/
 
