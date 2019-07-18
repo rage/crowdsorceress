@@ -25,7 +25,7 @@ class SandboxResultsHandler
   def test_results(test_output)
     # Push test results into exercise's error messages
     return if test_output['testResults'].empty? || test_output['status'] == 'PASSED'
-    header = 'Virheet testeissä: '
+    header = 'Errors in the tests: '
 
     messages = test_output['testResults'].each_with_object(String.new) do |test, string|
       unless test['successful']
@@ -48,7 +48,7 @@ class SandboxResultsHandler
 
   def compile_errors(test_output, package_type)
     return unless test_output['status'] == 'COMPILE_FAILED'
-    header = package_type == 'TEMPLATE' ? 'Tehtäväpohja ei kääntynyt: ' : 'Malliratkaisu ei kääntynyt: '
+    header = package_type == 'TEMPLATE' ? 'The code template did no compile: ' : 'The model solution did not compile: '
     messages = compile_error_message_lines(test_output, header)
     error = { header: header, messages: messages }
     @exercise.error_messages.push error
@@ -70,9 +70,9 @@ class SandboxResultsHandler
     i = 0
     while i < message_lines.size
       if message_lines[i].include? 'SubmissionTest'
-        beginning = 'Virhe testikoodissa'
+        beginning = 'Error in the test code'
       elsif message_lines[i].include? 'Submission'
-        beginning = 'Virhe lähdekoodissa'
+        beginning = 'Error in the source code'
       else
         i += 1
         next
@@ -95,8 +95,8 @@ class SandboxResultsHandler
       error_mark_line = message_lines[index + 2].sub('[javac]', '').chomp
       marked_char = error_mark_line.index('^') - 5
 
-      { message: "#{beginning} rivillä #{errored_line_number} merkissä järjestysnumeroltaan #{marked_char}.: #{error}\n#{errored_line}\n#{error_mark_line}\n",
-        line: errored_line_number, char: marked_char }
+      { message: "#{beginning} on the line #{errored_line_number}: #{error}\n#{errored_line}\n#{error_mark_line}\n",
+        line: errored_line_number, char: marked_char } # TODO: remove this properly
     end
   end
 
@@ -110,19 +110,19 @@ class SandboxResultsHandler
   end
 
   def model_message(passed, compiled)
-    @exercise.sandbox_results[:message] += ' Malliratkaisun tulokset: '
+    @exercise.sandbox_results[:message] += ' Results for the model solution: '
     @exercise.sandbox_results[:model_results_received] = true
-    @exercise.sandbox_results[:message] += if passed then 'Kaikki OK.'
-                                           elsif compiled then 'Testit eivät menneet läpi.'
-                                           else 'Koodi ei kääntynyt.'
+    @exercise.sandbox_results[:message] += if passed then 'Everything ok.'
+                                           elsif compiled then 'All the tests did not pass.'
+                                           else 'The code did not compile.'
                                            end
   end
 
   def template_message(compiled)
-    @exercise.sandbox_results[:message] += ' Tehtäväpohjan tulokset: '
+    @exercise.sandbox_results[:message] += ' Results for the code template: '
     @exercise.sandbox_results[:template_results_received] = true
-    @exercise.sandbox_results[:message] += if compiled then 'Kaikki OK.'
-                                           else 'Koodi ei kääntynyt.'
+    @exercise.sandbox_results[:message] += if compiled then 'Everything OK.'
+                                           else 'The code did not compile.'
                                            end
   end
 
@@ -149,7 +149,7 @@ class SandboxResultsHandler
 
   def get_actual_errored_line(errored_line, header)
     errored_line_number = errored_line.to_i
-    if header.include? 'Tehtäväpohja'
+    if header.include? 'The code template'
       solution_lines.each do |line_number|
         errored_line_number += 1 if line_number < errored_line_number
       end

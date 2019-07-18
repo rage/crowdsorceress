@@ -21,9 +21,9 @@ module Api
         if @exercise.save
           @exercise.saved!
           send_submission
-          render json: { message: 'Exercise successfully created! :) :3', exercise: @exercise }, status: :created
+          render json: { message: 'Exercise successfully created!', exercise: @exercise }, status: :created
         else
-          render json: @exercise.errors, status: :unprocessable_entity, message: 'Exercise not created. =( :F'
+          render json: @exercise.errors, status: :unprocessable_entity, message: 'Exercise not created.'
         end
       end
 

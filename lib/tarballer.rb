@@ -24,7 +24,7 @@ class Tarballer
   end
 
   def unmodified_error(exercise)
-    exercise.error_messages.push(header: 'Tapahtui virhe: Muokkaamaton tehtävä lähetettiin uudelleen', messages: [{ message: '' }])
+    exercise.error_messages.push(header: 'An error occurred: Submission was not modified before resubmission', messages: [{ message: '' }])
     exercise.error!
     MessageBroadcasterJob.perform_now(exercise)
   end

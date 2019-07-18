@@ -24,7 +24,7 @@ class SubmissionProcessor
       if submission.times_sent_to_sandbox < 8
         process_submission(submission)
       else
-        submission.error_messages.push(header: 'Tehtäväntarkastuspalvelin on ruuhkautunut, yritä tehtävän lähetystä uudelleen', messages: [{message: ''}])
+        submission.error_messages.push(header: 'The test server is congested, please try resubmitting later', messages: [{message: ''}])
         submission.sandbox_timeout!
         MessageBroadcasterJob.perform_now(submission) if submission.assignment.show_results_to_user
       end
