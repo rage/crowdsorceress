@@ -32,7 +32,7 @@ RSpec.describe TimeoutCheckerJob, type: :job do
 
         FileUtils.remove_dir("submission_generation/tmp/Submission_#{exercise.id}")
         FileUtils.remove_entry("submission_generation/packages/ModelSolutionPackage_#{exercise.id}.tar")
-        FileUtils.remove_entry("submission_generation/packages/TemplatePackage_#{exercise.id}.tar")
+        # FileUtils.remove_entry("submission_generation/packages/TemplatePackage_#{exercise.id}.tar")
       end
     end
   end

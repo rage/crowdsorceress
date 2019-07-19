@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddProcessingInfoToExercises < ActiveRecord::Migration[5.1]
   def change
     add_column :exercises, :processing_tried_at, :datetime, null: true

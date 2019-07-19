@@ -29,7 +29,7 @@ RSpec.describe Exercise, type: :model do
         exercise.create_submission
 
         directory = Dir.new("submission_generation/tmp/Submission_#{exercise.id}")
-        expect(directory.entries).to include('model', 'template')
+        expect(directory.entries).to include('model') # template
 
         FileUtils.remove_dir("submission_generation/tmp/Submission_#{exercise.id}")
       end
@@ -40,7 +40,7 @@ RSpec.describe Exercise, type: :model do
         exercise2.create_submission
 
         directory = Dir.new("submission_generation/tmp/Submission_#{exercise2.id}")
-        expect(directory.entries).to include('model', 'template', 'test')
+        expect(directory.entries).to include('model', 'test') # template
 
         test_file = File.new("submission_generation/tmp/Submission_#{exercise2.id}/test/SubmissionTest.java", 'r')
         expect(File.exist?(test_file)).to be(true)
@@ -58,35 +58,35 @@ RSpec.describe Exercise, type: :model do
     end
   end
 
-  describe 'when receiving results from sandbox' do
-    context 'when template does not compile and tests fail' do
-      it 'handles sandbox results properly' do
-        exercise.code =
-          'System.out.println("moi");
-           // BEGIN SOLUTION
-           return "Hello " + input;
-           // END SOLUTION'
-        exercise.sandbox_results = { status: '', message: '', passed: false,
-                                     model_results_received: false, template_results_received: false }
+  # describe 'when receiving results from sandbox' do
+  #   context 'when template does not compile and tests fail' do
+  #     it 'handles sandbox results properly' do
+  #       exercise.code =
+  #         'System.out.println("moi");
+  #          // BEGIN SOLUTION
+  #          return "Hello " + input;
+  #          // END SOLUTION'
+  #       exercise.sandbox_results = { status: '', message: '', passed: false,
+  #                                    model_results_received: false, template_results_received: false }
 
-        # Handle model solutions results
-        exercise.handle_results({ 'status' => 'TESTS_FAILED', 'testResults' =>
-          [{ 'name' => 'ModelSolutionTest test1', 'successful' => false, 'message' => 'ComparisonFailure: expected:<Hello[lolled]> but was: <Hello [lol]>',
-             'valgrindFailed' => false, 'points' => ['01-11'], 'exception' => ['expected:<Hello[lolled]> but was: <Hello [lol]>'] }],
-                                  'logs' => { 'stdout' => [109, 111, 105, 10], 'stderr' => [] } }, 'MODEL')
-        # Handle template's results
-        FileUtils.mkdir_p "submission_generation/tmp/Submission_#{exercise.id}"
-        exercise.handle_results({ 'status' => 'COMPILE_FAILED', 'testResults' => [], 'logs' =>
-          { 'stdout' => StdoutExample.new.example, 'stderr' => [] } }, 'TEMPLATE')
+  #       # Handle model solutions results
+  #       exercise.handle_results({ 'status' => 'TESTS_FAILED', 'testResults' =>
+  #         [{ 'name' => 'ModelSolutionTest test1', 'successful' => false, 'message' => 'ComparisonFailure: expected:<Hello[lolled]> but was: <Hello [lol]>',
+  #            'valgrindFailed' => false, 'points' => ['01-11'], 'exception' => ['expected:<Hello[lolled]> but was: <Hello [lol]>'] }],
+  #                                 'logs' => { 'stdout' => [109, 111, 105, 10], 'stderr' => [] } }, 'MODEL')
+  #       # Handle template's results
+  #       FileUtils.mkdir_p "submission_generation/tmp/Submission_#{exercise.id}"
+  #       exercise.handle_results({ 'status' => 'COMPILE_FAILED', 'testResults' => [], 'logs' =>
+  #         { 'stdout' => StdoutExample.new.example, 'stderr' => [] } }, 'TEMPLATE')
 
-        expect(exercise.sandbox_results[:passed]).to be(false)
-        expect(exercise.sandbox_results[:status]).not_to be('finished')
-        expect(exercise.sandbox_results[:message]).to include('Malliratkaisun tulokset: Testit eivät menneet läpi.',
-                                                              'Tehtäväpohjan tulokset: Koodi ei kääntynyt.')
-        expect(exercise.error_messages.first['messages'].first['message']).to include('expected:<Hello[lolled]> but was: <Hello [lol]>')
-      end
-    end
-  end
+  #       expect(exercise.sandbox_results[:passed]).to be(false)
+  #       expect(exercise.sandbox_results[:status]).not_to be('finished')
+  #       expect(exercise.sandbox_results[:message]).to include('Malliratkaisun tulokset: Testit eivät menneet läpi.',
+  #                                                             'Tehtäväpohjan tulokset: Koodi ei kääntynyt.')
+  #       expect(exercise.error_messages.first['messages'].first['message']).to include('expected:<Hello[lolled]> but was: <Hello [lol]>')
+  #     end
+  #   end
+  # end
 
   describe 'when all exercise\'s tests have passed on sandbox' do
     it 'creates a zip' do
@@ -94,7 +94,7 @@ RSpec.describe Exercise, type: :model do
       ZipHandler.new(exercise).clean_up
 
       expect(File).to exist(exercise_target_path.join("ModelSolution_#{exercise.id}.#{exercise.versions.last.id}.zip"))
-      expect(File).to exist(exercise_target_path.join("Template_#{exercise.id}.#{exercise.versions.last.id}.zip"))
+      # expect(File).to exist(exercise_target_path.join("Template_#{exercise.id}.#{exercise.versions.last.id}.zip"))
 
       FileUtils.remove_dir("submission_generation/packages/assignment_#{exercise.assignment.id}/")
     end
