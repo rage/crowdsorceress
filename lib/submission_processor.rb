@@ -1,15 +1,16 @@
-class SubmissionProcessor
+# frozen_string_literal: true
 
-  class PostFailedError < StandardError;
+class SubmissionProcessor
+  class PostFailedError < StandardError
   end
 
   def process_submission(exercise)
     @exercise = exercise
-    @exercise.processing_tried_at = Time.now
+    @exercise.processing_tried_at = Time.current
     @exercise.save!
 
     try_to_send_submission_to_free_server
-    @exercise.processing_began_at = Time.now
+    @exercise.processing_began_at = Time.current
     @exercise.times_sent_to_sandbox += 1
     @exercise.save!
     Rails.logger.info "Submission #{@exercise.id} sent to sandbox."
@@ -24,7 +25,7 @@ class SubmissionProcessor
       if submission.times_sent_to_sandbox < 8
         process_submission(submission)
       else
-        submission.error_messages.push(header: 'The test server is congested, please try resubmitting later', messages: [{message: ''}])
+        submission.error_messages.push(header: 'The test server is congested, please try resubmitting later', messages: [{ message: '' }])
         submission.sandbox_timeout!
         MessageBroadcasterJob.perform_now(submission) if submission.assignment.show_results_to_user
       end
@@ -32,11 +33,9 @@ class SubmissionProcessor
   end
 
   def try_to_send_submission_to_free_server
-=begin
-    unless @exercise.testing_model_solution? || @exercise.sandbox_results[:template_results_received]
-      send_package_to_sandbox('TEMPLATE', "TemplatePackage_#{@exercise.id}.tar")
-    end
-=end
+    #     unless @exercise.testing_model_solution? || @exercise.sandbox_results[:template_results_received]
+    #       send_package_to_sandbox('TEMPLATE', "TemplatePackage_#{@exercise.id}.tar")
+    #     end
     send_package_to_sandbox('MODEL', "ModelSolutionPackage_#{@exercise.id}.tar") unless @exercise.sandbox_results[:model_results_received]
   end
 
@@ -54,7 +53,7 @@ class SubmissionProcessor
       begin
         RestClient.post "#{url}/tasks.json", file: tar_file, notify: results_url, token: secret_token(package_type)
         Rails.logger.info "Sent package #{package_type} to sandbox #{url}"
-      rescue => e
+      rescue StandardError => e
         Rails.logger.info "Posting to sandbox failed: #{e}"
         raise PostFailedError
       end

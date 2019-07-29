@@ -33,3 +33,12 @@ Metrics/BlockLength:
 
 Metrics/AbcSize:
   Max: 20
+
+Style/AsciiComments:
+  Enabled: false
+
+Naming/HeredocDelimiterNaming:
+  Enabled: false
+
+Naming/HeredocDelimiterCase:
+  Enabled: false

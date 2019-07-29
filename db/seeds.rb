@@ -199,7 +199,7 @@ type8 = ExerciseType.create name: 'io_and_test_code', code_template: code_templa
 assignments[8] = Assignment.create description: 'Tee tehtävä, anna sille testisyötteet ja -tulosteet ja näe kuinka ne näkyvät testikoodissa!', exercise_type: type8, course: course, part: '1', show_results_to_user: true, mandatory_tags: true, peer_review_count: 3, pr_part: '2'
 
 # Exercise type 9
-type9 = ExerciseType.create name: 'input_output_tests_for_set_up_code', code_template: code_template5, test_template: test_template1, testing_type: 5
+type9 = ExerciseType.create name: 'input_output_tests_for_set_up_code', code_template: code_template5, test_template: test_template1, testing_type: 5, input_type: 'String', output_type: 'String'
 assignments[9] = Assignment.create description: 'Tee ttestit valmiille tehtävälle', exercise_type: type9, course: course, part: '1', show_results_to_user: true, mandatory_tags: true, peer_review_count: 3, pr_part: '2'
 
 # Peer review questions:

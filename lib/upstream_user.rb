@@ -42,7 +42,7 @@ class UpstreamUser
     token = OAuth2::AccessToken.new(oauth_client, @oauth_token)
     begin
       response = token.get('/api/v8/users/current.json')
-    rescue
+    rescue StandardError
       return nil
     end
     JSON.parse(response.body)

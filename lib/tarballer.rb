@@ -16,9 +16,7 @@ class Tarballer
 
   def exercise_modified?(exercise)
     if Dir.exist?(assignment_target_path(exercise)) && Dir.exist?(assignment_target_path(exercise).join("exercise_#{exercise.id}"))
-      if directory_includes_file(exercise, 'ModelSolution') || directory_includes_file(exercise, 'Template')
-        return false
-      end
+      return false if directory_includes_file(exercise, 'ModelSolution') || directory_includes_file(exercise, 'Template')
     end
     true
   end

@@ -63,7 +63,7 @@ class SandboxPosterJob
       begin
         RestClient.post "#{url}/tasks.json", file: tar_file, notify: results_url, token: secret_token(package_type)
         logger.info "Sent package #{package_type} to sandbox #{url}"
-      rescue => e
+      rescue StandardError => e
         logger.info "Posting to sandbox failed: #{e}"
         raise PostFailedError
       end

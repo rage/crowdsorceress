@@ -19,7 +19,7 @@ class SessionsController < ApplicationController
     else
       login_failed!
     end
-  rescue
+  rescue StandardError
     login_failed!
   end
 
