@@ -23,11 +23,15 @@ class SubmissionProcessor
       Rails.logger.info "Attempting to process submission #{submission.id}"
 
       if submission.times_sent_to_sandbox < 8
-        process_submission(submission)
+        unless Time.current - submission.processing_tried_at < 1.minutes
+          process_submission(submission)
+        end
       else
-        submission.error_messages.push(header: 'The test server is congested, please try resubmitting later', messages: [{ message: '' }])
-        submission.sandbox_timeout!
-        MessageBroadcasterJob.perform_now(submission) if submission.assignment.show_results_to_user
+        unless submission.error_messages.map{|msg| msg['header']}.include? 'The test server is congested, please try resubmitting later'
+          submission.error_messages.push(header: 'The test server is congested, please try resubmitting later', messages: [{ message: '' }])
+          submission.sandbox_timeout!
+          MessageBroadcasterJob.perform_now(submission) if submission.assignment.show_results_to_user
+        end
       end
     end
   end

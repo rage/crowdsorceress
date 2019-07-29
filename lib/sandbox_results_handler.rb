@@ -35,6 +35,7 @@ class SandboxResultsHandler
     end
 
     error = { header: header, messages: [{ message: messages }] }
+    @exercise.error_messages = []
     @exercise.error_messages.push error
   end
 
