@@ -16,6 +16,11 @@
     <%= form.text_field :name, id: :course_name, class: "form-control" %>
   </div>
 
+  <div class="field">
+    <%= form.label :language %>
+    <%= form.select :language, ["Java", "Python"] %>
+  </div>
+
   <div class="actions">
     <%= form.submit nil, class: "btn btn-primary" %>
   </div>

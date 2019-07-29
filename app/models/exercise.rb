@@ -27,7 +27,7 @@ class Exercise < ApplicationRecord
   def reset!
     self.error_messages = []
     status_undefined!
-    self.sandbox_results = { status: '', message: '', passed: false, model_results_received: false, template_results_received: false }
+    self.sandbox_results = {status: '', message: '', passed: false, model_results_received: false, template_results_received: false}
     self.tags = []
 
     self.submit_count += 1
@@ -51,7 +51,11 @@ class Exercise < ApplicationRecord
 
   def check_if_already_submitted
     if !Dir.exist?(submission_target_path.to_s)
-    then FileUtils.cp_r Rails.root.join('submission_generation', 'SubmissionTemplate').to_s, submission_target_path.to_s
+      if self.assignment.course.language == 'Java'
+        FileUtils.cp_r Rails.root.join('submission_generation', 'SubmissionTemplate').to_s, submission_target_path.to_s
+      else
+        FileUtils.cp_r Rails.root.join('submission_generation', 'PythonSubmissionTemplate').to_s, submission_target_path.to_s
+      end
     else
       FileUtils.remove_dir(submission_target_path.join('model').to_s, true)
       # FileUtils.remove_dir(submission_target_path.join('template').to_s, true)
@@ -64,18 +68,30 @@ class Exercise < ApplicationRecord
   end
 
   def write_to_main_file
-    File.open(submission_target_path.join('src', 'Submission.java').to_s, 'w') do |f|
+    path = submission_target_path.join('src', 'submission.py').to_s
+
+    if self.assignment.course.language == 'Java'
+      path = submission_target_path.join('src', 'Submission.java').to_s
+    end
+
+    File.open(path, 'w') do |f|
       f.write(code)
     end
   end
 
   def write_to_test_file
+    path = submission_target_path.join('test', 'test_submission.py').to_s
+
+    if self.assignment.course.language == 'Java'
+      path = submission_target_path.join('test', 'SubmissionTest.java').to_s
+    end
+
     if assignment.exercise_type.testing_type == 'student_written_tests' || assignment.exercise_type.testing_type == 'whole_test_code_for_set_up_code'
-      File.open(submission_target_path.join('test', 'SubmissionTest.java').to_s, 'w') do |f|
+      File.open(path, 'w') do |f|
         f.write(unit_tests.first['test_code'])
       end
     else
-      File.open(submission_target_path.join('test', 'SubmissionTest.java').to_s, 'w') do |f|
+      File.open(path, 'w') do |f|
         f.write(TestGenerator.new.generate(self))
       end
     end
@@ -111,7 +127,7 @@ class Exercise < ApplicationRecord
   end
 
   def average_grade
-    peer_reviews.inject(0.0) { |sum, review| sum + review.average_grade } / peer_reviews.count
+    peer_reviews.inject(0.0) {|sum, review| sum + review.average_grade} / peer_reviews.count
   end
 
   def peer_review_question_averages

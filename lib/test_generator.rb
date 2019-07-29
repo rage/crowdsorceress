@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_templates'
+# require 'test_templates'
 
 TESTS =
   <<~eos
@@ -16,6 +16,16 @@ MOCK_STDIO_INIT =
     @Rule
         public MockStdio io = new MockStdio();
 
+  eos
+
+PYTHON_TEST =
+  <<~eos
+    def test_%<counter>s(self, mock_stdout):
+        with patch('builtins.input', side_effect=[%<input>s]):
+          main()
+          actual = mock_stdout.getvalue()
+        expected = %<output>s
+        self.assertIn(expected, actual)
   eos
 
 class TestGenerator
@@ -52,8 +62,10 @@ class TestGenerator
     tests = ''
     counter = 1
 
+    test_method_template = exercise.assignment.course.language == 'Java' ? TESTS : PYTHON_TEST
+
     exercise.testIO.each do |io|
-      tests += format(TESTS, counter: counter, input: io['input'], output: io['output'])
+      tests += format(test_method_template, counter: counter, input: io['input'], output: io['output'])
       counter += 1
     end
 
