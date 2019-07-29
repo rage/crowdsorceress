@@ -20,12 +20,15 @@ MOCK_STDIO_INIT =
 
 PYTHON_TEST =
   <<~eos
-    def test_%<counter>s(self, mock_stdout):
+    \u0020\u0020@patch('sys.stdout', new_callable=io.StringIO)
+
+    \u0020\u0020def test_%<counter>s(self, mock_stdout):
         with patch('builtins.input', side_effect=[%<input>s]):
           main()
           actual = mock_stdout.getvalue()
         expected = %<output>s
         self.assertIn(expected, actual)
+
   eos
 
 class TestGenerator
@@ -62,7 +65,7 @@ class TestGenerator
     tests = ''
     counter = 1
 
-    test_method_template = exercise.assignment.course.language == 'Java' ? TESTS : PYTHON_TEST
+    test_method_template = exercise.assignment.course.language == 'Python' ? PYTHON_TEST : TESTS
 
     exercise.testIO.each do |io|
       tests += format(test_method_template, counter: counter, input: io['input'], output: io['output'])
