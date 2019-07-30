@@ -30,6 +30,7 @@ class Exercise < ApplicationRecord
     self.sandbox_results = { status: '', message: '', passed: false, model_results_received: false, template_results_received: false }
     self.tags = []
     self.times_sent_to_sandbox = 0
+    self.processing_tried_at = nil
 
     self.submit_count += 1
   end
