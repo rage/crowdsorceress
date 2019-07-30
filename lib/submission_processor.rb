@@ -23,7 +23,7 @@ class SubmissionProcessor
       Rails.logger.info "Attempting to process submission #{submission.id}"
 
       if submission.times_sent_to_sandbox < 8
-        process_submission(submission) unless Time.current - submission.processing_tried_at < 1.minute
+        process_submission(submission) unless !submission.processing_tried_at.nil? && Time.current - submission.processing_tried_at < 1.minute
       else
         unless submission.error_messages.map { |msg| msg['header'] }.include? 'The test server is congested, please try resubmitting later'
           submission.error_messages.push(header: 'The test server is congested, please try resubmitting later', messages: [{ message: '' }])

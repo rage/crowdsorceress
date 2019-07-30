@@ -24,7 +24,9 @@ class ExerciseTypesController < ApplicationController
   # POST /exercise_types
   def create
     @exercise_type = ExerciseType.new(exercise_type_params)
-    @exercise_type.trim_input_and_output_types
+    # @exercise_type.trim_input_and_output_types
+    @exercise_type.input_type = 'String'
+    @exercise_type.output_type = 'String'
 
     if @exercise_type.save
       redirect_to @exercise_type, notice: 'Exercise type was successfully created.'

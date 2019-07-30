@@ -8,8 +8,8 @@ module Api
         @assignment = Assignment.find(params[:id])
         @exercise_type = @assignment.exercise_type
 
-        render json: { assignment: @assignment, tags: Tag.recommended, template: @exercise_type.code_template, 
-        mandatory_tags: @assignment.mandatory_tags, language: @assignment.course.language }
+        render json: { assignment: @assignment, tags: Tag.recommended, template: @exercise_type.code_template,
+                       mandatory_tags: @assignment.mandatory_tags, language: @assignment.course.language }
           .merge(testing_type(@exercise_type))
       end
 

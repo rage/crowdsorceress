@@ -17,6 +17,7 @@ loop do
   begin
     task.run
   rescue StandardError => e
+    # puts e
     Rails.logger.error "Failed to send submission to sandbox: #{e}"
   end
 

@@ -79,7 +79,7 @@ class Exercise < ApplicationRecord
   end
 
   def write_to_test_file
-    path = submission_target_path.join('test', 'SubmissionTest.java').to_s 
+    path = submission_target_path.join('test', 'SubmissionTest.java').to_s
     path = submission_target_path.join('test', 'test_submission.py').to_s if assignment.course.language == 'Python'
 
     if assignment.exercise_type.testing_type == 'student_written_tests' || assignment.exercise_type.testing_type == 'whole_test_code_for_set_up_code'
