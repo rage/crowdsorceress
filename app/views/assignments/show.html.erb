@@ -24,47 +24,16 @@
   </p>
 <% end %>
 
-<% if @assignment.pr_part %>
- <p>
-    <strong>Peer review part:</strong>
-    <%= @assignment.pr_part %>
-  </p>
-<% end %>
-
-<p>
-  <strong>Sandbox results are shown to user:</strong>
-  <%= @assignment.show_results_to_user %>
-</p>
-
-<p>
-  <strong>Tags are required:</strong>
-  <%= @assignment.mandatory_tags %>
-</p>
-
-<p>
-  <strong>Number of peer reviews an user can make for this assignment:</strong>
-  <%= @assignment.peer_review_count %>
-</p>
-
 <div class="card">
   <div class="card-body">
     <h5 class="card-title">Embed:</h5>
-    <strong>for course materials in 2018 or earlier:</strong>
+    <strong>HTML:</strong>
     <pre><code><%= "<div class='crowdsorcerer-widget' data-assignment='#{@assignment.id}'></div>" %></code></pre>
-    <strong>for course materials in 2019:</strong>
+    <strong>University of Helsinki materials:</strong>
     <pre><code><%= "<crowdsorcerer id='#{@assignment.id}'></crowdsorcerer>" %></code></pre>
   </div>
 </div>
 <br>
-<div class="card">
-  <div class="card-body">
-    <h5 class="card-title">Embed peer review:</h5>
-    <strong>for course materials in 2018 or earlier:</strong>
-    <pre><code><%= "<div class='crowdsorcerer-widget' data-assignment='#{@assignment.id}' peer-review data-exercises='3'></div>" %></code></pre>
-    <strong>for course materials in 2019:</strong>
-    <pre><code><%= "<crowdsorcerer id='#{@assignment.id}' peerreview='true' exercisecount='3'></crowdsorcerer>" %></code></pre>
-  </div>
-</div>
 
 <br>
 

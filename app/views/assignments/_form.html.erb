@@ -11,6 +11,8 @@
     </div>
   <% end %>
 
+  <p>For instructions, see <a href="https://github.com/rage/crowdsorceress/blob/english/documentation/admin_instructions.md">the documentation</a></p>
+
   <div class="field">
     <%= form.label :description %>
     <%= form.text_field :description, id: :assignment_description, class: "form-control" %>
@@ -29,27 +31,6 @@
     <div class="field">
       <%= form.label :part %>
       <%= form.text_field :part, id: :assignment_part, class: "form-control" %>
-    </div>
-
-    <div class="field">
-      <%= form.label :pr_part %>
-      <%= form.text_field :pr_part, id: :assignment_pr_part, class: "form-control" %>
-    </div>
-
-    <div class="field">
-      <%= form.label :show_results_to_user %>
-      <%= form.check_box :show_results_to_user, id: :assignment_show_results_to_user, class: "form-control"  %>
-    </div>
-
-    <div class="field">
-      <%= form.label :mandatory_tags %>
-      <%= form.check_box :mandatory_tags, id: :assignment_mandatory_tags, class: "form-control"  %>
-    </div>
-
-    <div class="field">
-      <%= form.label :peer_review_count %>
-      <p>HOX! Add this only after peer reviews have been embedded to material! This is for counting max points for an assignment.</p>
-      <%= form.text_field :peer_review_count, id: :assignment_peer_review_count, class: "form-control" %>
     </div>
 
   <div class="actions">

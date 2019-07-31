@@ -11,6 +11,8 @@
         </div>
     <% end %>
 
+  <p>For instructions, see <a href="https://github.com/rage/crowdsorceress/blob/english/documentation/admin_instructions.md">the documentation</a></p>
+
     <div class="field">
       <%= form.label :name %>
       <%= form.text_field :name, id: :exercise_type_name, class: "form-control" %>
@@ -26,23 +28,9 @@
       <%= form.text_area :code_template, id: :exercise_type_code_template, class: "form-control", rows: 10 %>
     </div>
 
-    <%
-=begin%>
- <div class="field">
-      <%= form.label :input_type %>
-      <%= form.text_field :input_type, id: :exercise_type_input_type, class: "form-control" %>
-    </div>
-
-    <div class="field">
-      <%= form.label :output_type %>
-      <%= form.text_field :output_type, id: :exercise_type_output_type, class: "form-control" %>
-    </div> 
-<%
-=end%>
-
     <div class="field">
       <%= form.label :test_template %>
-      <p>Remember to add the %&lt;tests&gt;s tag and, if needed, the %&lt;mock_stdio_init&gt;s tag to the template.</p>
+      <p>Remember to add the %&lt;tests&gt;s tag.</p>
       <%= form.text_area :test_template, id: :exercise_type_test_template, class: "form-control", rows: 10 %>
     </div>
 
