@@ -1,5 +1,19 @@
 These are example templates for exercise types.
 
+### Code template:
+
+~~~~
+def greeting():
+  name = input()
+  print("Hello,", name)
+
+def main(): #required! see admin instruction for more info
+  greeting()
+
+if __name__ == '__main__':
+  main()
+~~~~
+
 ### Test template:
 ~~~~
 import unittest
@@ -32,4 +46,5 @@ This template is used by the backend. Test cases are inserted into the placehold
     <assertion>
 ~~~~
     
-This template is sent to the frontend, which gives the user-given inputs in place of the placeholders and forms the assertion (either AssertIn, AssertNotIn or AssertEqual).
+This template is sent to the frontend, which gives the user-given inputs in place of the placeholders and forms
+the assertion (either AssertIn, AssertNotIn or AssertEqual).
