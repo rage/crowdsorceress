@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
 
   def current_user
     @current_user ||= begin
-      UpstreamUser.new(session[:oauth_token]).get
+      UpstreamUser.new(session[:user_id]).get
     end
   end
 
@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
     redirect_to sessions_path, notice: 'Please log in.'
   end
 
-  def oauth_client
-    @oauth_client ||= OAuth2::Client.new(ENV['OAUTH_APPLICATION_ID'], ENV['OAUTH_SECRET'], site: ENV['OAUTH_SITE'])
-  end
+  #def oauth_client
+  #  @oauth_client ||= OAuth2::Client.new(ENV['OAUTH_APPLICATION_ID'], ENV['OAUTH_SECRET'], site: ENV['OAUTH_SITE'])
+  #end
 end

@@ -26,7 +26,7 @@ module ApplicationCable
     end
 
     def upstream_user
-      @upstream_user ||= UpstreamUser.new(request.params[:oauth_token]).get
+      @upstream_user ||= UpstreamUser.new(request.headers['utorid']).get
     end
   end
 end

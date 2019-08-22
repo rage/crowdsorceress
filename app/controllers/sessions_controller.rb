@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
     fetch_token
     if current_user
       unless admin?
-        session[:oauth_token] = nil
+        session[:user_id] = nil
         return redirect_to sessions_path, alert: 'Not authorized.'
       end
       current_user.update!(last_logged_in: Time.zone.now)
@@ -24,15 +24,14 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    session[:oauth_token] = nil
+    session[:user_id] = nil
     redirect_to sessions_path, notice: 'You are logged out.'
   end
 
   private
 
   def fetch_token
-    token = oauth_client.password.get_token(params[:login], params[:password])
-    session[:oauth_token] = token.token
+    session[:user_id] = request.headers['utorid']
   end
 
   def login_failed!
