@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class SandboxResultsHandler
+  require 'pcrs'
+
   def initialize(exercise)
     @exercise = exercise
   end
@@ -8,8 +10,9 @@ class SandboxResultsHandler
   def handle(test_output, package_type)
     test_results(test_output) if package_type == 'MODEL'
     compile_errors(test_output, package_type)
-
-    generate_data_for_frontend(test_output, package_type)
+ 
+    PCRS.new(@exercise, test_output).send_results
+    generate_data_for_frontend(test_output, package_type) 
   end
 
   def generate_data_for_frontend(test_output, package_type)
@@ -157,4 +160,5 @@ class SandboxResultsHandler
     end
     errored_line_number.to_s
   end
+  
 end
