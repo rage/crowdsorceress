@@ -30,7 +30,7 @@ module Api
       private
 
       def in_progress
-        if @exercise.in_progress? && (Time.zone.now - 10.minutes) < @exercise.updated_at && @exercise.show_results_to_user
+	      if @exercise.in_progress? && (Time.zone.now - 10.minutes) < @exercise.updated_at && @exercise.assignment.show_results_to_user
           render json: { message: 'Exercise is already in progress.', exercise: @exercise, status: 400 }
           return true
         end
