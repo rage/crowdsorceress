@@ -1,7 +1,7 @@
 # frozen_string_literal: true
+require 'pcrs'
 
-class SandboxResultsHandler
-  require 'pcrs'
+class SandboxResultsHandler 
 
   def initialize(exercise)
     @exercise = exercise
