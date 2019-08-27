@@ -54,9 +54,9 @@ test_method_template1 =
   \u0020\u0020\u0020\u0020<assertion>
 eos
 
-exercise_type1 = ExerciseType.create name: 'input_output', code_template: code_template1, test_template: test_template1, testing_type: 5
+exercise_type1 = ExerciseType.create name: 'input_output', code_template: code_template1, test_template: test_template1, testing_type: 5, input_type: 'String', output_type: 'String'
 
-exercise_type2 = ExerciseType.create name: 'io_and_code', code_template: code_template1, test_template: test_template1, testing_type: 3, test_method_template: test_method_template1
+exercise_type2 = ExerciseType.create name: 'io_and_code', code_template: code_template1, test_template: test_template1, testing_type: 3, test_method_template: test_method_template1, input_type: 'String', output_type: 'String'
 
 assignment1 = Assignment.create description: 'Basic Python exercise with locked code template, string input and string output.', exercise_type: exercise_type1, course: course, part: '1', show_results_to_user: true, mandatory_tags: false, peer_review_count: 0, pr_part: '1'
 
