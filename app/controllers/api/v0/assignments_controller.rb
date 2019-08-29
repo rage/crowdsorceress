@@ -8,24 +8,23 @@ module Api
         @assignment = Assignment.find(params[:id])
         @exercise_type = @assignment.exercise_type
 
-        render json: {assignment: @assignment, tags: Tag.recommended, template: @exercise_type.code_template,
-                      mandatory_tags: @assignment.mandatory_tags, language: @assignment.course.language,
-                      input_type: @exercise_type.input_type, output_type: @exercise_type.output_type}
-                       .merge(testing_type(@exercise_type))
+        render json: { assignment: @assignment, tags: Tag.recommended, template: @exercise_type.code_template,
+                       mandatory_tags: @assignment.mandatory_tags, language: @assignment.course.language,
+                       input_type: @exercise_type.input_type, output_type: @exercise_type.output_type }
+          .merge(testing_type(@exercise_type))
       end
 
       def testing_type(exercise_type)
         if exercise_type.testing_type == 'input_output' || exercise_type.testing_type == 'input_output_tests_for_set_up_code'
-          {exercise_type: exercise_type.testing_type}
+          { exercise_type: exercise_type.testing_type }
         elsif exercise_type.testing_type == 'student_written_tests' || exercise_type.testing_type == 'whole_test_code_for_set_up_code'
-          {test_template: @exercise_type.test_template, exercise_type: if exercise_type.testing_type == 'student_written_tests'
-          then
-                                                                         'unit_tests'
-                                                                       else
-                                                                         'whole_test_code_for_set_up_code'
-                                                                       end}
+          { test_template: @exercise_type.test_template, exercise_type: if exercise_type.testing_type == 'student_written_tests'
+                                                                          'unit_tests'
+                                                                        else
+                                                                          'whole_test_code_for_set_up_code'
+                                                                       end }
         elsif exercise_type.testing_type == 'io_and_code' || exercise_type.testing_type == 'tests_for_set_up_code'
-          {test_template: @exercise_type.test_method_template, exercise_type: exercise_type.testing_type}
+          { test_template: @exercise_type.test_method_template, exercise_type: exercise_type.testing_type }
         end
       end
     end

@@ -17,7 +17,11 @@ class ZipHandler
   private
 
   def update_model_and_template
-    model_file = File.open(submission_target_path.join('model', 'src', 'Submission.java').to_s, 'rb:UTF-8')
+    model_file = if @exercise.assignment.course.language == 'Python'
+                   File.open(submission_target_path.join('model', 'src', 'submission.py').to_s, 'rb:UTF-8')
+                 else
+                   File.open(submission_target_path.join('model', 'src', 'Submission.java').to_s, 'rb:UTF-8')
+                 end
     model = model_file.read
     # template_file = File.open(submission_target_path.join('template', 'src', 'Submission.java').to_s, 'rb:UTF-8')
     # template = template_file.read
@@ -53,9 +57,13 @@ class ZipHandler
   end
 
   def create_zip(zipfile_name, file)
-    input_files = ['lib/testrunner/tmc-junit-runner.jar', 'lib/edu-test-utils-0.4.2.jar', 'lib/junit-4.10.jar',
-                   'nbproject/build-impl.xml', 'nbproject/genfiles.properties', 'nbproject/project.properties',
-                   'nbproject/project.xml', 'src/Submission.java', 'test/SubmissionTest.java', 'build.xml']
+    if @exercise.assignment.course.language == 'Python'
+      input_files = ['src/submission.py', 'test/__init__.py', 'test/test_submission.py', 'tmc/__init__.py', 'tmc/__main__.py', 'tmc/points.py', 'tmc/result.py', 'tmc/runner.py', 'tmc/utils.py']
+    else
+      input_files = ['lib/testrunner/tmc-junit-runner.jar', 'lib/edu-test-utils-0.4.2.jar', 'lib/junit-4.10.jar',
+                     'nbproject/build-impl.xml', 'nbproject/genfiles.properties', 'nbproject/project.properties',
+                     'nbproject/project.xml', 'src/Submission.java', 'test/SubmissionTest.java', 'build.xml']
+    end
 
     Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
       input_files.each do |name|

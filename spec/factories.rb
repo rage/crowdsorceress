@@ -3,6 +3,7 @@
 FactoryGirl.define do
   factory :course do
     name "MyString"
+    language 'Java'
   end
   factory :tag do
     name 'tag'
@@ -11,6 +12,8 @@ FactoryGirl.define do
   factory :exercise_type do
     name 'string_string'
     test_template 'asd'
+    input_type 'String'
+    output_type 'String'
   end
 
   factory :string_string_et, class: ExerciseType do
