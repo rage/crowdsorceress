@@ -31,7 +31,7 @@ class SessionsController < ApplicationController
   private
 
   def fetch_token
-    session[:user_id] = request.headers['utorid']
+    session[:user_id] = request.env['utorid']
   end
 
   def login_failed!

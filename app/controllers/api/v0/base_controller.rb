@@ -44,7 +44,7 @@ module Api
 
       def current_user
         @current_user ||= begin
-          UpstreamUser.new(request.headers['utorid']).get
+          UpstreamUser.new(request.env['utorid']).get
         end
       end
 
