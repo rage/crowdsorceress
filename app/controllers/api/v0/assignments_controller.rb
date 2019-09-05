@@ -10,7 +10,7 @@ module Api
 
         render json: { assignment: @assignment, tags: Tag.recommended, template: @exercise_type.code_template,
                        mandatory_tags: @assignment.mandatory_tags, language: @assignment.course.language,
-                       input_type: @exercise_type.input_type, output_type: @exercise_type.output_type }
+                       input_type: @exercise_type.input_type, output_type: @exercise_type.output_type, testing_a_method: @exercise_type.testing_a_method }
           .merge(testing_type(@exercise_type))
       end
 
