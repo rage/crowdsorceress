@@ -69,4 +69,4 @@ gem 'turbolinks', '~> 5'
 
 gem 'sass-rails', '~> 5.0'
 
-gem 'kaminari', '~> 1.1', '>= 1.1.1'
+gem 'kaminari', '~> 1.2'
