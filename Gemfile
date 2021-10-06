@@ -52,7 +52,7 @@ gem 'tzinfo-data', '~> 1.2017.2', platforms: [:mingw, :mswin, :x64_mingw, :jruby
 
 gem 'oauth2', '~> 1.2'
 
-gem 'sidekiq', '~> 5.0.4'
+gem 'sidekiq', '~> 5.2.0'
 
 gem 'rubyzip', '~> 1.2', '>= 1.2.1'
 
